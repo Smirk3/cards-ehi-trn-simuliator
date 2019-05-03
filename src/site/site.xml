@@ -1,0 +1,14 @@
+<project>
+    <skin>
+        <groupId>org.apache.maven.skins</groupId>
+        <artifactId>maven-fluido-skin</artifactId>
+        <version>1.6</version>
+    </skin>
+
+    <body>
+        <menu name="Documentation">
+            <item name="Getting Started" href="getting-started.html" />
+            <item name="Changelog" href="changelog.html" />
+        </menu>
+    </body>
+</project>

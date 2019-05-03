@@ -1,0 +1,11 @@
+<div th:if="${!(#lists.isEmpty(alerts))}">
+    <div th:each="alert : ${alerts}">
+        <div class="alert alert-info" role="alert" th:if="${alert.type == 'INFO'}" th:utext="${alert.text}" />
+
+        <div class="alert alert-success" role="alert" th:if="${alert.type == 'SUCCESS'}" th:utext="${alert.text}" />
+
+        <div class="alert alert-warning" role="alert" th:if="${alert.type == 'WARNING'}" th:utext="${alert.text}" />
+
+        <div class="alert alert-danger" role="alert" th:if="${alert.type == 'ERROR'}" th:utext="${alert.text}" />
+    </div>
+</div>
