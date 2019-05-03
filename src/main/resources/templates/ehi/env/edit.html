@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<body>
+<div class="container" th:fragment="content">
+
+    <form method="post" enctype="multipart/form-data" th:action="@{/ehi/env/edit}" >
+        <h2>Application veriables</h2>
+        <fieldset style="padding-top: 20px">
+            <div class="form-group row">
+                <label th:for="merchantId" class="col-sm-2 col-form-label" th:text="'EHI url default'"></label>
+                <div class="col-sm-10">
+                    <div>
+                        <input type="text" class="form-control" th:id="ehiUrlDefault" th:name="ehiUrlDefault" th:value="${ehiUrlDefaultInvalid == null ? settings.ehiUrlDefault : ehiUrlDefaultInvalid}" />
+                    </div>
+                </div>
+            </div>
+
+        </fieldset>
+
+        <div class="form-group row">
+            <div class="offset-sm-2 col-sm-10">
+                <button type="submit" class="btn btn-primary">Save</button>
+                <a class="btn btn-secondary" th:href="@{/ehi/env}" role="button">Cancel</a>
+            </div>
+        </div>
+    </form>
+
+</div>
+</body>
+</html>

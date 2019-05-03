@@ -72,9 +72,9 @@ public class SettingsController extends BaseController {
     private void setSettingsDownloadEnabled(HttpServletRequest request, Model model) {
         boolean isSettingsDownloadEnabled = false;
         Settings settings = getSessionSettings(request.getSession());
-        if (!CollectionUtils.isEmpty(settings.getContracts())
-                || !CollectionUtils.isEmpty(settings.getTemplates())
-                || StringUtils.hasText(settings.getBankPublicKey())){
+        if (!CollectionUtils.isEmpty(settings.cards)
+                || !CollectionUtils.isEmpty(settings.templates)
+                || StringUtils.hasText(settings.ehiUrlDefault)){
             isSettingsDownloadEnabled = true;
         }
         model.addAttribute("isSettingsDownloadEnabled", isSettingsDownloadEnabled);
