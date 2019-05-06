@@ -1,6 +1,5 @@
 package ehi;
 
-import com.sun.org.apache.xerces.internal.impl.dv.util.Base64;
 import ehi.alerts.AlertError;
 import ehi.alerts.AlertSuccess;
 import ehi.alerts.AlertUtil;
@@ -12,7 +11,6 @@ import ehi.settings.SettingsUtil;
 import ehi.template.Template;
 import ehi.template.TemplateNotFoundException;
 import ehi.template.TemplateUtil;
-import org.apache.http.annotation.Contract;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.stereotype.Controller;
@@ -20,25 +18,13 @@ import org.springframework.ui.Model;
 import org.springframework.util.CollectionUtils;
 import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.SessionAttributes;
-import org.springframework.web.util.WebUtils;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import java.io.ByteArrayInputStream;
-import java.io.UnsupportedEncodingException;
-import java.nio.charset.Charset;
-import java.security.PrivateKey;
-import java.security.PublicKey;
-import java.security.cert.Certificate;
-import java.security.cert.CertificateException;
-import java.security.cert.CertificateFactory;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collection;
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -133,8 +119,8 @@ return null;
 
     @RequestMapping("/new/fields")
     public String showNewMessageFields(Model model, HttpServletRequest request) {
-        String template;
-        try {
+        String template = null;
+/*        try {
             Card card = getCard(request, cardSelected);
             MessageId messageId = MessageId.getById(messageNumberSelected);
             MessageRequest message = MessageFactory.getMessageRequest(messageId, card);
@@ -149,7 +135,7 @@ return null;
         } catch (CardNotFoundException e) {
             AlertUtil.addAlert(model, new AlertError("IBPay contract " + cardSelected + " was not found."));
             template = showNewMessageTypeSelector(request, model);
-        }
+        }*/
 
         return template;
     }

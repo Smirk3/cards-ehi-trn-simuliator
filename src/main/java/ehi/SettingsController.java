@@ -73,8 +73,8 @@ public class SettingsController extends BaseController {
         boolean isSettingsDownloadEnabled = false;
         Settings settings = getSessionSettings(request.getSession());
         if (!CollectionUtils.isEmpty(settings.cards)
-                || !CollectionUtils.isEmpty(settings.templates)
-                || StringUtils.hasText(settings.ehiUrlDefault)){
+            || !CollectionUtils.isEmpty(settings.templates)
+            || StringUtils.hasText(settings.ehiUrlDefault)) {
             isSettingsDownloadEnabled = true;
         }
         model.addAttribute("isSettingsDownloadEnabled", isSettingsDownloadEnabled);

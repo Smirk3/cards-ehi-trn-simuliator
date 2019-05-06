@@ -1,6 +1,6 @@
-package ehi.gps.classifier;
+package ehi.gps.model;
 
-public enum Country {
+public class Country {
 
     private String name;
     private String Capital;

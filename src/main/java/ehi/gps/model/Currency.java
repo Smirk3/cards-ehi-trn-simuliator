@@ -1,4 +1,4 @@
-package ehi.gps.classifier;
+package ehi.gps.model;
 
 public class Currency {
 

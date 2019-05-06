@@ -37,7 +37,7 @@ public class AppVariablesController extends BaseController {
 
     @RequestMapping("/edit")
     public String editContract(HttpServletRequest request, Model model,
-            @RequestParam("ehiUrlDefault") String ehiUrlDefault) {
+                               @RequestParam("ehiUrlDefault") String ehiUrlDefault) {
         String template;
         Settings settings = SettingsUtil.getSessionSettings(request.getSession());
 
