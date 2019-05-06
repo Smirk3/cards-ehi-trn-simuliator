@@ -1,7 +1,10 @@
 package ehi.country;
 
+import ehi.gps.model.Country;
+import ehi.gps.model.CountryBuilder;
 import ehi.gps.model.Currency;
-import ehi.jaxb.generated.currency.code.iso4217.generated.ISO4217;
+import ehi.jaxb.generated.Countries;
+import ehi.jaxb.generated.ISO4217;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Value;
@@ -13,7 +16,9 @@ import javax.xml.bind.JAXBException;
 import javax.xml.bind.Unmarshaller;
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 @Component
 public class CountryManager {
@@ -23,15 +28,59 @@ public class CountryManager {
     @Value(value = "classpath:xml/currency-codes-ISO4217.xml")
     private Resource currencyCodesResource;
 
-    private ISO4217 currencies;
+    @Value(value = "classpath:xml/iso_country_codes.xml")
+    private Resource countriesResource;
+
+    private ISO4217 currenciesRaw;
+    private Countries countriesRaw;
+
+    private List<Country> countries;
 
     public CountryManager() {
-        this.currencies = parseIsoCurrencies(currencyCodesResource);
+        this.currenciesRaw = parseIsoCurrencies(currencyCodesResource);
+        this.countriesRaw = parseIsoCountries(countriesResource);
+        this.countries = transform(countriesRaw, currenciesRaw);
+    }
 
+    private static List<Country> transform(Countries countriesRaw, ISO4217 currenciesRaw) {
+        List<Country> result = new ArrayList<>();
+        for (Countries.Country countryRaw : countriesRaw.getCountry()){
+            Optional<ISO4217.CcyTbl.CcyNtry> ccyNtry = currenciesRaw.getCcyTbl().getCcyNtry().stream()
+                .filter(c -> c.getCtryNm().equals(countryRaw.getName())).findAny();
+            if (!ccyNtry.isPresent()) {
+                logger.error("Currency was not found for country: " + countryRaw.getName());
+            } else {
+                Currency currency = new Currency(ccyNtry.get().getCtryNm(),
+                    ccyNtry.get().getCcyNm().getValue(),
+                    ccyNtry.get().getCcy(),
+                    ccyNtry.get().getCcyNbr().toString(),
+                    Integer.valueOf(ccyNtry.get().getCcyMnrUnts()));
+                Country country = new CountryBuilder().setName(countryRaw.getName())
+                    .setIsoCodeAlpha2(countryRaw.getAlpha2())
+                    .setIsoCodeAlpha3(countryRaw.getAlpha3())
+                    .setIsoCodeNumeric(countryRaw.getCountryCode().toString())
+                    .setCurrency(currency)
+                    .createCountry();
+                result.add(country);
+            }
+        }
+        return result;
     }
 
     private List<Currency> resolveCurrencies(Resource currencyCodesResource) {
 
+    }
+
+    private static Countries parseIsoCountries(Resource countriesResource) {
+        try {
+            JAXBContext jaxbContext = JAXBContext.newInstance(Countries.class);
+            Unmarshaller jaxbUnmarshaller = jaxbContext.createUnmarshaller();
+            return (Countries) jaxbUnmarshaller.unmarshal(getInputStream(countriesResource));
+
+        } catch (JAXBException jaxbe) {
+            logger.error("Unable to resolve countries from resource 'classpath:xml/iso_country_codes.xml'. " + jaxbe);
+            throw new RuntimeException(jaxbe);
+        }
     }
 
     private static ISO4217 parseIsoCurrencies(Resource currencyCodesResource) {

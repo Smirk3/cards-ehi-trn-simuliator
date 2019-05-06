@@ -102,8 +102,9 @@
                     </xjbSources>
                     <sources>
                         <source>src/main/resources/xsd/currency-codes-ISO4217.xsd</source>
+                        <source>src/main/resources/xsd/iso_country_codes.xsd</source>
                     </sources>
-                    <outputDirectory>${basedir}/src/main/java/ehi/jaxb/generated/currency/code/iso4217
+                    <outputDirectory>${basedir}/src/main/java/ehi/jaxb
                     </outputDirectory>
                     <clearOutputDir>false</clearOutputDir>
                 </configuration>
