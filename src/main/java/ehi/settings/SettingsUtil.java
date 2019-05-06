@@ -125,7 +125,7 @@ public class SettingsUtil {
                 }
 
                 templates.add(template);
-            } catch (ContractNotFoundException e) {
+            } catch (CardNotFoundException e) {
                 AlertUtil.addAlert(model, new AlertWarning(String.format("Message template %s was not loaded because"
                         + "of IBPay contract was not found by message merchant id: %s (VK_SND_ID field)",
                         template.getName(), msgMerchantId)));

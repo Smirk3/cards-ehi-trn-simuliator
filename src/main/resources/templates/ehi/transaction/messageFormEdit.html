@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<body>
+
+<div class="container" th:fragment="content">
+    <form method="post" th:action="@{/ehi/message/show}" th:object="${message}">
+        <fieldset>
+            <!--<legend th:text="'Message type: ' + ${message.type == T(ibpay.message.MessageType).PAY ? 'Payment' : 'Authentication'}" />
+            <div class="form-group row">
+                <div class="col-sm-10" th:text="${message.id.description}">
+                </div>
+            </div>-->
+
+            <div class="form-group row">
+                <label for="ehiUrl" class="col-sm-2 col-form-label">EHI url</label>
+                <div class="col-sm-10">
+                    <input type="text" class="form-control" id="ehiUrl" th:name="ehiUrl" th:value="${ibUrlDefault == null ? message.ibUrl : ibUrlDefault}" aria-describedby="helpInline" />
+                    <small id="helpInline" class="form-text text-muted" th:text="'NANO URL for soap message'" style="font-size: 0.75rem" />
+                </div>
+            </div>
+
+            <legend>Message fields</legend>
+            <div th:each="field : ${message.fields}" class="form-group row">
+                <label th:for="${field.name}" class="col-sm-2 col-form-label" th:text="${(field.priority == null? '- ' : field.priority + '.')} + ' ' + ${field.name}"></label>
+                <div class="col-sm-10">
+                    <div th:if="${field.name == T(ibpay.message.field.FieldName).VK_SND_ID}">
+                        <select th:id="${field.name}" th:name="${field.name}" class="custom-select" aria-describedby="helpInline">
+                            <option th:each="merchantId : ${message.merchantIds}" th:value="${merchantId}" th:text="${merchantId}" th:selected="${(field.value == merchantId)}" />
+                        </select>
+                        <small id="helpInline" class="form-text text-muted" th:text="${field.description}" style="font-size: 0.75rem" />
+                    </div>
+                    <div th:if="${field.name != T(ibpay.message.field.FieldName).VK_SND_ID}">
+                        <input type="text" class="form-control" th:name="${field.name}" th:value="${field.value}" th:readonly="${field.readonly}" aria-describedby="helpInline" />
+                        <small id="helpInline" class="form-text text-muted" th:text="${field.description}" style="font-size: 0.75rem" />
+                    </div>
+                </div>
+            </div>
+
+        </fieldset>
+        <div class="form-group row">
+            <div class="offset-sm-2 col-sm-10">
+                <button type="submit" class="btn btn-primary">Next</button>
+            </div>
+        </div>
+    </form>
+</div>
+
+</body>
+</html>
