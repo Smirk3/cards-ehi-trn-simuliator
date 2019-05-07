@@ -4,6 +4,8 @@ import ehi.alerts.AlertError;
 import ehi.alerts.AlertSuccess;
 import ehi.alerts.AlertUtil;
 import ehi.card.Card;
+import ehi.country.CountryManager;
+import ehi.gps.classifier.Scheme;
 import ehi.message.Message;
 import ehi.message.Util;
 import ehi.settings.CardNotFoundException;
@@ -14,6 +16,7 @@ import ehi.template.TemplateNotFoundException;
 import ehi.template.TemplateUtil;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.util.CollectionUtils;
@@ -25,6 +28,7 @@ import org.springframework.web.bind.annotation.SessionAttributes;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
@@ -32,7 +36,7 @@ import java.util.Map;
 
 @Controller
 @RequestMapping(EhiMessageController.EHI_MESSAGE_URI)
-@SessionAttributes({"message", "messageNumberSelected"})
+@SessionAttributes({"message"})
 public class EhiMessageController extends BaseController {
 
     private static final Logger logger = LogManager.getLogger(EhiMessageController.class);
@@ -45,6 +49,9 @@ public class EhiMessageController extends BaseController {
     private static final String MODEL_ATTR_TEMPLATES = "templates";
 
     public static final String EHI_MESSAGE_URI = "/ehi/message";
+
+    @Autowired
+    private CountryManager countryManager;
 
     @RequestMapping("")
     public String index(HttpServletRequest request, Model model) {
@@ -69,7 +76,7 @@ public class EhiMessageController extends BaseController {
             message.setSendEmptyFields(settings.isSendEmptyFields());
 
             Util.signData(message, settings.getContracts());
-            model.addAttribute(VIEW, "ibpay/payment/messageFormPreview");
+            model.addAttribute(VIEW, "ehi/transaction/messageFormPreview");
             return TEMPLATE;
 
         } catch (CardNotFoundException e) {
@@ -99,7 +106,7 @@ return null;
         model.addAttribute("messageTypes", messageTypes);
         model.addAttribute("contracts", getCards(request));
 
-        model.addAttribute(VIEW, "ibpay/payment/messageFormTypeSelector");
+        model.addAttribute(VIEW, "ehi/transaction/messageFormTypeSelector");
         return TEMPLATE;
     }
 */
@@ -120,34 +127,44 @@ return null;
 
     @RequestMapping("/new/fields")
     public String showNewMessageFields(Model model, HttpServletRequest request) {
+        Settings settings = SettingsUtil.getSessionSettings(request.getSession());
+        addEhiUrlDefault(model, settings);
+
         String template = null;
-        try {
-            Card card = getCard(request, cardSelected);
-            MessageId messageId = MessageId.getById(messageNumberSelected);
-            MessageRequest message = MessageFactory.getMessageRequest(messageId, card);
+        //try {
+        Message message = newMessage();
 
             request.getSession().setAttribute(SESSION_ATTR_MESSAGE, message);
-            model.addAttribute(MODEL_ATTR_MESSAGE, message);
-            model.addAttribute(MODEL_ATTR_CARD, card);
+        model.addAttribute(MODEL_ATTR_MESSAGE, message);
+        //model.addAttribute(MODEL_ATTR_CARD, card);
 
             model.addAttribute(VIEW, "ehi/transaction/messageFormEdit");
             template = TEMPLATE;
 
-        } catch (CardNotFoundException e) {
+/*        } catch (CardNotFoundException e) {
             AlertUtil.addAlert(model, new AlertError("IBPay contract " + cardSelected + " was not found."));
             template = showNewMessageTypeSelector(request, model);
-        }
+        }*/
 
         return template;
     }
 
-    private Message newMessage() {
+    private void addEhiUrlDefault(Model model, Settings settings) {
+        //if (StringUtils.hasText(settings.ehiUrlDefault)) {
+        model.addAttribute("ehiUrlDefault", settings.ehiUrlDefault);
+        //}
+    }
 
+    private Message newMessage() {
+        Message message = new Message();
+        message.schemes = Arrays.asList(Scheme.values());
+        message.countries = countryManager.getCountries();
+        return message;
     }
 
     @RequestMapping("/edit/fields")
     public String showEditMessageFields(Model model) {
-        model.addAttribute(VIEW, "ibpay/payment/messageFormEdit");
+        model.addAttribute(VIEW, "ehi/transaction/messageFormEdit");
         return TEMPLATE;
     }
 
@@ -158,7 +175,7 @@ return null;
             templates = new ArrayList<>();
         }
         model.addAttribute(MODEL_ATTR_TEMPLATES, templates);
-        model.addAttribute(VIEW, "ehi/payment/template/templates");
+        model.addAttribute(VIEW, "ehi/transaction/template/templates");
         return TEMPLATE;
     }
 
@@ -226,7 +243,7 @@ return null;
 
     @RequestMapping("/templates/create/name")
     public String showCreateTemplateName(Model model) {
-        model.addAttribute(VIEW, "ehi/payment/template/newTemplateName");
+        model.addAttribute(VIEW, "ehi/transaction/template/newTemplateName");
         return TEMPLATE;
     }
 
@@ -257,7 +274,7 @@ return null;
         try {
             Template template = TemplateUtil.findTemplate(templates, templateId);
             model.addAttribute("template", template);
-            model.addAttribute(VIEW, "ehi/payment/template/templateEditForm");
+            model.addAttribute(VIEW, "ehi/transaction/template/templateEditForm");
             return TEMPLATE;
 
         } catch (TemplateNotFoundException e) {

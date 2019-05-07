@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<body>
+<div class="container" th:fragment="content">
+
+    <div style="padding-top: 50px">
+        <h2>Message templates list</h2>
+
+        <div th:if="${#lists.isEmpty(templates)}">You have no transaction message templates. Upload templates from file
+            at <a th:href="@{/ehi/settings}">"Settings"</a> or create <a th:href="@{/ehi/message/new/fields}">new
+                one</a>.
+        </div>
+
+        <div class="table-responsive" th:if="${not #lists.isEmpty(templates)}">
+            <div style="padding-bottom: 20px">
+                <small class="form-text text-muted">You can save changes to file at <a th:href="@{/ehi/settings}">"Settings"</a>
+                </small>
+            </div>
+
+            <table class="table table-striped">
+                <thead>
+                <tr>
+                    <th>Name</th>
+                    <th>Agreement</th>
+                    <th>Message#</th>
+                    <!--<th>Amount</th>
+                    <th>Beneficiary</th>
+                    <th>Details</th>-->
+                    <th>Description</th>
+                    <th>Actions</th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr th:each="template : ${templates}">
+                    <td th:text="${template.name}"/>
+                    <td th:text="${template.paymentAgreement}"/>
+                    <td th:text="${template.messageId}"/>
+                    <!--<td th:text="${template.paymentAmount != null ? template.paymentAmount + ' ' + template.paymentCurrency : ''}"/>
+                    <td th:text="${template.paymentBeneficiary}"/>
+                    <td th:text="${template.paymentDetails}"/>-->
+                    <td th:text="${template.description}"/>
+                    <td>
+                        <div class="btn-group" role="group" aria-label="...">
+                            <a class="btn btn-secondary" th:href="@{/ibpay/message/templates/do(templateId=${template.id})}" role="button" th:text="${template.message.type == T(ibpay.message.MessageType).PAY ? 'Pay' : 'Authenticate'}"/>
+                            <a class="btn btn-secondary" th:href="@{/ibpay/message/templates/show/edit(templateId=${template.id})}" role="button">edit</a>
+                            <a class="btn btn-secondary" th:href="@{/ibpay/message/templates/delete(templateId=${template.id})}" role="button">delete</a>
+                        </div>
+                    </td>
+                </tr>
+
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+</div>
+</body>
+</html>

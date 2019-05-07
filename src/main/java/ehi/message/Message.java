@@ -8,10 +8,14 @@ import java.util.List;
 
 public class Message implements Serializable {
 
+    public String ehiUrl;
+
     public Scheme scheme;
 
     public Country country;
 
     public List<Country> countries;
+
+    public List<Scheme> schemes;
 
 }

@@ -36,6 +36,10 @@ public class CountryManager {
         this.countries = transform(countriesRaw, currenciesRaw);
     }
 
+    public List<Country> getCountries() {
+        return countries;
+    }
+
     private static List<Country> transform(Countries countriesRaw, ISO4217 currenciesRaw) {
         List<Country> result = new ArrayList<>();
         for (Countries.Country countryRaw : countriesRaw.getCountry()) {

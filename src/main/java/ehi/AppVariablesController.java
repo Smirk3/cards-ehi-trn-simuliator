@@ -23,7 +23,7 @@ public class AppVariablesController extends BaseController {
     public String index(HttpServletRequest request, Model model) {
         Settings settings = SettingsUtil.getSessionSettings(request.getSession());
         model.addAttribute(SETTINGS, settings);
-        model.addAttribute(VIEW, "ibpay/env/view");
+        model.addAttribute(VIEW, "ehi/env/view");
         return TEMPLATE;
     }
 
@@ -31,7 +31,7 @@ public class AppVariablesController extends BaseController {
     public String showEditForm(HttpServletRequest request, Model model) {
         Settings settings = SettingsUtil.getSessionSettings(request.getSession());
         model.addAttribute(SETTINGS, settings);
-        model.addAttribute(VIEW, "ibpay/env/edit");
+        model.addAttribute(VIEW, "ehi/env/edit");
         return TEMPLATE;
     }
 
