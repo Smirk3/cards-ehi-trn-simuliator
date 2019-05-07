@@ -7,7 +7,7 @@ import ehi.jaxb.generated.Countries;
 import ehi.jaxb.generated.ISO4217;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.springframework.beans.factory.annotation.Value;
+import org.springframework.core.io.ClassPathResource;
 import org.springframework.core.io.Resource;
 import org.springframework.stereotype.Component;
 
@@ -25,41 +25,29 @@ public class CountryManager {
 
     private static final Logger logger = LogManager.getLogger(CountryManager.class);
 
-    @Value(value = "classpath:xml/currency-codes-ISO4217.xml")
-    private Resource currencyCodesResource;
-
-    @Value(value = "classpath:xml/iso_country_codes.xml")
-    private Resource countriesResource;
-
     private ISO4217 currenciesRaw;
     private Countries countriesRaw;
 
     private List<Country> countries;
 
     public CountryManager() {
-        this.currenciesRaw = parseIsoCurrencies(currencyCodesResource);
-        this.countriesRaw = parseIsoCountries(countriesResource);
+        this.currenciesRaw = parseIsoCurrencies(new ClassPathResource("xml/currency-codes-ISO4217.xml"));
+        this.countriesRaw = parseIsoCountries(new ClassPathResource("xml/iso_country_codes.xml"));
         this.countries = transform(countriesRaw, currenciesRaw);
     }
 
     private static List<Country> transform(Countries countriesRaw, ISO4217 currenciesRaw) {
         List<Country> result = new ArrayList<>();
-        for (Countries.Country countryRaw : countriesRaw.getCountry()){
-            Optional<ISO4217.CcyTbl.CcyNtry> ccyNtry = currenciesRaw.getCcyTbl().getCcyNtry().stream()
-                .filter(c -> c.getCtryNm().equals(countryRaw.getName())).findAny();
-            if (!ccyNtry.isPresent()) {
-                logger.error("Currency was not found for country: " + countryRaw.getName());
+        for (Countries.Country countryRaw : countriesRaw.getCountry()) {
+            Optional<Currency> currency = resolveCurrency(countryRaw.getName(), currenciesRaw);
+            if (!currency.isPresent()) {
+                logger.error("Country '{}' was skipped because of currency was not found!", countryRaw.getName());
             } else {
-                Currency currency = new Currency(ccyNtry.get().getCtryNm(),
-                    ccyNtry.get().getCcyNm().getValue(),
-                    ccyNtry.get().getCcy(),
-                    ccyNtry.get().getCcyNbr().toString(),
-                    Integer.valueOf(ccyNtry.get().getCcyMnrUnts()));
                 Country country = new CountryBuilder().setName(countryRaw.getName())
                     .setIsoCodeAlpha2(countryRaw.getAlpha2())
                     .setIsoCodeAlpha3(countryRaw.getAlpha3())
                     .setIsoCodeNumeric(countryRaw.getCountryCode().toString())
-                    .setCurrency(currency)
+                    .setCurrency(currency.get())
                     .createCountry();
                 result.add(country);
             }
@@ -67,8 +55,19 @@ public class CountryManager {
         return result;
     }
 
-    private List<Currency> resolveCurrencies(Resource currencyCodesResource) {
+    private static Optional<Currency> resolveCurrency(String countryName, ISO4217 currenciesRaw) {
+        Optional<ISO4217.CcyTbl.CcyNtry> ccyNtry = currenciesRaw.getCcyTbl().getCcyNtry().stream()
+            .filter(c -> c.getCtryNm().equalsIgnoreCase(countryName)).findAny();
 
+        if (ccyNtry.isPresent()) {
+            return Optional.of(new Currency(ccyNtry.get().getCtryNm(),
+                ccyNtry.get().getCcyNm().getValue(),
+                ccyNtry.get().getCcy(),
+                ccyNtry.get().getCcyNbr() != null ? ccyNtry.get().getCcyNbr().toString() : null,
+                ccyNtry.get().getCcyMnrUnts() != null ? Integer.valueOf(ccyNtry.get().getCcyMnrUnts()) : null));
+        } else {
+            return Optional.empty();
+        }
     }
 
     private static Countries parseIsoCountries(Resource countriesResource) {

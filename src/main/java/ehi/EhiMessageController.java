@@ -4,6 +4,7 @@ import ehi.alerts.AlertError;
 import ehi.alerts.AlertSuccess;
 import ehi.alerts.AlertUtil;
 import ehi.card.Card;
+import ehi.message.Message;
 import ehi.message.Util;
 import ehi.settings.CardNotFoundException;
 import ehi.settings.Settings;
@@ -120,7 +121,7 @@ return null;
     @RequestMapping("/new/fields")
     public String showNewMessageFields(Model model, HttpServletRequest request) {
         String template = null;
-/*        try {
+        try {
             Card card = getCard(request, cardSelected);
             MessageId messageId = MessageId.getById(messageNumberSelected);
             MessageRequest message = MessageFactory.getMessageRequest(messageId, card);
@@ -135,9 +136,13 @@ return null;
         } catch (CardNotFoundException e) {
             AlertUtil.addAlert(model, new AlertError("IBPay contract " + cardSelected + " was not found."));
             template = showNewMessageTypeSelector(request, model);
-        }*/
+        }
 
         return template;
+    }
+
+    private Message newMessage() {
+
     }
 
     @RequestMapping("/edit/fields")

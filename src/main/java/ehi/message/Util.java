@@ -7,6 +7,7 @@ import org.springframework.util.StringUtils;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.SplittableRandom;
 
 public class Util {
 
@@ -22,5 +23,9 @@ public class Util {
         }
 
         return card.get();
+    }
+
+    public static String randomNumberInRange(int from, int to) {
+        return Integer.valueOf(new SplittableRandom().nextInt(from, to)).toString();
     }
 }
