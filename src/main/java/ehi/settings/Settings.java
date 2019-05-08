@@ -11,6 +11,8 @@ public class Settings {
 
     public List<Card> cards;
 
+    public List<Merchant> merchants;
+
     public List<Template> templates;
 
 }
