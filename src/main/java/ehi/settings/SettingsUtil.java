@@ -2,6 +2,10 @@ package ehi.settings;
 
 import ehi.card.Card;
 import ehi.card.CardBuilder;
+import ehi.model.Address;
+import ehi.model.AddressBuilder;
+import ehi.model.Merchant;
+import ehi.model.MerchantBuilder;
 import ehi.template.Template;
 import org.springframework.ui.Model;
 import org.springframework.util.StringUtils;
@@ -33,6 +37,22 @@ public class SettingsUtil {
     private static final String TEMPLATE_DESCRIPTION = "description";
     private static final String TEMPLATE_REQUEST = "request";
 
+    private static final String MERCHANTS = "merchants";
+    private static final String MERCHANT_NAME = "name";
+    private static final String MERCHANT_PHONE_NUMBER = "phoneNumber";
+    private static final String MERCHANT_URL = "url";
+    private static final String MERCHANT_NAME_OTHER = "nameOther";
+    private static final String MERCHANT_NET_ID = "netId";
+    private static final String MERCHANT_TAX_ID = "taxId";
+    private static final String MERCHANT_CONTACT = "contact";
+    private static final String MERCHANT_ADDR = "address";
+    private static final String MERCHANT_ADDR_STREET = "street";
+    private static final String MERCHANT_ADDR_CITY = "city";
+    private static final String MERCHANT_ADDR_REGION = "region";
+    private static final String MERCHANT_ADDR_POSTCODE = "postCode";
+    private static final String MERCHANT_ADDR_COUNTRY = "country";
+
+
     public static String toString(Settings settings){
         JsonObjectBuilder settingsBuilder = Json.createObjectBuilder();
         nullSafe(settingsBuilder, EHI_URL_DEFAULT, settings.ehiUrlDefault);
@@ -46,6 +66,29 @@ public class SettingsUtil {
             crtsBuilder.add(crtBuilder);
         }
         settingsBuilder.add(CARDS, crtsBuilder.build());
+
+        JsonArrayBuilder merchantsBuilder = Json.createArrayBuilder();
+        for (Merchant merchant : settings.merchants){
+            JsonObjectBuilder merchantBuilder = Json.createObjectBuilder();
+            merchantBuilder.add(MERCHANT_NAME, merchant.name);
+            merchantBuilder.add(MERCHANT_PHONE_NUMBER, merchant.phoneNumber);
+            merchantBuilder.add(MERCHANT_URL, merchant.url);
+            merchantBuilder.add(MERCHANT_NAME_OTHER, merchant.nameOther);
+            merchantBuilder.add(MERCHANT_NET_ID, merchant.netId);
+            merchantBuilder.add(MERCHANT_TAX_ID, merchant.taxId);
+            merchantBuilder.add(MERCHANT_CONTACT, merchant.contact);
+
+            JsonObjectBuilder merchAddrBuilder = Json.createObjectBuilder();
+            merchAddrBuilder.add(MERCHANT_ADDR_STREET, merchant.address.street);
+            merchAddrBuilder.add(MERCHANT_ADDR_CITY, merchant.address.city);
+            merchAddrBuilder.add(MERCHANT_ADDR_COUNTRY, merchant.address.country);
+            merchAddrBuilder.add(MERCHANT_ADDR_REGION, merchant.address.region);
+            merchAddrBuilder.add(MERCHANT_ADDR_POSTCODE, merchant.address.postCode);
+            merchantBuilder.add(MERCHANT_ADDR, merchAddrBuilder.build());
+
+            merchantsBuilder.add(merchantBuilder);
+        }
+        settingsBuilder.add(MERCHANTS, merchantsBuilder.build());
 
         JsonArrayBuilder tmplsBuilder = Json.createArrayBuilder();
         for (Template template : settings.templates){
@@ -86,6 +129,34 @@ public class SettingsUtil {
             card.number = cardJson.getString(CARD_NUMBER);
 
             cards.add(card);
+        }
+
+        JsonArray merchantsJson = settingsJson.getJsonArray(MERCHANTS);
+        List<Merchant> merchants = new ArrayList<>();
+        settings.merchants = merchants;
+        for (int j = 0; j < crtsJson.size(); j++) {
+            JsonObject merchantJson = merchantsJson.getJsonObject(j);
+            JsonObject merchAddrJson = merchantJson.getJsonObject(MERCHANT_ADDR);
+            Address address = new AddressBuilder()
+                .setStreet(merchAddrJson.getString(MERCHANT_ADDR_STREET))
+                .setCity(merchAddrJson.getString(MERCHANT_ADDR_CITY))
+                .setRegion(merchAddrJson.getString(MERCHANT_ADDR_REGION))
+                .setCountry(merchAddrJson.getString(MERCHANT_ADDR_COUNTRY))
+                .setPostCode(merchAddrJson.getString(MERCHANT_ADDR_POSTCODE))
+                .createAddress();
+
+            Merchant merchant = new MerchantBuilder()
+                .setName(merchantJson.getString(MERCHANT_NAME))
+                .setPhoneNumber(merchantJson.getString(MERCHANT_PHONE_NUMBER))
+                .setUrl(merchantJson.getString(MERCHANT_URL))
+                .setNameOther(merchantJson.getString(MERCHANT_NAME_OTHER))
+                .setNetId(merchantJson.getString(MERCHANT_NET_ID))
+                .setTaxId(merchantJson.getString(MERCHANT_TAX_ID))
+                .setContact(merchantJson.getString(MERCHANT_CONTACT))
+                .setAddress(address)
+                .createMerchant();
+
+            merchants.add(merchant);
         }
 
         JsonArray templatesJson = settingsJson.getJsonArray(TEMPLATES);

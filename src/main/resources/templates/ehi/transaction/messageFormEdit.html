@@ -115,12 +115,22 @@
             </div>
 
             <div class="form-group row">
-                <label th:for="card" class="col-sm-2 col-form-label" th:text="'Card'"></label>
+                <label th:for="card.pcId" class="col-sm-2 col-form-label" th:text="'Card'"></label>
                 <div class="col-sm-10">
                     <select th:id="card.pcId" th:name="card.pcId" class="custom-select" aria-describedby="helpInline">
                         <option th:each="crd : ${data.cards}" th:value="${crd.pcId}" th:text="${crd.number}" th:selected="${(message.card.pcId == crd.pcId)}"/>
                     </select>
                     <small id="helpInline" class="form-text text-muted" th:text="'Select card transaction done with'" style="font-size: 0.75rem"/>
+                </div>
+            </div>
+
+            <div class="form-group row">
+                <label th:for="merchant.name" class="col-sm-2 col-form-label" th:text="'Merchant'"></label>
+                <div class="col-sm-10">
+                    <select th:id="merchant.name" th:name="merchant.name" class="custom-select" aria-describedby="helpInline">
+                        <option th:each="merch : ${data.merchants}" th:value="${merch.name}" th:text="${merch.name}" th:selected="${(message.merchant.name == merch.name)}"/>
+                    </select>
+                    <small id="helpInline" class="form-text text-muted" th:text="'Select transaction merchant'" style="font-size: 0.75rem"/>
                 </div>
             </div>
 

@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<body>
+<div class="container" th:fragment="content">
+
+    <div style="padding-top: 50px">
+        <h2>Cards list</h2>
+
+        <div th:if="${cards.isEmpty()}">You have no cards. Upload EHI Simuliator <a th:href="@{/ehi/settings}">"Settings"</a> from file or create new one.</div>
+
+        <div th:if="${cards.isEmpty()}" style="padding-top: 20px">
+            <a class="btn btn-outline-primary btn-block" th:href="@{/ehi/card/show/create}" role="button">Add card</a>
+        </div>
+
+        <div style="padding-bottom: 20px" th:if="not ${cards.isEmpty()}">
+            <small class="form-text text-muted">You can save changes to file at <a th:href="@{/ehi/settings}">"Settings"</a></small>
+        </div>
+
+
+        <div class="table-responsive" th:if="not ${cards.isEmpty()}">
+            <a class="btn btn-outline-primary btn-block" th:href="@{/ehi/card/show/create}" role="button">Add card</a>
+            <table class="table table-striped">
+                <thead>
+                <tr>
+                    <th>Processing center id</th>
+                    <th>Number</th>
+                    <th></th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr th:each="instance : ${cards}">
+                    <td th:text="${instance.value.pcId}"/>
+                    <td th:text="${instance.value.number}" th:nowrap="true" />
+                    <td>
+                        <div class="btn-group" role="group" aria-label="...">
+                            <a class="btn btn-secondary" th:href="@{/ehi/card/show/edit(cardPcId=${instance.value.pcId})}" role="button">edit</a>
+                            <a class="btn btn-secondary" th:href="@{/ehi/card/delete(cardPcId=${instance.value.pcId})}" role="button">delete</a>
+                        </div>
+                    </td>
+                </tr>
+
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+</div>
+</body>
+</html>

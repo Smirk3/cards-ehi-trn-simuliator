@@ -8,6 +8,7 @@ import ehi.gps.classifier.PinEntryCapability;
 import ehi.gps.classifier.PosCapability;
 import ehi.gps.classifier.Scheme;
 import ehi.gps.model.Country;
+import ehi.model.Merchant;
 
 import java.io.Serializable;
 import java.time.LocalDateTime;
@@ -35,5 +36,7 @@ public class Message implements Serializable {
     public TransactionType transactionType;
 
     public Card card;
+
+    public Merchant merchant;
 
 }

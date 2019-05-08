@@ -19,6 +19,7 @@ import ehi.message.controller.bean.FormData;
 import ehi.message.controller.bean.FormDataBuilder;
 import ehi.message.model.Amount;
 import ehi.message.model.Message;
+import ehi.model.Merchant;
 import ehi.settings.CardNotFoundException;
 import ehi.settings.Settings;
 import ehi.settings.SettingsUtil;
@@ -173,6 +174,7 @@ return null;
         message.processingCode = new ProcessingCode();
         message.transactionType = new TransactionType();
         message.card = new Card();
+        message.merchant = new Merchant();
         return message;
     }
 
@@ -188,6 +190,7 @@ return null;
             .setProcessingCodes(classifierManager.getProcessingCodes())
             .setTransactionTypes(classifierManager.getTransactionTypes())
             .setCards(settings.cards)
+            .setMerchants(settings.merchants)
             .createFormData();
         model.addAttribute("data", data);
     }

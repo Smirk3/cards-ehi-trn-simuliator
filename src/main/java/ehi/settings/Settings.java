@@ -1,6 +1,7 @@
 package ehi.settings;
 
 import ehi.card.Card;
+import ehi.model.Merchant;
 import ehi.template.Template;
 
 import java.util.List;

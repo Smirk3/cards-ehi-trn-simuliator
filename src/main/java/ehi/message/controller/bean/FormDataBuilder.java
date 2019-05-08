@@ -9,6 +9,7 @@ import ehi.gps.classifier.PosCapability;
 import ehi.gps.classifier.Scheme;
 import ehi.gps.model.Country;
 import ehi.gps.model.Currency;
+import ehi.model.Merchant;
 
 import java.util.List;
 
@@ -23,6 +24,7 @@ public class FormDataBuilder {
     private List<ProcessingCode> processingCodes;
     private List<TransactionType> transactionTypes;
     private List<Card> cards;
+    private List<Merchant> merchants;
 
     public FormDataBuilder setEhiUrlDefault(String ehiUrlDefault) {
         this.ehiUrlDefault = ehiUrlDefault;
@@ -74,7 +76,12 @@ public class FormDataBuilder {
         return this;
     }
 
+    public FormDataBuilder setMerchants(List<Merchant> merchants) {
+        this.merchants = merchants;
+        return this;
+    }
+
     public FormData createFormData() {
-        return new FormData(ehiUrlDefault, countries, schemes, currencies, mccs, posCapabilities, pinEntryCapabilities, processingCodes, transactionTypes, cards);
+        return new FormData(ehiUrlDefault, countries, schemes, currencies, mccs, posCapabilities, pinEntryCapabilities, processingCodes, transactionTypes, cards, merchants);
     }
 }

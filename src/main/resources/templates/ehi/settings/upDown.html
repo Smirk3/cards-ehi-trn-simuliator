@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<body>
+<div class="container" th:fragment="content">
+
+    <h2>Upload settings from file</h2>
+    <form method="post" enctype="multipart/form-data" th:action="@{/ehi/settings/upload}" class="form-inline">
+        <div class="form-group row">
+            <div class="offset-sm-2 col-sm-10">
+                <input type="file" name="file" aria-describedby="fileHelp" />
+                <input type="submit" class="btn btn-primary" value="Upload" />
+                <small id="fileHelp" class="form-text text-muted">You can upload EHI Simuliator settings from file, it might be saved with name "ehiSimuliatorSettings.json"</small>
+            </div>
+        </div>
+    </form>
+
+    <div style="padding-top: 50px">
+
+        <div th:if="not ${isSettingsDownloadEnabled}" style="padding-bottom: 20px">You have no EHI Simuliator settings for download. Upload EHI Simuliator settings from file above or use defaults by pressing button below.</div>
+
+        <div th:if="${isSettingsDownloadEnabled}" style="padding-bottom: 5px">
+            <a class="btn btn-outline-primary btn-block" th:href="@{/ehi/settings/download}" role="button">Save settings to file</a>
+        </div>
+        <div>
+            <a class="btn btn-outline-secondary btn-block" th:href="@{/ehi/settings/useDefaults}" role="button">Use default settings</a>
+        </div>
+
+    </div>
+
+</div>
+</body>
+</html>
