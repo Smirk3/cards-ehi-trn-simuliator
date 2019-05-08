@@ -10,6 +10,7 @@ import org.apache.logging.log4j.Logger;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.core.io.Resource;
 import org.springframework.stereotype.Component;
+import org.springframework.util.StringUtils;
 
 import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBException;
@@ -17,8 +18,11 @@ import javax.xml.bind.Unmarshaller;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Optional;
+import java.util.TreeSet;
+import java.util.stream.Collectors;
 
 @Component
 public class CountryManager {
@@ -29,15 +33,21 @@ public class CountryManager {
     private Countries countriesRaw;
 
     private List<Country> countries;
+    private List<Currency> currencies;
 
     public CountryManager() {
-        this.currenciesRaw = parseIsoCurrencies(new ClassPathResource("xml/currency-codes-ISO4217.xml"));
-        this.countriesRaw = parseIsoCountries(new ClassPathResource("xml/iso_country_codes.xml"));
+        this.currenciesRaw = parseIsoCurrencies(new ClassPathResource("data/xml/currency-codes-ISO4217.xml"));
+        this.countriesRaw = parseIsoCountries(new ClassPathResource("data/xml/iso_country_codes.xml"));
         this.countries = transform(countriesRaw, currenciesRaw);
+        this.currencies = resolveCurrencies(currenciesRaw);
     }
 
     public List<Country> getCountries() {
         return countries;
+    }
+
+    public List<Currency> getCurrencies() {
+        return currencies;
     }
 
     private static List<Country> transform(Countries countriesRaw, ISO4217 currenciesRaw) {
@@ -59,6 +69,21 @@ public class CountryManager {
         return result;
     }
 
+    private List<Currency> resolveCurrencies(ISO4217 currenciesRaw) {
+        return currenciesRaw.getCcyTbl().getCcyNtry().stream()
+            .map(c -> new Currency(null,
+                c.getCcyNm().getValue(),
+                c.getCcy(),
+                c.getCcyNbr() != null ? c.getCcyNbr().toString() : null,
+                parseMinorUnit(c.getCcyMnrUnts())))
+            .filter(c -> StringUtils.hasText(c.isoCode))
+            //distinct
+            .collect(Collectors.toCollection(() -> new TreeSet<>(Comparator.comparing(Currency::getIsoCode))))
+            .stream()
+            .sorted()
+            .collect(Collectors.toList());
+    }
+
     private static Optional<Currency> resolveCurrency(String countryName, ISO4217 currenciesRaw) {
         Optional<ISO4217.CcyTbl.CcyNtry> ccyNtry = currenciesRaw.getCcyTbl().getCcyNtry().stream()
             .filter(c -> c.getCtryNm().equalsIgnoreCase(countryName)).findAny();
@@ -68,7 +93,7 @@ public class CountryManager {
                 ccyNtry.get().getCcyNm().getValue(),
                 ccyNtry.get().getCcy(),
                 ccyNtry.get().getCcyNbr() != null ? ccyNtry.get().getCcyNbr().toString() : null,
-                ccyNtry.get().getCcyMnrUnts() != null ? Integer.valueOf(ccyNtry.get().getCcyMnrUnts()) : null));
+                parseMinorUnit(ccyNtry.get().getCcyMnrUnts())));
         } else {
             return Optional.empty();
         }
@@ -81,7 +106,7 @@ public class CountryManager {
             return (Countries) jaxbUnmarshaller.unmarshal(getInputStream(countriesResource));
 
         } catch (JAXBException jaxbe) {
-            logger.error("Unable to resolve countries from resource 'classpath:xml/iso_country_codes.xml'. " + jaxbe);
+            logger.error("Unable to resolve countries from resource 'classpath:data/xml/iso_country_codes.xml'. " + jaxbe);
             throw new RuntimeException(jaxbe);
         }
     }
@@ -93,8 +118,16 @@ public class CountryManager {
             return (ISO4217) jaxbUnmarshaller.unmarshal(getInputStream(currencyCodesResource));
 
         } catch (JAXBException jaxbe) {
-            logger.error("Unable to resolve currencies from resource 'classpath:xml/currency-codes-ISO4217.xml'. " + jaxbe);
+            logger.error("Unable to resolve currencies from resource 'classpath:data/xml/currency-codes-ISO4217.xml'. " + jaxbe);
             throw new RuntimeException(jaxbe);
+        }
+    }
+
+    private static Integer parseMinorUnit(String value) {
+        try {
+            return Integer.valueOf(value);
+        } catch (Exception e) {
+            return null;
         }
     }
 

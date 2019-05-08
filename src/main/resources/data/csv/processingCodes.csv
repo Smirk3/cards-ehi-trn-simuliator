@@ -1,0 +1,15 @@
+00	Debits (goods and services) YES	00	DEBIT
+01	Debits (for ATM withdrawals, or for cash disbursements using Maestro cards)  YES	01	DEBIT
+02	Adjustment Credits YES	02	CREDIT
+09	Debits (goods with cash back) YES	09	DEBIT
+17	Debits (for cash advances) YES	17	DEBIT
+18	Unique Transaction (requires unique MCC) YES	18	DEBIT
+19	Debit Adjustments YES	19	DEBIT
+20	Credits (for refund) YES	20	CREDIT
+21	Credits (for deposit) YES	21	CREDIT
+22	Credits - Card Load YES	22	CREDIT
+23	Debits - Card Unload YES	23	DEBIT
+28	Credits (for Payment Transaction) YES	28	CREDIT
+30	Balance inquiry service NO	30	DEBIT
+91	PIN unblock transactions NO	91	DEBIT
+92	PIN change transactions NO	92	DEBIT

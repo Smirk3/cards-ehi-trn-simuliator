@@ -1,13 +1,24 @@
-package ehi;
+package ehi.message.controller;
 
+import ehi.BaseController;
 import ehi.alerts.AlertError;
 import ehi.alerts.AlertSuccess;
 import ehi.alerts.AlertUtil;
 import ehi.card.Card;
 import ehi.country.CountryManager;
+import ehi.data.ClassifierManager;
+import ehi.data.bean.Mcc;
+import ehi.data.bean.ProcessingCode;
+import ehi.data.bean.TransactionType;
+import ehi.gps.classifier.PinEntryCapability;
+import ehi.gps.classifier.PosCapability;
 import ehi.gps.classifier.Scheme;
-import ehi.message.Message;
+import ehi.gps.model.Currency;
 import ehi.message.Util;
+import ehi.message.controller.bean.FormData;
+import ehi.message.controller.bean.FormDataBuilder;
+import ehi.message.model.Amount;
+import ehi.message.model.Message;
 import ehi.settings.CardNotFoundException;
 import ehi.settings.Settings;
 import ehi.settings.SettingsUtil;
@@ -27,6 +38,7 @@ import org.springframework.web.bind.annotation.SessionAttributes;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
@@ -52,6 +64,9 @@ public class EhiMessageController extends BaseController {
 
     @Autowired
     private CountryManager countryManager;
+
+    @Autowired
+    private ClassifierManager classifierManager;
 
     @RequestMapping("")
     public String index(HttpServletRequest request, Model model) {
@@ -128,7 +143,7 @@ return null;
     @RequestMapping("/new/fields")
     public String showNewMessageFields(Model model, HttpServletRequest request) {
         Settings settings = SettingsUtil.getSessionSettings(request.getSession());
-        addEhiUrlDefault(model, settings);
+        addFormData(model, settings);
 
         String template = null;
         //try {
@@ -149,17 +164,32 @@ return null;
         return template;
     }
 
-    private void addEhiUrlDefault(Model model, Settings settings) {
-        //if (StringUtils.hasText(settings.ehiUrlDefault)) {
-        model.addAttribute("ehiUrlDefault", settings.ehiUrlDefault);
-        //}
-    }
-
     private Message newMessage() {
         Message message = new Message();
-        message.schemes = Arrays.asList(Scheme.values());
-        message.countries = countryManager.getCountries();
+        message.date = LocalDateTime.now();
+        message.amount = new Amount();
+        message.amount.currency = new Currency();
+        message.mcc = new Mcc();
+        message.processingCode = new ProcessingCode();
+        message.transactionType = new TransactionType();
+        message.card = new Card();
         return message;
+    }
+
+    private void addFormData(Model model, Settings settings) {
+        FormData data = new FormDataBuilder()
+            .setEhiUrlDefault(settings.ehiUrlDefault)
+            .setSchemes(Arrays.asList(Scheme.values()))
+            .setCountries(countryManager.getCountries())
+            .setCurrencies(countryManager.getCurrencies())
+            .setMccs(classifierManager.getMccs())
+            .setPosCapabilities(Arrays.asList(PosCapability.values()))
+            .setPinEntryCapabilities(Arrays.asList(PinEntryCapability.values()))
+            .setProcessingCodes(classifierManager.getProcessingCodes())
+            .setTransactionTypes(classifierManager.getTransactionTypes())
+            .setCards(settings.cards)
+            .createFormData();
+        model.addAttribute("data", data);
     }
 
     @RequestMapping("/edit/fields")

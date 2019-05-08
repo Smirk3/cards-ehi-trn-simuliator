@@ -1,0 +1,11 @@
+Authorisation Request	A	0100
+Automatic Authorisation Reversal 	D	0100
+Authorisation Reversal due to Automated Fuel Dispenser 	D	0120
+Authorisation Reversal Request 	D	0400
+Authorisation Advice	A	0120
+Authorisation Reversal Advice	D	0420
+Financial Reversal	E	1240
+Chargeback Notification	C	1240
+Chargeback Notification (NonCredit) 	H	1240
+Financial Notification (Second Presentment)	N	1240
+Financial Notification (First Presentment)	P	1240

@@ -1,6 +1,7 @@
 package ehi.settings;
 
 import ehi.card.Card;
+import ehi.card.CardBuilder;
 import ehi.template.Template;
 import org.springframework.ui.Model;
 import org.springframework.util.StringUtils;
@@ -80,7 +81,7 @@ public class SettingsUtil {
         for (int j = 0; j < crtsJson.size(); j++) {
             JsonObject cardJson = crtsJson.getJsonObject(j);
 
-            Card card = new Card();
+            Card card = new CardBuilder().createCard();
             card.pcId = cardJson.getString(CARD_PC_ID);
             card.number = cardJson.getString(CARD_NUMBER);
 

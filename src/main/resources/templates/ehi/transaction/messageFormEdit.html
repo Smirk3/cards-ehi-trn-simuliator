@@ -14,7 +14,7 @@
             <div class="form-group row">
                 <label for="ehiUrl" class="col-sm-2 col-form-label">EHI url</label>
                 <div class="col-sm-10">
-                    <input type="text" class="form-control" id="ehiUrl" th:name="ehiUrl" th:value="${ehiUrlDefault == null ? message.ehiUrl : ehiUrlDefault}" aria-describedby="helpInline"/>
+                    <input type="text" class="form-control" id="ehiUrl" th:name="ehiUrl" th:value="${data.ehiUrlDefault == null ? message.ehiUrl : data.ehiUrlDefault}" aria-describedby="helpInline"/>
                     <small id="helpInline" class="form-text text-muted" th:text="'NANO URL for soap message'" style="font-size: 0.75rem" />
                 </div>
             </div>
@@ -24,30 +24,105 @@
             <div class="form-group row">
                 <label th:for="scheme" class="col-sm-2 col-form-label" th:text="Scheme"></label>
                 <div class="col-sm-10">
-                    <div>
                         <select th:id="scheme" th:name="scheme" class="custom-select" aria-describedby="helpInline">
-                            <option th:each="schm : ${message.schemes}" th:value="${schm.value}" th:text="${schm.value}" th:selected="${(scheme == schm)}"/>
+                            <option th:each="schm : ${data.schemes}" th:value="${schm.value}" th:text="${schm.value}" th:selected="${(scheme == schm)}"/>
                         </select>
                         <small id="helpInline" class="form-text text-muted" th:text="'Select the appropriate Scheme (Visa or MasterCard)'" style="font-size: 0.75rem"/>
-                    </div>
                 </div>
             </div>
 
             <div class="form-group row">
                 <label th:for="country" class="col-sm-2 col-form-label" th:text="Country"></label>
                 <div class="col-sm-10">
-                    <div>
                         <select th:id="country" th:name="country" class="custom-select" aria-describedby="helpInline">
-                            <option th:each="cntry : ${message.countries}" th:value="${cntry.name}" th:text="${cntry.name}" th:selected="${(country == cntry)}"/>
+                            <option th:each="cntry : ${data.countries}" th:value="${cntry.name}" th:text="${cntry.name}" th:selected="${(country == cntry)}"/>
                         </select>
                         <small id="helpInline" class="form-text text-muted" th:text="'Select transaction country'" style="font-size: 0.75rem"/>
+                </div>
+            </div>
+
+            <div class="form-group row">
+                <label th:for="date" class="col-sm-2 col-form-label" th:text="Date"></label>
+                <div class="col-sm-10">
+                    <input type="text" class="form-control" th:name="date" th:value="${#temporals.format(message.date, 'yyyy-MM-dd HH:mm.SSS')}" aria-describedby="helpInline"/>
+                    <small id="helpInline" class="form-text text-muted" th:text="'Transaction date'" style="font-size: 0.75rem"/>
+                </div>
+            </div>
+
+            <div class="form-group row align-items-center">
+                <label th:for="amount" class="col-sm-2 col-form-label" th:text="Amount"></label>
+                <div>
+                    <div class="col-3" style="float: left;">
+                        <input type="text" class="form-control" th:name="amount.value" th:value="${message.amount.value}" aria-describedby="helpInline" style="text-align: right;"/>
+                        <small id="helpInline" class="form-text text-muted" th:text="'Transaction amount and currency'" style="font-size: 0.75rem"/>
+                    </div>
+                    <div class="col-8" style="float: left;">
+                        <select th:id="amount.currency.isoCode" th:name="amount.currency.isoCode" class="custom-select" aria-describedby="helpInline">
+                            <option th:each="crnc : ${data.currencies}" th:value="${crnc.isoCode}" th:text="${crnc.isoCode} + ' - ' + ${crnc.name}" th:selected="${(message.amount.currency.isoCode == crnc.isoCode)}"/>
+                        </select>
                     </div>
                 </div>
             </div>
-            <!--<div th:if="${field.name != T(ibpay.message.field.FieldName).VK_SND_ID}">
-                <input type="text" class="form-control" th:name="${field.name}" th:value="${field.value}" th:readonly="${field.readonly}" aria-describedby="helpInline" />
-                <small id="helpInline" class="form-text text-muted" th:text="${field.description}" style="font-size: 0.75rem" />
-            </div>-->
+
+            <div class="form-group row">
+                <label th:for="mcc" class="col-sm-2 col-form-label" th:text="'MCC Description'"></label>
+                <div class="col-sm-10">
+                    <select th:id="mcc" th:name="mccs" class="custom-select" aria-describedby="helpInline">
+                        <option th:each="mccRec : ${data.mccs}" th:value="${mccRec.code}" th:text="${mccRec.description}" th:selected="${(message.mcc.code == mccRec.code)}"/>
+                    </select>
+                    <small id="helpInline" class="form-text text-muted" th:text="'Select the Merchant Category Code (MCC)'" style="font-size: 0.75rem"/>
+                </div>
+            </div>
+
+            <div class="form-group row">
+                <label th:for="posCapability" class="col-sm-2 col-form-label" th:text="'POS Capability'"></label>
+                <div class="col-sm-10">
+                    <select th:id="posCapability" th:name="posCapability" class="custom-select" aria-describedby="helpInline">
+                        <option th:each="posCap : ${data.posCapabilities}" th:value="${posCap}" th:text="${posCap.label}" th:selected="${(message.posCapability == posCap)}"/>
+                    </select>
+                    <small id="helpInline" class="form-text text-muted" th:text="'Card Data Input Capability / POS Terminal Capabilities'" style="font-size: 0.75rem"/>
+                </div>
+            </div>
+
+            <div class="form-group row">
+                <label th:for="pinEntryCapability" class="col-sm-2 col-form-label" th:text="'PIN Entry capability'"></label>
+                <div class="col-sm-10">
+                    <select th:id="pinEntryCapability" th:name="pinEntryCapability" class="custom-select" aria-describedby="helpInline">
+                        <option th:each="pinEntryCap : ${data.pinEntryCapabilities}" th:value="${pinEntryCap}" th:text="${pinEntryCap.label}" th:selected="${(message.pinEntryCapability == pinEntryCap)}"/>
+                    </select>
+                    <small id="helpInline" class="form-text text-muted" th:text="'PIN Entry capability'" style="font-size: 0.75rem"/>
+                </div>
+            </div>
+
+            <div class="form-group row">
+                <label th:for="processingCode" class="col-sm-2 col-form-label" th:text="'Processing code'"></label>
+                <div class="col-sm-10">
+                    <select th:id="processingCode.value" th:name="processingCode.value" class="custom-select" aria-describedby="helpInline">
+                        <option th:each="procCode : ${data.processingCodes}" th:value="${procCode.value}" th:text="${procCode.label}" th:selected="${(message.processingCode.value == procCode.value)}"/>
+                    </select>
+                    <small id="helpInline" class="form-text text-muted" th:text="'Processing code'" style="font-size: 0.75rem"/>
+                </div>
+            </div>
+
+            <div class="form-group row">
+                <label th:for="transactionType" class="col-sm-2 col-form-label" th:text="'Transaction type'"></label>
+                <div class="col-sm-10">
+                    <select th:id="transactionType.id" th:name="transactionType.id" class="custom-select" aria-describedby="helpInline">
+                        <option th:each="trnType : ${data.transactionTypes}" th:value="${trnType.id}" th:text="${trnType.description}" th:selected="${(message.transactionType.id == trnType.id)}"/>
+                    </select>
+                    <small id="helpInline" class="form-text text-muted" th:text="'Transaction type'" style="font-size: 0.75rem"/>
+                </div>
+            </div>
+
+            <div class="form-group row">
+                <label th:for="card" class="col-sm-2 col-form-label" th:text="'Card'"></label>
+                <div class="col-sm-10">
+                    <select th:id="card.pcId" th:name="card.pcId" class="custom-select" aria-describedby="helpInline">
+                        <option th:each="crd : ${data.cards}" th:value="${crd.pcId}" th:text="${crd.number}" th:selected="${(message.card.pcId == crd.pcId)}"/>
+                    </select>
+                    <small id="helpInline" class="form-text text-muted" th:text="'Select card transaction done with'" style="font-size: 0.75rem"/>
+                </div>
+            </div>
 
         </fieldset>
         <div class="form-group row">
