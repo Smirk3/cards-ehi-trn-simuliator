@@ -1,14 +1,16 @@
 package ehi.card.controller;
 
 import ehi.BaseController;
+import ehi.alerts.AlertError;
 import ehi.alerts.AlertSuccess;
 import ehi.alerts.AlertUtil;
 import ehi.card.Card;
+import ehi.card.CardBuilder;
+import ehi.card.exception.IllegalCard;
 import ehi.message.Util;
-import ehi.settings.CardNotFoundException;
+import ehi.card.exception.CardNotFoundException;
 import ehi.settings.Settings;
 import ehi.settings.SettingsUtil;
-import org.apache.http.annotation.Contract;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.stereotype.Controller;
@@ -18,17 +20,9 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
 import javax.servlet.http.HttpServletRequest;
-import java.io.IOException;
-import java.security.InvalidKeyException;
-import java.security.NoSuchAlgorithmException;
-import java.security.NoSuchProviderException;
-import java.security.SignatureException;
-import java.security.cert.CertificateEncodingException;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
-import java.util.stream.Collectors;
+import java.util.Optional;
 
 @Controller
 @RequestMapping(CardsController.BASE_URI)
@@ -85,34 +79,29 @@ public class CardsController extends BaseController {
 
     @RequestMapping("/create")
     public String createCard(HttpServletRequest request, Model model,
-                                 @RequestParam("contractMnemo") String contractMnemo,
-                                 @RequestParam("charset") String charset,
-                                 @RequestParam("signatureAlgorithm") String signatureAlgorithm,
-                                 @RequestParam("merchantId") String merchantId,
-                                 @RequestParam("privateKey") String privateKey) {
+                                 @RequestParam("pcId") String cardPcId,
+                                 @RequestParam("number") String cardNumber) {
         Settings settings = SettingsUtil.getSessionSettings(request.getSession());
-        /*Contract contract = new Contract();
-        contract.setMnemo(contractMnemo);
-        contract.setCharset(charset);
-        contract.setSignatureAlgorithm(signatureAlgorithm);
-        contract.setMerchantId(merchantId);
-        contract.setPrivateKey(privateKey);
-        settings.getContracts().put(contract.getMnemo(), contract);
+        Optional<Card> cardFound = settings.cards.stream().filter(c -> c.pcId.equalsIgnoreCase(cardPcId)).findAny();
         try {
-            SecurityKeyReader.validatePrivateKey(privateKey);
+            if (cardFound.isPresent()) throw new IllegalCard();
+            Card card = new CardBuilder()
+                            .setPcId(cardPcId)
+                            .setNumber(cardNumber)
+                            .createCard();
+            settings.cards.add(card);
 
-            AlertUtil.addAlert(model, new AlertSuccess("IBPay contract " + contractMnemo + " was created successfully."));
+            AlertUtil.addAlert(model, new AlertSuccess("Card " + card.number + " was created successfully."));
             return showList(request, model);
-        } catch (IllegalPrivateKey ipk) {
-            logger.error(ipk, ipk);
-            AlertUtil.addAlert(model, new AlertError(String.format("Invalid private key. [%s]", ipk.getMessage())));
+        } catch (IllegalCard ic) {
+            AlertUtil.addAlert(model, new AlertError(String.format("Invalid card pc id: [%s]", cardPcId)));
             return showCreateTemplateName(model);
-        }*/return null;
+        }
     }
 
     @RequestMapping("/show/edit")
     public String showCardEditForm(HttpServletRequest request, Model model,
-                                       @RequestParam("pcId") String cardPcId) {
+                                       @RequestParam("cardPcId") String cardPcId) {
         String template;
         Settings settings = SettingsUtil.getSessionSettings(request.getSession());
         List<Card> cards = settings.cards;
@@ -133,20 +122,12 @@ public class CardsController extends BaseController {
 
     @RequestMapping("/edit")
     public String editCard(HttpServletRequest request, Model model,
-                               @RequestParam("contractMnemo") String contractMnemo,
-                               @RequestParam("charset") String charset,
-                               @RequestParam("signatureAlgorithm") String signatureAlgorithm,
-                               @RequestParam("merchantId") String merchantId,
-                               @RequestParam("privateKey") String privateKey) {
+                               @RequestParam("pcId") String cardPcId,
+                               @RequestParam("number") String cardNumber) {
         Settings settings = SettingsUtil.getSessionSettings(request.getSession());
-
-        List<Card> cards = settings.cards;
         try {
-            Card card = Util.findCard(cards, contractMnemo);
-            //card.setCharset(charset);
-            //card.setSignatureAlgorithm(signatureAlgorithm);
-            //card.setMerchantId(merchantId);
-            //card.setPrivateKey(privateKey);
+            Card card = Util.findCard(settings.cards, cardPcId);
+            card.number = cardNumber;
 
             AlertUtil.addAlert(model, new AlertSuccess("Card " + card.number + " was updated successfully."));
 

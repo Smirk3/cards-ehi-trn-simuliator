@@ -1,7 +1,7 @@
 package ehi.message;
 
 import ehi.card.Card;
-import ehi.settings.CardNotFoundException;
+import ehi.card.exception.CardNotFoundException;
 import org.springframework.util.CollectionUtils;
 import org.springframework.util.StringUtils;
 

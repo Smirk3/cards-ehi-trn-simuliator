@@ -29,12 +29,12 @@
                 </thead>
                 <tbody>
                 <tr th:each="instance : ${cards}">
-                    <td th:text="${instance.value.pcId}"/>
-                    <td th:text="${instance.value.number}" th:nowrap="true" />
+                    <td th:text="${instance.pcId}"/>
+                    <td th:text="${instance.number}" th:nowrap="true" />
                     <td>
                         <div class="btn-group" role="group" aria-label="...">
-                            <a class="btn btn-secondary" th:href="@{/ehi/card/show/edit(cardPcId=${instance.value.pcId})}" role="button">edit</a>
-                            <a class="btn btn-secondary" th:href="@{/ehi/card/delete(cardPcId=${instance.value.pcId})}" role="button">delete</a>
+                            <a class="btn btn-secondary" th:href="@{/ehi/card/show/edit(cardPcId=${instance.pcId})}" role="button">edit</a>
+                            <a class="btn btn-secondary" th:href="@{/ehi/card/delete(cardPcId=${instance.pcId})}" role="button">delete</a>
                         </div>
                     </td>
                 </tr>

@@ -9,14 +9,14 @@
             <div class="offset-sm-2 col-sm-10">
                 <input type="file" name="file" aria-describedby="fileHelp" />
                 <input type="submit" class="btn btn-primary" value="Upload" />
-                <small id="fileHelp" class="form-text text-muted">You can upload EHI Simuliator settings from file, it might be saved with name "ehiSimuliatorSettings.json"</small>
+                <small id="fileHelp" class="form-text text-muted">You can upload EHI Simulator settings from file, it might be saved with name "card-ehi-simulator-settings.json"</small>
             </div>
         </div>
     </form>
 
     <div style="padding-top: 50px">
 
-        <div th:if="not ${isSettingsDownloadEnabled}" style="padding-bottom: 20px">You have no EHI Simuliator settings for download. Upload EHI Simuliator settings from file above or use defaults by pressing button below.</div>
+        <div th:if="not ${isSettingsDownloadEnabled}" style="padding-bottom: 20px">You have no EHI Simulator settings for download. Upload EHI Simulator settings from file above or use defaults by pressing button below.</div>
 
         <div th:if="${isSettingsDownloadEnabled}" style="padding-bottom: 5px">
             <a class="btn btn-outline-primary btn-block" th:href="@{/ehi/settings/download}" role="button">Save settings to file</a>

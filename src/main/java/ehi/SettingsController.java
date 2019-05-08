@@ -31,7 +31,7 @@ public class SettingsController extends BaseController {
 
     private static final Logger logger = LogManager.getLogger(SettingsController.class);
 
-    @Value(value = "classpath:static/cardEhiSettings.json")
+    @Value(value = "classpath:static/card-ehi-simulator-settings.json")
     private Resource settingsDefault;
 
     @RequestMapping("")
@@ -51,7 +51,7 @@ public class SettingsController extends BaseController {
     @RequestMapping("/download")
     public void downloadTemplates(HttpServletRequest request, HttpServletResponse response) {
         Settings settings = getSessionSettings(request.getSession());
-        FileDownloadUtil.download(response, "cardEhiSettings.json", SettingsUtil.toString(settings));
+        FileDownloadUtil.download(response, "card-ehi-simulator-settings.json", SettingsUtil.toString(settings));
     }
 
     @RequestMapping("/useDefaults")

@@ -9,29 +9,10 @@
             <h2>Application veriables</h2>
 
             <div class="form-group row" style="padding-top: 20px">
-                <label class="col-sm-2 col-form-label" th:text="'IB url default'"></label>
+                <label class="col-sm-2 col-form-label" th:text="'EHI url default'"></label>
                 <div class="col-sm-10">
                     <div>
-                        <div class="form-control" th:text="${settings.ibUrlDefault}" aria-describedby="helpInline" />
-                    </div>
-                </div>
-            </div>
-
-            <div class="form-group row">
-                <label class="col-sm-2 col-form-label" th:text="'Send IBPay message with empty fields'"></label>
-                <div class="col-sm-10">
-                    <div>
-                        <div class="form-control" th:text="${(settings.sendEmptyFields ? 'YES' : 'NO')}" aria-describedby="helpInline" />
-                        <small id="helpInline" class="form-text " th:text="'Signing string is different for EE messages, \'000\' are added for empty fields. LT messages signing string remains the same.'" style="font-size: 0.75rem" />
-                    </div>
-                </div>
-            </div>
-
-            <div class="form-group row">
-                <label class="col-sm-2 col-form-label" th:text="'Bank public key (Base64 encoded)'"></label>
-                <div class="col-sm-10">
-                    <div>
-                        <div class="form-control" th:text="${settings.bankPublicKey}" aria-describedby="helpInline" />
+                        <div class="form-control" th:text="${settings.ehiUrlDefault}" aria-describedby="helpInline" />
                     </div>
                 </div>
             </div>

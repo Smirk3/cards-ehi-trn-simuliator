@@ -118,45 +118,49 @@ public class SettingsUtil {
         JsonObject settingsJson = jsonReader.readObject();
         settings.ehiUrlDefault = settingsJson.getString(EHI_URL_DEFAULT, null);
 
-        JsonArray crtsJson = settingsJson.getJsonArray(CARDS);
+        JsonArray cardsJson = settingsJson.getJsonArray(CARDS);
         List<Card> cards = new ArrayList<>();
         settings.cards = cards;
-        for (int j = 0; j < crtsJson.size(); j++) {
-            JsonObject cardJson = crtsJson.getJsonObject(j);
+        if (cardsJson.size() > 0) {
+            for (int j = 0; j < cardsJson.size(); j++) {
+                JsonObject cardJson = cardsJson.getJsonObject(j);
 
-            Card card = new CardBuilder().createCard();
-            card.pcId = cardJson.getString(CARD_PC_ID);
-            card.number = cardJson.getString(CARD_NUMBER);
+                Card card = new CardBuilder().createCard();
+                card.pcId = cardJson.getString(CARD_PC_ID);
+                card.number = cardJson.getString(CARD_NUMBER);
 
-            cards.add(card);
+                cards.add(card);
+            }
         }
 
         JsonArray merchantsJson = settingsJson.getJsonArray(MERCHANTS);
         List<Merchant> merchants = new ArrayList<>();
         settings.merchants = merchants;
-        for (int j = 0; j < crtsJson.size(); j++) {
-            JsonObject merchantJson = merchantsJson.getJsonObject(j);
-            JsonObject merchAddrJson = merchantJson.getJsonObject(MERCHANT_ADDR);
-            Address address = new AddressBuilder()
-                .setStreet(merchAddrJson.getString(MERCHANT_ADDR_STREET))
-                .setCity(merchAddrJson.getString(MERCHANT_ADDR_CITY))
-                .setRegion(merchAddrJson.getString(MERCHANT_ADDR_REGION))
-                .setCountry(merchAddrJson.getString(MERCHANT_ADDR_COUNTRY))
-                .setPostCode(merchAddrJson.getString(MERCHANT_ADDR_POSTCODE))
-                .createAddress();
+        if (merchantsJson.size() > 0) {
+            for (int j = 0; j < merchantsJson.size(); j++) {
+                JsonObject merchantJson = merchantsJson.getJsonObject(j);
+                JsonObject merchAddrJson = merchantJson.getJsonObject(MERCHANT_ADDR);
+                Address address = new AddressBuilder()
+                    .setStreet(merchAddrJson.getString(MERCHANT_ADDR_STREET))
+                    .setCity(merchAddrJson.getString(MERCHANT_ADDR_CITY))
+                    .setRegion(merchAddrJson.getString(MERCHANT_ADDR_REGION))
+                    .setCountry(merchAddrJson.getString(MERCHANT_ADDR_COUNTRY))
+                    .setPostCode(merchAddrJson.getString(MERCHANT_ADDR_POSTCODE))
+                    .createAddress();
 
-            Merchant merchant = new MerchantBuilder()
-                .setName(merchantJson.getString(MERCHANT_NAME))
-                .setPhoneNumber(merchantJson.getString(MERCHANT_PHONE_NUMBER))
-                .setUrl(merchantJson.getString(MERCHANT_URL))
-                .setNameOther(merchantJson.getString(MERCHANT_NAME_OTHER))
-                .setNetId(merchantJson.getString(MERCHANT_NET_ID))
-                .setTaxId(merchantJson.getString(MERCHANT_TAX_ID))
-                .setContact(merchantJson.getString(MERCHANT_CONTACT))
-                .setAddress(address)
-                .createMerchant();
+                Merchant merchant = new MerchantBuilder()
+                    .setName(merchantJson.getString(MERCHANT_NAME))
+                    .setPhoneNumber(merchantJson.getString(MERCHANT_PHONE_NUMBER))
+                    .setUrl(merchantJson.getString(MERCHANT_URL))
+                    .setNameOther(merchantJson.getString(MERCHANT_NAME_OTHER))
+                    .setNetId(merchantJson.getString(MERCHANT_NET_ID))
+                    .setTaxId(merchantJson.getString(MERCHANT_TAX_ID))
+                    .setContact(merchantJson.getString(MERCHANT_CONTACT))
+                    .setAddress(address)
+                    .createMerchant();
 
-            merchants.add(merchant);
+                merchants.add(merchant);
+            }
         }
 
         JsonArray templatesJson = settingsJson.getJsonArray(TEMPLATES);
@@ -213,6 +217,7 @@ public class SettingsUtil {
             settings = new Settings();
             settings.cards = new ArrayList<>();
             settings.templates = new ArrayList<>();
+            settings.merchants = new ArrayList<>();
 
             setSessionSettings(session, settings);
         }

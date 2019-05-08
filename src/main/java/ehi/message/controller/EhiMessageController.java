@@ -20,7 +20,7 @@ import ehi.message.controller.bean.FormDataBuilder;
 import ehi.message.model.Amount;
 import ehi.message.model.Message;
 import ehi.model.Merchant;
-import ehi.settings.CardNotFoundException;
+import ehi.card.exception.CardNotFoundException;
 import ehi.settings.Settings;
 import ehi.settings.SettingsUtil;
 import ehi.template.Template;
