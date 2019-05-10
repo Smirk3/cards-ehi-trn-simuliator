@@ -10,7 +10,7 @@ import javax.servlet.http.HttpServletRequest;
  * Created by igorz on 2017-03-24.
  */
 @Controller
-@RequestMapping("/jtracker/help")
+@RequestMapping("/ehi/help")
 public class HelpController extends BaseController {
     
     @RequestMapping("")
