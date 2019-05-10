@@ -2,6 +2,8 @@ package ehi.message;
 
 import ehi.card.Card;
 import ehi.card.exception.CardNotFoundException;
+import ehi.merchant.exception.MerchantNotFoundException;
+import ehi.merchant.model.Merchant;
 import org.springframework.util.CollectionUtils;
 import org.springframework.util.StringUtils;
 
@@ -23,6 +25,20 @@ public class Util {
         }
 
         return card.get();
+    }
+
+    public static Merchant findMerchant(List<Merchant> merchants, String merchantName) throws MerchantNotFoundException {
+        if (!StringUtils.hasText(merchantName) || CollectionUtils.isEmpty(merchants)) {
+            throw new MerchantNotFoundException();
+        }
+
+        Optional<Merchant> merchant = merchants.stream().filter(m -> merchantName.equals(m.name)).findAny();
+
+        if (merchant == null || !merchant.isPresent()) {
+            throw new MerchantNotFoundException();
+        }
+
+        return merchant.get();
     }
 
     public static String randomNumberInRange(int from, int to) {

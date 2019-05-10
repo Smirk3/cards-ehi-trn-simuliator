@@ -1,8 +1,8 @@
-package ehi.data;
+package ehi.classifier;
 
-import ehi.data.bean.Mcc;
-import ehi.data.bean.ProcessingCode;
-import ehi.data.bean.TransactionType;
+import ehi.classifier.bean.Mcc;
+import ehi.classifier.bean.ProcessingCode;
+import ehi.classifier.bean.TransactionType;
 import ehi.gps.classifier.AccountingEntryType;
 import org.apache.commons.csv.CSVFormat;
 import org.apache.commons.csv.CSVParser;

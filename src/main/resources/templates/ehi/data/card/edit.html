@@ -3,14 +3,14 @@
 <body>
 <div class="container" th:fragment="content">
 
-    <form method="post" th:action="@{/ehi/card/create}" >
-        <h2>IBPay contract</h2>
+    <form method="post" th:action="@{/ehi/data/card/edit}">
+        <h2>Card</h2>
         <fieldset>
             <div class="form-group row">
                 <label th:for="pcId" class="col-sm-2 col-form-label" th:text="'PC id'"></label>
                 <div class="col-sm-10">
                     <div>
-                        <input type="text" class="form-control" th:id="pcId" th:name="pcId" aria-describedby="helpInline" />
+                        <input th:id="pcId" th:name="pcId" th:value="${card.pcId}" th:readonly="true" type="text" class="form-control" aria-describedby="helpInline" />
                         <small id="helpInline" class="form-text text-muted" th:text="'Card id in processing center'" style="font-size: 0.75rem"/>
                     </div>
                 </div>
@@ -19,7 +19,7 @@
             <div class="form-group row">
                 <label for="number" class="col-sm-2 col-form-label">Number</label>
                 <div class="col-sm-10">
-                    <input type="text" class="form-control" th:id="number" th:name="number" aria-describedby="helpInline" />
+                    <input th:id="number" th:name="number" th:value="${card.number}" type="text" class="form-control" aria-describedby="helpInline" />
                     <small id="helpInline" class="form-text text-muted" th:text="'Card number (can be masked). It will be used for view only'" style="font-size: 0.75rem"/>
                 </div>
             </div>
@@ -28,7 +28,8 @@
 
         <div class="form-group row">
             <div class="offset-sm-2 col-sm-10">
-                <button type="submit" class="btn btn-primary">Create</button>
+                <button type="submit" class="btn btn-primary">Save</button>
+                <a class="btn btn-secondary" th:href="@{/ehi/data/card}" role="button">Cancel</a>
             </div>
         </div>
     </form>

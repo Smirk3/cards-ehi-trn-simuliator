@@ -1,4 +1,4 @@
-package ehi.model;
+package ehi.merchant.model;
 
 public class AddressBuilder {
     private String street;

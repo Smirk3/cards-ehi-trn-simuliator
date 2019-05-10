@@ -2,10 +2,10 @@ package ehi.settings;
 
 import ehi.card.Card;
 import ehi.card.CardBuilder;
-import ehi.model.Address;
-import ehi.model.AddressBuilder;
-import ehi.model.Merchant;
-import ehi.model.MerchantBuilder;
+import ehi.merchant.model.Address;
+import ehi.merchant.model.AddressBuilder;
+import ehi.merchant.model.Merchant;
+import ehi.merchant.model.MerchantBuilder;
 import ehi.template.Template;
 import org.springframework.ui.Model;
 import org.springframework.util.StringUtils;

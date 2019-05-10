@@ -1,15 +1,15 @@
 package ehi.message.controller.bean;
 
 import ehi.card.Card;
-import ehi.data.bean.Mcc;
-import ehi.data.bean.ProcessingCode;
-import ehi.data.bean.TransactionType;
+import ehi.classifier.bean.Mcc;
+import ehi.classifier.bean.ProcessingCode;
+import ehi.classifier.bean.TransactionType;
 import ehi.gps.classifier.PinEntryCapability;
 import ehi.gps.classifier.PosCapability;
 import ehi.gps.classifier.Scheme;
 import ehi.gps.model.Country;
 import ehi.gps.model.Currency;
-import ehi.model.Merchant;
+import ehi.merchant.model.Merchant;
 
 import java.util.List;
 

@@ -1,4 +1,4 @@
-package ehi.data.bean;
+package ehi.classifier.bean;
 
 import ehi.gps.classifier.AccountingEntryType;
 

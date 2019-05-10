@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<body>
+<div class="container" th:fragment="content">
+
+    <form method="post" th:action="${formMode == T(ehi.FormMode).EDIT} ? @{/ehi/data/merchant/edit} : @{/ehi/data/merchant/create}">
+        <h2>Merchant</h2>
+        <fieldset>
+            <div class="form-group row">
+                <label th:for="name" class="col-sm-2 col-form-label" th:text="'Name'"></label>
+                <div class="col-sm-10">
+                    <div>
+                        <input type="text" class="form-control" th:id="name" th:name="name" th:value="${merchant.name}" th:readonly="${formMode == T(ehi.FormMode).EDIT ? true : false}"/>
+                        <!--<hidden th:id="merchantName" th:name="merchantName" th:value="${merchant.name}" th:if="${formMode == T(ehi.FormMode).EDIT}"/>-->
+                    </div>
+                </div>
+            </div>
+
+            <div class="form-group row align-items-center">
+                <label th:for="amount" class="col-sm-2 col-form-label" th:text="Address"></label>
+                <div class="col-sm-10">
+                    <div class="form-group col-md-3" style="float: left;">
+                        <label for="address.street">Street</label>
+                        <input type="text" class="form-control" th:id="address.street" th:name="address.street" th:value="${merchant.address.street}">
+                    </div>
+                    <div class="form-group col-md-3" style="float: left;">
+                        <label for="address.city">City</label>
+                        <input type="text" class="form-control" th:id="address.city" th:name="address.city" th:value="${merchant.address.city}">
+                    </div>
+                    <div class="form-group col-md-2" style="float: left;">
+                        <label for="address.region">Region</label>
+                        <input type="text" class="form-control" th:id="address.region" th:name="address.region" th:value="${merchant.address.region}">
+                    </div>
+                    <div class="form-group col-md-2" style="float: left;">
+                        <label for="address.postCode">Postcode</label>
+                        <input type="text" class="form-control" th:id="address.postCode" th:name="address.postCode" th:value="${merchant.address.postCode}">
+                    </div>
+                    <div class="form-group col-md-2" style="float: left;">
+                        <label for="address.country">Country</label>
+                        <input type="text" class="form-control" th:id="address.country" th:name="address.country" th:value="${merchant.address.country}">
+                    </div>
+                </div>
+            </div>
+
+            <div class="form-group row">
+                <label for="phoneNumber" class="col-sm-2 col-form-label">Phone nr</label>
+                <div class="col-sm-10">
+                    <input type="text" class="form-control" th:id="phoneNumber" th:name="phoneNumber" th:value="${merchant.phoneNumber}"/>
+                </div>
+            </div>
+
+            <div class="form-group row">
+                <label for="url" class="col-sm-2 col-form-label">URL</label>
+                <div class="col-sm-10">
+                    <input type="text" class="form-control" th:id="url" th:name="url" th:value="${merchant.url}"/>
+                </div>
+            </div>
+
+            <div class="form-group row">
+                <label for="nameOther" class="col-sm-2 col-form-label">Name other</label>
+                <div class="col-sm-10">
+                    <input type="text" class="form-control" th:id="nameOther" th:name="nameOther" th:value="${merchant.nameOther}"/>
+                </div>
+            </div>
+
+            <div class="form-group row">
+                <label for="netId" class="col-sm-2 col-form-label">Net id</label>
+                <div class="col-sm-10">
+                    <input type="text" class="form-control" th:id="netId" th:name="netId" th:value="${merchant.netId}"/>
+                </div>
+            </div>
+
+            <div class="form-group row">
+                <label for="taxId" class="col-sm-2 col-form-label">Tax id</label>
+                <div class="col-sm-10">
+                    <input type="text" class="form-control" th:id="taxId" th:name="taxId" th:value="${merchant.taxId}"/>
+                </div>
+            </div>
+
+            <div class="form-group row">
+                <label for="contact" class="col-sm-2 col-form-label">Contact</label>
+                <div class="col-sm-10">
+                    <input type="text" class="form-control" th:id="contact" th:name="contact" th:value="${merchant.contact}"/>
+                </div>
+            </div>
+
+        </fieldset>
+
+        <div class="form-group row" th:if="${formMode == T(ehi.FormMode).CREATE}">
+            <div class="offset-sm-2 col-sm-10">
+                <button type="submit" class="btn btn-primary">Create</button>
+                <a class="btn btn-secondary" th:href="@{/ehi/data/merchant}" role="button">Cancel</a>
+            </div>
+        </div>
+        <div class="form-group row" th:if="${formMode == T(ehi.FormMode).EDIT}">
+            <div class="offset-sm-2 col-sm-10">
+                <button type="submit" class="btn btn-primary">Save</button>
+                <a class="btn btn-secondary" th:href="@{/ehi/data/merchant}" role="button">Cancel</a>
+            </div>
+        </div>
+    </form>
+
+</div>
+</body>
+</html>

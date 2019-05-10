@@ -6,9 +6,9 @@ import ehi.alerts.AlertSuccess;
 import ehi.alerts.AlertUtil;
 import ehi.card.Card;
 import ehi.card.CardBuilder;
+import ehi.card.exception.CardNotFoundException;
 import ehi.card.exception.IllegalCard;
 import ehi.message.Util;
-import ehi.card.exception.CardNotFoundException;
 import ehi.settings.Settings;
 import ehi.settings.SettingsUtil;
 import org.apache.logging.log4j.LogManager;
@@ -32,7 +32,7 @@ public class CardsController extends BaseController {
 
     private static final String MODEL_ATTR_CARDS = "cards";
 
-    public static final String BASE_URI = "/ehi/card";
+    public static final String BASE_URI = "/ehi/data/card";
 
     @RequestMapping("")
     public String index(HttpServletRequest request, Model model) {
@@ -55,7 +55,7 @@ public class CardsController extends BaseController {
 
     @RequestMapping("/delete")
     public String deleteCard(HttpServletRequest request, Model model,
-                                 @RequestParam("pcId") String cardPcId) {
+                             @RequestParam("cardPcId") String cardPcId) {
         Settings settings = SettingsUtil.getSessionSettings(request.getSession());
         List<Card> cards = settings.cards;
 

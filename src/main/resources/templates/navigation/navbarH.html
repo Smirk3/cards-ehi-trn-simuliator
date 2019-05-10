@@ -13,19 +13,46 @@
         <div class="collapse navbar-collapse" id="navbarsExampleDefault">
             <ul class="navbar-nav mr-auto">
                 <li class="nav-item">
-                    <a th:class="${#strings.startsWith(#httpServletRequest.requestURI,'/ehi/request') ? 'nav-link active' : 'nav-link'}" th:href="@{/ehi/request/templates/list}">Requests <span class="sr-only" th:if="${#strings.startsWith(#httpServletRequest.requestURI,'/ehi/request')}">(current)</span></a>
+                    <a th:class="${#strings.startsWith(#httpServletRequest.requestURI,'/ehi/request') ? 'nav-link active' : 'nav-link'}"
+                       th:href="@{/ehi/request/templates/list}">Requests
+                        <span class="sr-only"
+                              th:if="${#strings.startsWith(#httpServletRequest.requestURI,'/ehi/request')}">(current)
+                        </span>
+                    </a>
+                </li>
+                <li class="nav-item dropdown">
+                    <a th:class="'nav-link dropdown-toggle ' + ${#strings.startsWith(#httpServletRequest.requestURI,'/ehi/data') ? 'nav-link active' : 'nav-link'}"
+                       data-toggle="dropdown" href="#" role="button" aria-haspopup="true" aria-expanded="false">Data
+                    </a>
+                    <div class="dropdown-menu bg-inverse">
+                        <a class="nav-link" style="padding-left: 20px;" th:href="@{/ehi/data/card/list}">Cards</a>
+                        <a class="nav-link" th:href="@{/ehi/data/merchant/list}" style="padding-left: 20px;">Merchants
+                        </a>
+                    </div>
                 </li>
                 <li class="nav-item">
-                    <a th:class="${#strings.startsWith(#httpServletRequest.requestURI,'/ehi/card') ? 'nav-link active' : 'nav-link'}" th:href="@{/ehi/card/list}">Cards <span class="sr-only" th:if="${#strings.startsWith(#httpServletRequest.requestURI,'/ehi/card')}">(current)</span></a>
+                    <a th:class="${#strings.startsWith(#httpServletRequest.requestURI,'/ehi/env') ? 'nav-link active' : 'nav-link'}"
+                       th:href="@{/ehi/env}">Environment
+                        <span class="sr-only" th:if="${#strings.startsWith(#httpServletRequest.requestURI,'/ehi/env')}">
+                            (current)
+                        </span>
+                    </a>
                 </li>
                 <li class="nav-item">
-                    <a th:class="${#strings.startsWith(#httpServletRequest.requestURI,'/ehi/env') ? 'nav-link active' : 'nav-link'}" th:href="@{/ehi/env}">Environment <span class="sr-only" th:if="${#strings.startsWith(#httpServletRequest.requestURI,'/ehi/env')}">(current)</span></a>
+                    <a th:class="${#strings.startsWith(#httpServletRequest.requestURI,'/ehi/settings') ? 'nav-link active' : 'nav-link'}"
+                       th:href="@{/ehi/settings}">Settings
+                        <span class="sr-only"
+                              th:if="${#strings.startsWith(#httpServletRequest.requestURI,'/ehi/settings')}">(current)
+                        </span>
+                    </a>
                 </li>
                 <li class="nav-item">
-                    <a th:class="${#strings.startsWith(#httpServletRequest.requestURI,'/ehi/settings') ? 'nav-link active' : 'nav-link'}" th:href="@{/ehi/settings}">Settings <span class="sr-only" th:if="${#strings.startsWith(#httpServletRequest.requestURI,'/ehi/settings')}">(current)</span></a>
-                </li>
-                <li class="nav-item">
-                    <a th:class="${#strings.startsWith(#httpServletRequest.requestURI,'/ehi/help') ? 'nav-link active' : 'nav-link'}" th:href="@{/ehi/help}">Help <span class="sr-only" th:if="${#strings.startsWith(#httpServletRequest.requestURI,'/ehi/help')}">(current)</span></a>
+                    <a th:class="${#strings.startsWith(#httpServletRequest.requestURI,'/ehi/help') ? 'nav-link active' : 'nav-link'}"
+                       th:href="@{/ehi/help}">Help
+                        <span class="sr-only"
+                              th:if="${#strings.startsWith(#httpServletRequest.requestURI,'/ehi/help')}">(current)
+                        </span>
+                    </a>
                 </li>
             </ul>
         </div>

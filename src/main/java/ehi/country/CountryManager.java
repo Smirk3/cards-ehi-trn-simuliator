@@ -106,7 +106,7 @@ public class CountryManager {
             return (Countries) jaxbUnmarshaller.unmarshal(getInputStream(countriesResource));
 
         } catch (JAXBException jaxbe) {
-            logger.error("Unable to resolve countries from resource 'classpath:data/xml/iso_country_codes.xml'. " + jaxbe);
+            logger.error("Unable to resolve countries from resource 'classpath:classifier/xml/iso_country_codes.xml'. " + jaxbe);
             throw new RuntimeException(jaxbe);
         }
     }
@@ -118,7 +118,7 @@ public class CountryManager {
             return (ISO4217) jaxbUnmarshaller.unmarshal(getInputStream(currencyCodesResource));
 
         } catch (JAXBException jaxbe) {
-            logger.error("Unable to resolve currencies from resource 'classpath:data/xml/currency-codes-ISO4217.xml'. " + jaxbe);
+            logger.error("Unable to resolve currencies from resource 'classpath:classifier/xml/currency-codes-ISO4217.xml'. " + jaxbe);
             throw new RuntimeException(jaxbe);
         }
     }
