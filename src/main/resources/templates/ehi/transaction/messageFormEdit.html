@@ -6,34 +6,27 @@
 
     <legend>Transaction message</legend>
 
-    <div class="alert alert-warning" role="alert" th:if="${data.cards.isEmpty()} or ${data.merchants.isEmpty()}">
-        <div th:if="${data.cards.isEmpty()} and not ${data.merchants.isEmpty()}">You have no cards. Upload EHI
-            Simuliator <a th:href="@{/ehi/settings}">"Settings"</a>
-            from file or create new one.
-        </div>
-        <div th:if="${data.merchants.isEmpty()} and not ${data.cards.isEmpty()}">You have no merchants. Upload EHI
-            Simuliator
-            <a th:href="@{/ehi/settings}">"Settings"</a>
-            from file or create new one.
-        </div>
-        <div th:if="${data.merchants.isEmpty()} and ${data.cards.isEmpty()}">You have no cards and merchants. Upload EHI
-            Simuliator
-            <a th:href="@{/ehi/settings}">"Settings"</a>
-            from file or create new ones.
-        </div>
+    <div th:if="${data.cards.isEmpty()} and not ${data.merchants.isEmpty()}" class="alert alert-warning" role="alert">
+        You have no cards. Upload EHI Simuliator <a th:href="@{/ehi/settings}">"Settings"</a> from file or create new one.
+    </div>
+    <div th:if="${data.merchants.isEmpty()} and not ${data.cards.isEmpty()}" class="alert alert-warning" role="alert">
+        You have no merchants. Upload EHI Simuliator <a th:href="@{/ehi/settings}">"Settings"</a> from file or create new one.
+    </div>
+    <div th:if="${data.merchants.isEmpty()} and ${data.cards.isEmpty()}" class="alert alert-warning" role="alert">
+        You have no cards and merchants. Upload EHI Simuliator <a th:href="@{/ehi/settings}">"Settings"</a> from file or create new ones.
     </div>
 
     <form method="post" th:action="@{/ehi/message/show}" th:object="${message}" th:if="not ${data.cards.isEmpty()} and not ${data.merchants.isEmpty()}">
-        <fieldset>
 
-            <div class="form-group row">
-                <label for="ehiUrl" class="col-sm-2 col-form-label">EHI url</label>
-                <div class="col-sm-10">
-                    <input type="text" class="form-control" id="ehiUrl" th:name="ehiUrl" th:value="${data.ehiUrlDefault == null ? message.ehiUrl : data.ehiUrlDefault}" aria-describedby="helpInline"/>
-                    <small id="helpInline" class="form-text text-muted" th:text="'NANO URL for soap message'" style="font-size: 0.75rem" />
-                </div>
+        <div class="form-group row">
+            <label for="ehiUrl" class="col-sm-2 col-form-label">EHI url</label>
+            <div class="col-sm-10">
+                <input type="text" class="form-control" id="ehiUrl" th:name="ehiUrl" th:value="${data.ehiUrlDefault == null ? message.ehiUrl : data.ehiUrlDefault}" aria-describedby="helpInline"/>
+                <small id="helpInline" class="form-text text-muted" th:text="'NANO URL for soap message'" style="font-size: 0.75rem" />
             </div>
+        </div>
 
+        <fieldset>
             <legend>Message fields</legend>
 
             <div class="form-group row">

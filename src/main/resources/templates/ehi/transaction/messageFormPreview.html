@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<body>
+
+<div class="container" th:fragment="content">
+    <form method="post" th:action="${message.ehiUrl}" target="_blank" th:object="${message}">
+        <fieldset>
+
+            <legend>Transaction message</legend>
+
+            <div class="form-group row">
+                <label class="col-sm-2 col-form-label" th:text="'EHI url'"></label>
+                <div class="col-sm-10">
+                    <div>
+                        <div class="form-control" th:text="${message.ehiUrl}" aria-describedby="helpInline" />
+                    </div>
+                </div>
+            </div>
+
+            <div class="form-group row">
+                <div class="col-sm-10">
+                    <div>
+                        <div class="form-control" th:text="" />
+                        <input th:name="" th:value="" type="textarea"/>
+                    </div>
+                </div>
+            </div>
+
+        </fieldset>
+        <div class="form-group row">
+            <div class="offset-sm-2 col-sm-10">
+                <button type="submit" class="btn btn-primary">Submit</button>
+                <a class="btn btn-secondary" th:href="@{/ehi/message/templates/create/name}" role="button">Create template</a>
+                <a class="btn btn-secondary" th:href="@{/ehi/message/edit/fields}" role="button">Back</a>
+            </div>
+        </div>
+    </form>
+</div>
+
+<script th:inline="javascript">
+    var contextPath = /*[[${#httpServletRequest.getContextPath()+'/'}]]*/ 'context';
+</script>
+
+</body>
+</html>

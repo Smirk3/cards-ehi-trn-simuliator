@@ -1,6 +1,7 @@
 package ehi.card.controller;
 
 import ehi.BaseController;
+import ehi.FormMode;
 import ehi.alerts.AlertError;
 import ehi.alerts.AlertSuccess;
 import ehi.alerts.AlertUtil;
@@ -16,8 +17,11 @@ import org.apache.logging.log4j.Logger;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.util.CollectionUtils;
+import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.SessionAttribute;
+import org.springframework.web.bind.annotation.SessionAttributes;
 
 import javax.servlet.http.HttpServletRequest;
 import java.util.ArrayList;
@@ -26,11 +30,13 @@ import java.util.Optional;
 
 @Controller
 @RequestMapping(CardsController.BASE_URI)
+@SessionAttributes({CardsController.MODEL_ATTR_CARD})
 public class CardsController extends BaseController {
 
     private static final Logger logger = LogManager.getLogger(CardsController.class);
 
     private static final String MODEL_ATTR_CARDS = "cards";
+    public static final String MODEL_ATTR_CARD = "card";
 
     public static final String BASE_URI = "/ehi/data/card";
 
@@ -54,14 +60,12 @@ public class CardsController extends BaseController {
     }
 
     @RequestMapping("/delete")
-    public String deleteCard(HttpServletRequest request, Model model,
+    public String delete(HttpServletRequest request, Model model,
                              @RequestParam("cardPcId") String cardPcId) {
         Settings settings = SettingsUtil.getSessionSettings(request.getSession());
-        List<Card> cards = settings.cards;
-
         try {
             Card card = Util.findCard(settings.cards, cardPcId);
-            cards.remove(card);
+            settings.cards.remove(card);
             AlertUtil.addAlert(model, new AlertSuccess("Card " + card.number + " deleted."));
 
         } catch (CardNotFoundException e) {
@@ -72,44 +76,43 @@ public class CardsController extends BaseController {
     }
 
     @RequestMapping("/show/create")
-    public String showCreateTemplateName(Model model) {
-        model.addAttribute(VIEW, BASE_URI+"/new");
+    public String showCreateForm(Model model, Boolean isOnError) {
+        model.addAttribute(MODEL_ATTR_FORM_MODE, FormMode.CREATE);
+        if (isOnError == null || !isOnError){
+            model.addAttribute(MODEL_ATTR_CARD, new Card());
+        }
+        model.addAttribute(VIEW, BASE_URI+"/form");
         return TEMPLATE;
     }
 
     @RequestMapping("/create")
-    public String createCard(HttpServletRequest request, Model model,
-                                 @RequestParam("pcId") String cardPcId,
-                                 @RequestParam("number") String cardNumber) {
+    public String create(HttpServletRequest request, Model model, Card card) {
         Settings settings = SettingsUtil.getSessionSettings(request.getSession());
-        Optional<Card> cardFound = settings.cards.stream().filter(c -> c.pcId.equalsIgnoreCase(cardPcId)).findAny();
+        Optional<Card> cardFound = settings.cards.stream().filter(c -> c.pcId.equalsIgnoreCase(card.pcId)).findAny();
         try {
-            if (cardFound.isPresent()) throw new IllegalCard();
-            Card card = new CardBuilder()
-                            .setPcId(cardPcId)
-                            .setNumber(cardNumber)
-                            .createCard();
+            if (!StringUtils.hasText(card.pcId) || cardFound.isPresent()) throw new IllegalCard();
             settings.cards.add(card);
 
             AlertUtil.addAlert(model, new AlertSuccess("Card " + card.number + " was created successfully."));
             return showList(request, model);
         } catch (IllegalCard ic) {
-            AlertUtil.addAlert(model, new AlertError(String.format("Invalid card pc id: [%s]", cardPcId)));
-            return showCreateTemplateName(model);
+            AlertUtil.addAlert(model, new AlertError(String.format("Invalid card pc id: %s", card.pcId)));
+            return showCreateForm(model, true);
         }
     }
 
     @RequestMapping("/show/edit")
-    public String showCardEditForm(HttpServletRequest request, Model model,
+    public String showEditForm(HttpServletRequest request, Model model,
                                        @RequestParam("cardPcId") String cardPcId) {
         String template;
         Settings settings = SettingsUtil.getSessionSettings(request.getSession());
         List<Card> cards = settings.cards;
         try {
             Card card = Util.findCard(cards, cardPcId);
-            model.addAttribute("card", card);
+            model.addAttribute(MODEL_ATTR_CARD, card);
 
-            model.addAttribute(VIEW, BASE_URI+"/edit");
+            model.addAttribute(MODEL_ATTR_FORM_MODE, FormMode.EDIT);
+            model.addAttribute(VIEW, BASE_URI+"/form");
             template = TEMPLATE;
 
         } catch (CardNotFoundException e) {
@@ -121,13 +124,11 @@ public class CardsController extends BaseController {
     }
 
     @RequestMapping("/edit")
-    public String editCard(HttpServletRequest request, Model model,
-                               @RequestParam("pcId") String cardPcId,
-                               @RequestParam("number") String cardNumber) {
+    public String editCard(HttpServletRequest request, Model model, Card card) {
         Settings settings = SettingsUtil.getSessionSettings(request.getSession());
         try {
-            Card card = Util.findCard(settings.cards, cardPcId);
-            card.number = cardNumber;
+            Card cardFound = Util.findCard(settings.cards, card.pcId);
+            cardFound.number = card.number;
 
             AlertUtil.addAlert(model, new AlertSuccess("Card " + card.number + " was updated successfully."));
 

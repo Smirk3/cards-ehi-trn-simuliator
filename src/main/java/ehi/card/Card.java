@@ -35,4 +35,76 @@ public class Card {
         this.customerReference = customerReference;
         this.expiry = expiry;
     }
+
+    public String getPcId() {
+        return pcId;
+    }
+
+    public void setPcId(String pcId) {
+        this.pcId = pcId;
+    }
+
+    public String getNumber() {
+        return number;
+    }
+
+    public void setNumber(String number) {
+        this.number = number;
+    }
+
+    public String getInstitutionCode() {
+        return institutionCode;
+    }
+
+    public void setInstitutionCode(String institutionCode) {
+        this.institutionCode = institutionCode;
+    }
+
+    public String getCardUsageGroup() {
+        return cardUsageGroup;
+    }
+
+    public void setCardUsageGroup(String cardUsageGroup) {
+        this.cardUsageGroup = cardUsageGroup;
+    }
+
+    public String getSubBin() {
+        return subBin;
+    }
+
+    public void setSubBin(String subBin) {
+        this.subBin = subBin;
+    }
+
+    public String getProductIdInPc() {
+        return productIdInPc;
+    }
+
+    public void setProductIdInPc(String productIdInPc) {
+        this.productIdInPc = productIdInPc;
+    }
+
+    public String getCvv2() {
+        return cvv2;
+    }
+
+    public void setCvv2(String cvv2) {
+        this.cvv2 = cvv2;
+    }
+
+    public String getCustomerReference() {
+        return customerReference;
+    }
+
+    public void setCustomerReference(String customerReference) {
+        this.customerReference = customerReference;
+    }
+
+    public String getExpiry() {
+        return expiry;
+    }
+
+    public void setExpiry(String expiry) {
+        this.expiry = expiry;
+    }
 }

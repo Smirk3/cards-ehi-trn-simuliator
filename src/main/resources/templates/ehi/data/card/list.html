@@ -6,7 +6,7 @@
     <div style="padding-top: 50px">
         <h2>Cards list</h2>
 
-        <div th:if="${cards.isEmpty()}">You have no cards. Upload EHI Simuliator <a th:href="@{/ehi/settings}">"Settings"</a> from file or create new one.</div>
+        <div class="alert alert-warning" role="alert" th:if="${cards.isEmpty()}">You have no cards. Upload EHI Simuliator <a th:href="@{/ehi/settings}">"Settings"</a> from file or create new one.</div>
 
         <div th:if="${cards.isEmpty()}" style="padding-top: 20px">
             <a class="btn btn-outline-primary btn-block" th:href="@{/ehi/data/card/show/create}" role="button">Add

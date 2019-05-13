@@ -13,10 +13,10 @@
         <div class="collapse navbar-collapse" id="navbarsExampleDefault">
             <ul class="navbar-nav mr-auto">
                 <li class="nav-item">
-                    <a th:class="${#strings.startsWith(#httpServletRequest.requestURI,'/ehi/request') ? 'nav-link active' : 'nav-link'}"
-                       th:href="@{/ehi/request/templates/list}">Requests
+                    <a th:class="${#strings.startsWith(#httpServletRequest.requestURI,'/ehi/message') ? 'nav-link active' : 'nav-link'}"
+                       th:href="@{/ehi/message}">Messages
                         <span class="sr-only"
-                              th:if="${#strings.startsWith(#httpServletRequest.requestURI,'/ehi/request')}">(current)
+                              th:if="${#strings.startsWith(#httpServletRequest.requestURI,'/ehi/message')}">(current)
                         </span>
                     </a>
                 </li>

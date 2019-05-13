@@ -6,7 +6,7 @@
     <div style="padding-top: 50px">
         <h2>Message templates list</h2>
 
-        <div th:if="${#lists.isEmpty(templates)}">You have no transaction message templates. Upload templates from file
+        <div class="alert alert-warning" role="alert" th:if="${#lists.isEmpty(templates)}">You have no transaction message templates. Upload templates from file
             at <a th:href="@{/ehi/settings}">"Settings"</a> or create <a th:href="@{/ehi/message/new/fields}">new
                 one</a>.
         </div>

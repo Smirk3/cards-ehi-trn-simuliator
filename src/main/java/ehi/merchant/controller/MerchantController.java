@@ -5,6 +5,7 @@ import ehi.FormMode;
 import ehi.alerts.AlertError;
 import ehi.alerts.AlertSuccess;
 import ehi.alerts.AlertUtil;
+import ehi.card.Card;
 import ehi.merchant.exception.IllegalMerchant;
 import ehi.merchant.exception.MerchantNotFoundException;
 import ehi.merchant.model.Merchant;
@@ -74,9 +75,11 @@ public class MerchantController extends BaseController {
     }
 
     @RequestMapping("/show/create")
-    public String showCreateForm(Model model) {
+    public String showCreateForm(Model model, Boolean isOnError) {
         model.addAttribute(MODEL_ATTR_FORM_MODE, FormMode.CREATE);
-        model.addAttribute(MODEL_ATTR_MERCHANT, new Merchant());
+        if (isOnError == null || !isOnError){
+            model.addAttribute(MODEL_ATTR_MERCHANT, new Merchant());
+        }
         model.addAttribute(VIEW, BASE_URI + "/form");
         return TEMPLATE;
     }
@@ -93,7 +96,7 @@ public class MerchantController extends BaseController {
             return showList(request, model);
         } catch (IllegalMerchant ic) {
             AlertUtil.addAlert(model, new AlertError(String.format("Invalid merchant name: %s", merchant.name)));
-            return showCreateForm(model);
+            return showCreateForm(model, true);
         }
     }
 

@@ -6,7 +6,7 @@
     <div style="padding-top: 50px">
         <h2>Merchants list</h2>
 
-        <div th:if="${merchants.isEmpty()}">You have no merchants. Upload EHI Simuliator <a th:href="@{/ehi/settings}">"Settings"</a>
+        <div class="alert alert-warning" role="alert" th:if="${merchants.isEmpty()}">You have no merchants. Upload EHI Simuliator <a th:href="@{/ehi/settings}">"Settings"</a>
             from file or create new one.
         </div>
 

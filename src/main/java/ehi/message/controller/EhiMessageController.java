@@ -15,6 +15,7 @@ import ehi.gps.classifier.PinEntryCapability;
 import ehi.gps.classifier.PosCapability;
 import ehi.gps.classifier.Scheme;
 import ehi.gps.model.Currency;
+import ehi.merchant.exception.MerchantNotFoundException;
 import ehi.merchant.model.Merchant;
 import ehi.message.Util;
 import ehi.message.controller.bean.FormData;
@@ -36,6 +37,7 @@ import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.SessionAttributes;
+import org.springframework.web.servlet.view.RedirectView;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -47,6 +49,9 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import static ehi.message.Util.findCard;
+import static ehi.message.Util.findMerchant;
+
 @Controller
 @RequestMapping(EhiMessageController.EHI_MESSAGE_URI)
 @SessionAttributes({"message"})
@@ -57,11 +62,11 @@ public class EhiMessageController extends BaseController {
     private static final String SESSION_ATTR_MESSAGE = "message";
     private static final String MODEL_ATTR_MESSAGE = "message";
     private static final String MODEL_ATTR_CARD = "card";
-    private static final String MODEL_ATTR_MESSAGE_RESPONSE = "messageResponse";
 
     private static final String MODEL_ATTR_TEMPLATES = "templates";
 
     public static final String EHI_MESSAGE_URI = "/ehi/message";
+    public static final String EHI_TEMPLATES_LIST_URI = "/templates/list";
 
     @Autowired
     private CountryManager countryManager;
@@ -70,43 +75,29 @@ public class EhiMessageController extends BaseController {
     private ClassifierManager classifierManager;
 
     @RequestMapping("")
-    public String index(HttpServletRequest request, Model model) {
-        return showTemplatesList(request, model);
+    public RedirectView index() {
+        return new RedirectView(EHI_MESSAGE_URI + EHI_TEMPLATES_LIST_URI);
     }
 
     @RequestMapping("/show")
-    public String show(Model model, HttpServletRequest request,
-                       @RequestParam(value = "ehiUrl", required = false) String ehiUrl) {
-/*
-        Map<String, String> params = getMessageParams(request);
-        MessageRequest message = (MessageRequest) request.getSession().getAttribute(SESSION_ATTR_MESSAGE);
-        message.setIbUrl(ehiUrl);
-
-        MessageUtil.setFieldValues(message, params);
-
+    public String show(Model model, HttpServletRequest request, Message message) {
         Settings settings = SettingsUtil.getSessionSettings(request.getSession());
         try {
-            Card ibPayContract = getCard(request, message.getMerchantId());
-            message.setCharset(ibPayContract.getCharset());
-            message.setSignatureAlgorithm(ibPayContract.getSignatureAlgorithm());
-            message.setSendEmptyFields(settings.isSendEmptyFields());
-
-            Util.signData(message, settings.getContracts());
+            message.card = findCard(settings.cards, message.card.pcId);
+            message.merchant = findMerchant(settings.merchants, message.merchant.name);
             model.addAttribute(VIEW, "ehi/transaction/messageFormPreview");
             return TEMPLATE;
 
         } catch (CardNotFoundException e) {
-            AlertUtil.addAlert(model, new AlertError("IBPay contract '" + message.getMerchantId()
-                + "' at field VK_SND_ID was not found. You should create it at \"Contracts\" first."));
+            AlertUtil.addAlert(model, new AlertError("Card '" + message.card.pcId
+                + "' was not found.<br/> You should create it <a href=\"/ehi/data/card\">here</a>."));
             return showEditMessageFields(model);
 
-        } catch (PrivateKeyNotFoundException e) {
-            AlertUtil.addAlert(model, new AlertError("Private key for contract " + message.getMerchantId()
-                + " was not found.<br/> You can upload private keys from file or add a new one <a href=\"/ibpay/security/list\">here</a>"));
+        } catch (MerchantNotFoundException e) {
+            AlertUtil.addAlert(model, new AlertError("Merchant " + message.merchant.name
+                + " was not found.<br/> You should create it <a href=\"/ehi/data/merchant\">here</a>"));
             return showEditMessageFields(model);
         }
-*/
-return null;
     }
 
 /*
@@ -138,7 +129,7 @@ return null;
 
     private Card getCard(HttpServletRequest request, String cardPcId) throws CardNotFoundException {
         List<Card> cards = SettingsUtil.getSessionSettings(request.getSession()).cards;
-        return Util.findCard(cards, cardPcId);
+        return findCard(cards, cardPcId);
     }
 
     @RequestMapping("/new/fields")
@@ -201,7 +192,7 @@ return null;
         return TEMPLATE;
     }
 
-    @RequestMapping("/templates/list")
+    @RequestMapping(EHI_TEMPLATES_LIST_URI)
     public String showTemplatesList(HttpServletRequest request, Model model) {
         List<Template> templates = SettingsUtil.getSessionSettings(request.getSession()).templates;
         if (templates == null){

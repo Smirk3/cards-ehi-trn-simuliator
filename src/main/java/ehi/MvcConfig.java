@@ -1,11 +1,17 @@
 package ehi;
 
-import org.springframework.web.servlet.config.annotation.WebMvcConfigurerAdapter;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Configuration;
+import org.springframework.web.servlet.config.annotation.ViewControllerRegistry;
+import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
+import org.thymeleaf.spring5.templateresolver.SpringResourceTemplateResolver;
 
-//@Configuration
-public class MvcConfig extends WebMvcConfigurerAdapter {
+import javax.annotation.PostConstruct;
 
-    /*@Autowired
+@Configuration
+public class MvcConfig implements WebMvcConfigurer {
+
+    @Autowired
     public SpringResourceTemplateResolver templateResolver;
 
     @PostConstruct
@@ -18,5 +24,4 @@ public class MvcConfig extends WebMvcConfigurerAdapter {
         registry.addViewController("/").setViewName("redirect:/ehi/message");
         registry.addViewController("/ehi").setViewName("redirect:/ehi/message");
     }
-*/
 }
