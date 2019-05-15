@@ -3,6 +3,7 @@ package ehi.country;
 import ehi.gps.model.Country;
 import ehi.gps.model.CountryBuilder;
 import ehi.gps.model.Currency;
+import ehi.gps.model.CurrencyBuilder;
 import ehi.jaxb.generated.Countries;
 import ehi.jaxb.generated.ISO4217;
 import org.apache.logging.log4j.LogManager;
@@ -71,11 +72,7 @@ public class CountryManager {
 
     private List<Currency> resolveCurrencies(ISO4217 currenciesRaw) {
         return currenciesRaw.getCcyTbl().getCcyNtry().stream()
-            .map(c -> new Currency(null,
-                c.getCcyNm().getValue(),
-                c.getCcy(),
-                c.getCcyNbr() != null ? c.getCcyNbr().toString() : null,
-                parseMinorUnit(c.getCcyMnrUnts())))
+            .map(c -> new CurrencyBuilder().setEntity(null).setName(c.getCcyNm().getValue()).setIsoCode(c.getCcy()).setNumber(c.getCcyNbr() != null ? c.getCcyNbr().toString() : null).setMinorUnit(parseMinorUnit(c.getCcyMnrUnts())).createCurrency())
             .filter(c -> StringUtils.hasText(c.isoCode))
             //distinct
             .collect(Collectors.toCollection(() -> new TreeSet<>(Comparator.comparing(Currency::getIsoCode))))
@@ -89,11 +86,7 @@ public class CountryManager {
             .filter(c -> c.getCtryNm().equalsIgnoreCase(countryName)).findAny();
 
         if (ccyNtry.isPresent()) {
-            return Optional.of(new Currency(ccyNtry.get().getCtryNm(),
-                ccyNtry.get().getCcyNm().getValue(),
-                ccyNtry.get().getCcy(),
-                ccyNtry.get().getCcyNbr() != null ? ccyNtry.get().getCcyNbr().toString() : null,
-                parseMinorUnit(ccyNtry.get().getCcyMnrUnts())));
+            return Optional.of(new CurrencyBuilder().setEntity(ccyNtry.get().getCtryNm()).setName(ccyNtry.get().getCcyNm().getValue()).setIsoCode(ccyNtry.get().getCcy()).setNumber(ccyNtry.get().getCcyNbr() != null ? ccyNtry.get().getCcyNbr().toString() : null).setMinorUnit(parseMinorUnit(ccyNtry.get().getCcyMnrUnts())).createCurrency());
         } else {
             return Optional.empty();
         }

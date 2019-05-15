@@ -14,11 +14,16 @@ import ehi.country.CountryManager;
 import ehi.gps.classifier.PinEntryCapability;
 import ehi.gps.classifier.PosCapability;
 import ehi.gps.classifier.Scheme;
-import ehi.gps.model.Currency;
+import ehi.gps.model.CurrencyBuilder;
 import ehi.merchant.exception.MerchantNotFoundException;
 import ehi.merchant.model.Merchant;
 import ehi.message.controller.bean.FormData;
 import ehi.message.controller.bean.FormDataBuilder;
+import ehi.message.exception.CountryNotFoundException;
+import ehi.message.exception.CurrencyNotFoundException;
+import ehi.message.exception.MccNotFoundException;
+import ehi.message.exception.ProcessingCodeNotFoundException;
+import ehi.message.exception.TransactionTypeNotFoundException;
 import ehi.message.model.Amount;
 import ehi.message.model.Message;
 import ehi.settings.Settings;
@@ -49,7 +54,12 @@ import java.util.List;
 import java.util.Map;
 
 import static ehi.message.Util.findCard;
+import static ehi.message.Util.findCountryByIsoAlpha3;
+import static ehi.message.Util.findCurrency;
+import static ehi.message.Util.findMcc;
 import static ehi.message.Util.findMerchant;
+import static ehi.message.Util.findProcessingCode;
+import static ehi.message.Util.findTransactionType;
 
 @Controller
 @RequestMapping(EhiMessageController.EHI_MESSAGE_URI)
@@ -82,6 +92,12 @@ public class EhiMessageController extends BaseController {
         try {
             message.card = findCard(settings.cards, message.card.pcId);
             message.merchant = findMerchant(settings.merchants, message.merchant.name);
+            message.country = findCountryByIsoAlpha3(countryManager.getCountries(), message.country.isoCodeAlpha3);
+            message.amount.currency = findCurrency(countryManager.getCurrencies(), message.amount.currency.isoCode);
+            message.mcc = findMcc(classifierManager.getMccs(), message.mcc.code);
+            message.processingCode = findProcessingCode(classifierManager.getProcessingCodes(), message.processingCode.value);
+            message.transactionType = findTransactionType(classifierManager.getTransactionTypes(), message.transactionType.id);
+
             model.addAttribute(VIEW, "ehi/transaction/messageFormPreview");
             return TEMPLATE;
 
@@ -89,10 +105,24 @@ public class EhiMessageController extends BaseController {
             AlertUtil.addAlert(model, new AlertError("Card '" + message.card.pcId
                 + "' was not found.<br/> You should create it <a href=\"/ehi/data/card\">here</a>."));
             return showEditMessageFields(model);
-
         } catch (MerchantNotFoundException e) {
             AlertUtil.addAlert(model, new AlertError("Merchant " + message.merchant.name
                 + " was not found.<br/> You should create it <a href=\"/ehi/data/merchant\">here</a>"));
+            return showEditMessageFields(model);
+        } catch (CountryNotFoundException e) {
+            AlertUtil.addAlert(model, new AlertError("Country " + message.country.isoCodeAlpha3 + " was not found."));
+            return showEditMessageFields(model);
+        } catch (CurrencyNotFoundException e) {
+            AlertUtil.addAlert(model, new AlertError("Currency " + message.amount.currency.isoCode + " was not found."));
+            return showEditMessageFields(model);
+        } catch (MccNotFoundException e) {
+            AlertUtil.addAlert(model, new AlertError("Mcc " + message.mcc.code + " was not found."));
+            return showEditMessageFields(model);
+        } catch (ProcessingCodeNotFoundException e) {
+            AlertUtil.addAlert(model, new AlertError("Processing code " + message.processingCode.value + " was not found."));
+            return showEditMessageFields(model);
+        } catch (TransactionTypeNotFoundException e) {
+            AlertUtil.addAlert(model, new AlertError("Transaction type " + message.transactionType.id + " was not found."));
             return showEditMessageFields(model);
         }
     }
@@ -145,7 +175,7 @@ public class EhiMessageController extends BaseController {
         Message message = new Message();
         message.date = LocalDateTime.now();
         message.amount = new Amount();
-        message.amount.currency = new Currency();
+        message.amount.currency = new CurrencyBuilder().createCurrency();
         message.mcc = new Mcc();
         message.processingCode = new ProcessingCode();
         message.transactionType = new TransactionType();

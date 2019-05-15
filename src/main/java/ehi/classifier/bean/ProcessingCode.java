@@ -18,4 +18,28 @@ public class ProcessingCode {
         this.label = label;
         this.accountingEntryType = accountingEntryType;
     }
+
+    public String getValue() {
+        return value;
+    }
+
+    public void setValue(String value) {
+        this.value = value;
+    }
+
+    public String getLabel() {
+        return label;
+    }
+
+    public void setLabel(String label) {
+        this.label = label;
+    }
+
+    public AccountingEntryType getAccountingEntryType() {
+        return accountingEntryType;
+    }
+
+    public void setAccountingEntryType(AccountingEntryType accountingEntryType) {
+        this.accountingEntryType = accountingEntryType;
+    }
 }

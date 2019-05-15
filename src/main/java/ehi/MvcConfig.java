@@ -1,6 +1,8 @@
 package ehi;
 
 import ehi.message.controller.converter.StringToLocalDateTimeConverter;
+import ehi.message.controller.converter.StringToPinEntryCapabilityConverter;
+import ehi.message.controller.converter.StringToPosCapabilityConverter;
 import ehi.message.controller.converter.StringToSchemeConverter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Configuration;
@@ -32,5 +34,7 @@ public class MvcConfig implements WebMvcConfigurer {
     public void addFormatters(FormatterRegistry registry) {
         registry.addConverter(new StringToSchemeConverter());
         registry.addConverter(new StringToLocalDateTimeConverter());
+        registry.addConverter(new StringToPosCapabilityConverter());
+        registry.addConverter(new StringToPinEntryCapabilityConverter());
     }
 }

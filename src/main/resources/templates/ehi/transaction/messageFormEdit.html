@@ -42,8 +42,8 @@
             <div class="form-group row">
                 <label th:for="country" class="col-sm-2 col-form-label" th:text="Country"></label>
                 <div class="col-sm-10">
-                        <select th:id="country" th:name="country" class="custom-select" aria-describedby="helpInline">
-                            <option th:each="cntry : ${data.countries}" th:value="${cntry.name}" th:text="${cntry.name}" th:selected="${(country == cntry)}"/>
+                        <select th:id="country.isoCodeAlpha3" th:name="country.isoCodeAlpha3" class="custom-select" aria-describedby="helpInline">
+                            <option th:each="cntry : ${data.countries}" th:value="${cntry.isoCodeAlpha3}" th:text="${cntry.name}" th:selected="${(country == cntry)}"/>
                         </select>
                         <small id="helpInline" class="form-text text-muted" th:text="'Select transaction country'" style="font-size: 0.75rem"/>
                 </div>
@@ -75,7 +75,7 @@
             <div class="form-group row">
                 <label th:for="mcc" class="col-sm-2 col-form-label" th:text="'MCC Description'"></label>
                 <div class="col-sm-10">
-                    <select th:id="mcc" th:name="mccs" class="custom-select" aria-describedby="helpInline">
+                    <select th:id="mcc.code" th:name="mcc.code" class="custom-select" aria-describedby="helpInline">
                         <option th:each="mccRec : ${data.mccs}" th:value="${mccRec.code}" th:text="${mccRec.description}" th:selected="${(message.mcc.code == mccRec.code)}"/>
                     </select>
                     <small id="helpInline" class="form-text text-muted" th:text="'Select the Merchant Category Code (MCC)'" style="font-size: 0.75rem"/>
