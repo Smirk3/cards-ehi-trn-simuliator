@@ -17,7 +17,6 @@ import ehi.gps.classifier.Scheme;
 import ehi.gps.model.Currency;
 import ehi.merchant.exception.MerchantNotFoundException;
 import ehi.merchant.model.Merchant;
-import ehi.message.Util;
 import ehi.message.controller.bean.FormData;
 import ehi.message.controller.bean.FormDataBuilder;
 import ehi.message.model.Amount;
@@ -54,14 +53,12 @@ import static ehi.message.Util.findMerchant;
 
 @Controller
 @RequestMapping(EhiMessageController.EHI_MESSAGE_URI)
-@SessionAttributes({"message"})
+@SessionAttributes({EhiMessageController.MODEL_ATTR_MESSAGE})
 public class EhiMessageController extends BaseController {
 
     private static final Logger logger = LogManager.getLogger(EhiMessageController.class);
 
-    private static final String SESSION_ATTR_MESSAGE = "message";
-    private static final String MODEL_ATTR_MESSAGE = "message";
-    private static final String MODEL_ATTR_CARD = "card";
+    public static final String MODEL_ATTR_MESSAGE = "message";
 
     private static final String MODEL_ATTR_TEMPLATES = "templates";
 
@@ -137,23 +134,11 @@ public class EhiMessageController extends BaseController {
         Settings settings = SettingsUtil.getSessionSettings(request.getSession());
         addFormData(model, settings);
 
-        String template = null;
-        //try {
         Message message = newMessage();
-
-            request.getSession().setAttribute(SESSION_ATTR_MESSAGE, message);
         model.addAttribute(MODEL_ATTR_MESSAGE, message);
-        //model.addAttribute(MODEL_ATTR_CARD, card);
 
-            model.addAttribute(VIEW, "ehi/transaction/messageFormEdit");
-            template = TEMPLATE;
-
-/*        } catch (CardNotFoundException e) {
-            AlertUtil.addAlert(model, new AlertError("IBPay contract " + cardSelected + " was not found."));
-            template = showNewMessageTypeSelector(request, model);
-        }*/
-
-        return template;
+        model.addAttribute(VIEW, "ehi/transaction/messageFormEdit");
+        return TEMPLATE;
     }
 
     private Message newMessage() {

@@ -33,7 +33,7 @@
                 <label th:for="scheme" class="col-sm-2 col-form-label" th:text="Scheme"></label>
                 <div class="col-sm-10">
                         <select th:id="scheme" th:name="scheme" class="custom-select" aria-describedby="helpInline">
-                            <option th:each="schm : ${data.schemes}" th:value="${schm.value}" th:text="${schm.value}" th:selected="${(scheme == schm)}"/>
+                            <option th:each="schm : ${data.schemes}" th:value="${schm}" th:text="${schm.value}" th:selected="${(scheme == schm)}"/>
                         </select>
                         <small id="helpInline" class="form-text text-muted" th:text="'Select the appropriate Scheme (Visa or MasterCard)'" style="font-size: 0.75rem"/>
                 </div>
@@ -52,7 +52,7 @@
             <div class="form-group row">
                 <label th:for="date" class="col-sm-2 col-form-label" th:text="Date"></label>
                 <div class="col-sm-10">
-                    <input type="text" class="form-control" th:name="date" th:value="${#temporals.format(message.date, 'yyyy-MM-dd HH:mm.SSS')}" aria-describedby="helpInline"/>
+                    <input type="text" class="form-control" th:name="date" th:value="${#temporals.format(message.date, 'yyyy-MM-dd HH:mm:ss.SSS')}" aria-describedby="helpInline"/>
                     <small id="helpInline" class="form-text text-muted" th:text="'Transaction date'" style="font-size: 0.75rem"/>
                 </div>
             </div>

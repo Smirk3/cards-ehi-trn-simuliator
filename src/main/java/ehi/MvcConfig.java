@@ -1,7 +1,10 @@
 package ehi;
 
+import ehi.message.controller.converter.StringToLocalDateTimeConverter;
+import ehi.message.controller.converter.StringToSchemeConverter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.format.FormatterRegistry;
 import org.springframework.web.servlet.config.annotation.ViewControllerRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 import org.thymeleaf.spring5.templateresolver.SpringResourceTemplateResolver;
@@ -23,5 +26,11 @@ public class MvcConfig implements WebMvcConfigurer {
     public void addViewControllers(ViewControllerRegistry registry) {
         registry.addViewController("/").setViewName("redirect:/ehi/message");
         registry.addViewController("/ehi").setViewName("redirect:/ehi/message");
+    }
+
+    @Override
+    public void addFormatters(FormatterRegistry registry) {
+        registry.addConverter(new StringToSchemeConverter());
+        registry.addConverter(new StringToLocalDateTimeConverter());
     }
 }

@@ -38,4 +38,40 @@ public class Currency implements Comparable {
             return this.isoCode.compareTo(((Currency) o).isoCode);
         }
     }
+
+    public String getEntity() {
+        return entity;
+    }
+
+    public void setEntity(String entity) {
+        this.entity = entity;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public void setIsoCode(String isoCode) {
+        this.isoCode = isoCode;
+    }
+
+    public String getNumber() {
+        return number;
+    }
+
+    public void setNumber(String number) {
+        this.number = number;
+    }
+
+    public Integer getMinorUnit() {
+        return minorUnit;
+    }
+
+    public void setMinorUnit(Integer minorUnit) {
+        this.minorUnit = minorUnit;
+    }
 }

@@ -39,37 +39,12 @@ public class Message implements Serializable {
 
     public Merchant merchant;
 
-
     public String getEhiUrl() {
         return ehiUrl;
     }
 
     public void setEhiUrl(String ehiUrl) {
         this.ehiUrl = ehiUrl;
-    }
-
-    public Scheme getScheme() {
-        return scheme;
-    }
-
-    public void setScheme(Scheme scheme) {
-        this.scheme = scheme;
-    }
-
-    public Country getCountry() {
-        return country;
-    }
-
-    public void setCountry(Country country) {
-        this.country = country;
-    }
-
-    public LocalDateTime getDate() {
-        return date;
-    }
-
-    public void setDate(LocalDateTime date) {
-        this.date = date;
     }
 
     public Amount getAmount() {
@@ -80,59 +55,19 @@ public class Message implements Serializable {
         this.amount = amount;
     }
 
-    public Mcc getMcc() {
-        return mcc;
+    public Scheme getScheme() {
+        return scheme;
     }
 
-    public void setMcc(Mcc mcc) {
-        this.mcc = mcc;
+    public void setScheme(Scheme scheme) {
+        this.scheme = scheme;
     }
 
-    public PosCapability getPosCapability() {
-        return posCapability;
+    public LocalDateTime getDate() {
+        return date;
     }
 
-    public void setPosCapability(PosCapability posCapability) {
-        this.posCapability = posCapability;
-    }
-
-    public PinEntryCapability getPinEntryCapability() {
-        return pinEntryCapability;
-    }
-
-    public void setPinEntryCapability(PinEntryCapability pinEntryCapability) {
-        this.pinEntryCapability = pinEntryCapability;
-    }
-
-    public ProcessingCode getProcessingCode() {
-        return processingCode;
-    }
-
-    public void setProcessingCode(ProcessingCode processingCode) {
-        this.processingCode = processingCode;
-    }
-
-    public TransactionType getTransactionType() {
-        return transactionType;
-    }
-
-    public void setTransactionType(TransactionType transactionType) {
-        this.transactionType = transactionType;
-    }
-
-    public Card getCard() {
-        return card;
-    }
-
-    public void setCard(Card card) {
-        this.card = card;
-    }
-
-    public Merchant getMerchant() {
-        return merchant;
-    }
-
-    public void setMerchant(Merchant merchant) {
-        this.merchant = merchant;
+    public void setDate(LocalDateTime date) {
+        this.date = date;
     }
 }
