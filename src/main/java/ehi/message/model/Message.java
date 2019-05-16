@@ -39,6 +39,7 @@ public class Message implements Serializable {
 
     public Merchant merchant;
 
+
     public String getEhiUrl() {
         return ehiUrl;
     }

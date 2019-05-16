@@ -7,16 +7,11 @@ import ehi.alerts.AlertUtil;
 import ehi.card.Card;
 import ehi.card.exception.CardNotFoundException;
 import ehi.classifier.ClassifierManager;
-import ehi.classifier.bean.Mcc;
-import ehi.classifier.bean.ProcessingCode;
-import ehi.classifier.bean.TransactionType;
 import ehi.country.CountryManager;
 import ehi.gps.classifier.PinEntryCapability;
 import ehi.gps.classifier.PosCapability;
 import ehi.gps.classifier.Scheme;
-import ehi.gps.model.CurrencyBuilder;
 import ehi.merchant.exception.MerchantNotFoundException;
-import ehi.merchant.model.Merchant;
 import ehi.message.controller.bean.FormData;
 import ehi.message.controller.bean.FormDataBuilder;
 import ehi.message.exception.CountryNotFoundException;
@@ -24,8 +19,8 @@ import ehi.message.exception.CurrencyNotFoundException;
 import ehi.message.exception.MccNotFoundException;
 import ehi.message.exception.ProcessingCodeNotFoundException;
 import ehi.message.exception.TransactionTypeNotFoundException;
-import ehi.message.model.Amount;
 import ehi.message.model.Message;
+import ehi.message.service.MessageService;
 import ehi.settings.Settings;
 import ehi.settings.SettingsUtil;
 import ehi.template.Template;
@@ -45,7 +40,6 @@ import org.springframework.web.servlet.view.RedirectView;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
@@ -60,6 +54,7 @@ import static ehi.message.Util.findMcc;
 import static ehi.message.Util.findMerchant;
 import static ehi.message.Util.findProcessingCode;
 import static ehi.message.Util.findTransactionType;
+import static ehi.message.Util.newMessageInstance;
 
 @Controller
 @RequestMapping(EhiMessageController.EHI_MESSAGE_URI)
@@ -74,12 +69,17 @@ public class EhiMessageController extends BaseController {
 
     public static final String EHI_MESSAGE_URI = "/ehi/message";
     public static final String EHI_TEMPLATES_LIST_URI = "/templates/list";
+    public static final String EHI_MESSAGE_NEW = "/new/fields";
+    public static final String EHI_MESSAGE_EDIT = "/edit/fields";
 
     @Autowired
     private CountryManager countryManager;
 
     @Autowired
     private ClassifierManager classifierManager;
+
+    @Autowired
+    private MessageService messageService;
 
     @RequestMapping("")
     public RedirectView index() {
@@ -90,119 +90,32 @@ public class EhiMessageController extends BaseController {
     public String show(Model model, HttpServletRequest request, Message message) {
         Settings settings = SettingsUtil.getSessionSettings(request.getSession());
         try {
-            message.card = findCard(settings.cards, message.card.pcId);
-            message.merchant = findMerchant(settings.merchants, message.merchant.name);
-            message.country = findCountryByIsoAlpha3(countryManager.getCountries(), message.country.isoCodeAlpha3);
-            message.amount.currency = findCurrency(countryManager.getCurrencies(), message.amount.currency.isoCode);
-            message.mcc = findMcc(classifierManager.getMccs(), message.mcc.code);
-            message.processingCode = findProcessingCode(classifierManager.getProcessingCodes(), message.processingCode.value);
-            message.transactionType = findTransactionType(classifierManager.getTransactionTypes(), message.transactionType.id);
+            bindMessageObjects(message, settings);
+
+            messageService.createMessageRequest(message);
 
             model.addAttribute(VIEW, "ehi/transaction/messageFormPreview");
             return TEMPLATE;
 
-        } catch (CardNotFoundException e) {
-            AlertUtil.addAlert(model, new AlertError("Card '" + message.card.pcId
-                + "' was not found.<br/> You should create it <a href=\"/ehi/data/card\">here</a>."));
-            return showEditMessageFields(model);
-        } catch (MerchantNotFoundException e) {
-            AlertUtil.addAlert(model, new AlertError("Merchant " + message.merchant.name
-                + " was not found.<br/> You should create it <a href=\"/ehi/data/merchant\">here</a>"));
-            return showEditMessageFields(model);
-        } catch (CountryNotFoundException e) {
-            AlertUtil.addAlert(model, new AlertError("Country " + message.country.isoCodeAlpha3 + " was not found."));
-            return showEditMessageFields(model);
-        } catch (CurrencyNotFoundException e) {
-            AlertUtil.addAlert(model, new AlertError("Currency " + message.amount.currency.isoCode + " was not found."));
-            return showEditMessageFields(model);
-        } catch (MccNotFoundException e) {
-            AlertUtil.addAlert(model, new AlertError("Mcc " + message.mcc.code + " was not found."));
-            return showEditMessageFields(model);
-        } catch (ProcessingCodeNotFoundException e) {
-            AlertUtil.addAlert(model, new AlertError("Processing code " + message.processingCode.value + " was not found."));
-            return showEditMessageFields(model);
-        } catch (TransactionTypeNotFoundException e) {
-            AlertUtil.addAlert(model, new AlertError("Transaction type " + message.transactionType.id + " was not found."));
-            return showEditMessageFields(model);
+        } catch (InvalidObjectIdentifier e) {
+            AlertUtil.addAlert(model, new AlertError(e.getMessage()));
+            return showEditMessageForm(model, request);
         }
     }
 
-/*
-    @RequestMapping("/new/number")
-    public String showNewMessageTypeSelector(HttpServletRequest request, Model model) {
-        List<MessageTypeSelector> messageTypes = new ArrayList<>();
-        messageTypes.add(new MessageTypeSelector(MessageId.MSG_1001, MessageType.PAY));
-        messageTypes.add(new MessageTypeSelector(MessageId.MSG_1011, MessageType.PAY));
-        messageTypes.add(new MessageTypeSelector(MessageId.MSG_1012, MessageType.PAY));
-        messageTypes.add(new MessageTypeSelector(MessageId.MSG_4011, MessageType.AUTH));
-        messageTypes.add(new MessageTypeSelector(MessageId.MSG_4012, MessageType.AUTH));
-
-        model.addAttribute("messageTypes", messageTypes);
-        model.addAttribute("contracts", getCards(request));
-
-        model.addAttribute(VIEW, "ehi/transaction/messageFormTypeSelector");
-        return TEMPLATE;
-    }
-*/
-
-    private Collection<Card> getCards(HttpServletRequest request){
-        List<Card> cards = SettingsUtil.getSessionSettings(request.getSession()).cards;
-        if (CollectionUtils.isEmpty(cards)){
-            return new ArrayList<>();
-        } else {
-            return cards;
-        }
-    }
-
-    private Card getCard(HttpServletRequest request, String cardPcId) throws CardNotFoundException {
-        List<Card> cards = SettingsUtil.getSessionSettings(request.getSession()).cards;
-        return findCard(cards, cardPcId);
-    }
-
-    @RequestMapping("/new/fields")
-    public String showNewMessageFields(Model model, HttpServletRequest request) {
-        Settings settings = SettingsUtil.getSessionSettings(request.getSession());
-        addFormData(model, settings);
-
-        Message message = newMessage();
-        model.addAttribute(MODEL_ATTR_MESSAGE, message);
+    @RequestMapping(EHI_MESSAGE_NEW)
+    public RedirectView showNewMessageForm(Model model) {
+        model.addAttribute(MODEL_ATTR_MESSAGE, newMessageInstance());
 
         model.addAttribute(VIEW, "ehi/transaction/messageFormEdit");
-        return TEMPLATE;
+        return new RedirectView(EHI_MESSAGE_URI + EHI_MESSAGE_EDIT);
     }
 
-    private Message newMessage() {
-        Message message = new Message();
-        message.date = LocalDateTime.now();
-        message.amount = new Amount();
-        message.amount.currency = new CurrencyBuilder().createCurrency();
-        message.mcc = new Mcc();
-        message.processingCode = new ProcessingCode();
-        message.transactionType = new TransactionType();
-        message.card = new Card();
-        message.merchant = new Merchant();
-        return message;
-    }
+    @RequestMapping(EHI_MESSAGE_EDIT)
+    public String showEditMessageForm(Model model, HttpServletRequest request) {
+        Settings settings = SettingsUtil.getSessionSettings(request.getSession());
+        addMessageFormData(model, settings);
 
-    private void addFormData(Model model, Settings settings) {
-        FormData data = new FormDataBuilder()
-            .setEhiUrlDefault(settings.ehiUrlDefault)
-            .setSchemes(Arrays.asList(Scheme.values()))
-            .setCountries(countryManager.getCountries())
-            .setCurrencies(countryManager.getCurrencies())
-            .setMccs(classifierManager.getMccs())
-            .setPosCapabilities(Arrays.asList(PosCapability.values()))
-            .setPinEntryCapabilities(Arrays.asList(PinEntryCapability.values()))
-            .setProcessingCodes(classifierManager.getProcessingCodes())
-            .setTransactionTypes(classifierManager.getTransactionTypes())
-            .setCards(settings.cards)
-            .setMerchants(settings.merchants)
-            .createFormData();
-        model.addAttribute("data", data);
-    }
-
-    @RequestMapping("/edit/fields")
-    public String showEditMessageFields(Model model) {
         model.addAttribute(VIEW, "ehi/transaction/messageFormEdit");
         return TEMPLATE;
     }
@@ -395,4 +308,69 @@ public class EhiMessageController extends BaseController {
             }
         }
     }
+
+    private void bindMessageObjects(Message message, Settings settings) throws InvalidObjectIdentifier {
+        try {
+            message.card = findCard(settings.cards, message.card.pcId);
+            message.merchant = findMerchant(settings.merchants, message.merchant.name);
+            message.country = findCountryByIsoAlpha3(countryManager.getCountries(), message.country.isoCodeAlpha3);
+            message.amount.currency = findCurrency(countryManager.getCurrencies(), message.amount.currency.isoCode);
+            message.mcc = findMcc(classifierManager.getMccs(), message.mcc.code);
+            message.processingCode = findProcessingCode(classifierManager.getProcessingCodes(), message.processingCode.value);
+            message.transactionType = findTransactionType(classifierManager.getTransactionTypes(), message.transactionType.id);
+
+        } catch (CardNotFoundException e) {
+            throw new InvalidObjectIdentifier("Card '" + message.card.pcId + "' was not found.<br/> You should create it <a href=\"/ehi/data/card\">here</a>.");
+        } catch (MerchantNotFoundException e) {
+            throw new InvalidObjectIdentifier("Merchant " + message.merchant.name + " was not found.<br/> You should create it <a href=\"/ehi/data/merchant\">here</a>");
+        } catch (CountryNotFoundException e) {
+            throw new InvalidObjectIdentifier("Country " + message.country.isoCodeAlpha3 + " was not found.");
+        } catch (CurrencyNotFoundException e) {
+            throw new InvalidObjectIdentifier("Currency " + message.amount.currency.isoCode + " was not found.");
+        } catch (MccNotFoundException e) {
+            throw new InvalidObjectIdentifier("Mcc " + message.mcc.code + " was not found.");
+        } catch (ProcessingCodeNotFoundException e) {
+            throw new InvalidObjectIdentifier("Processing code " + message.processingCode.value + " was not found.");
+        } catch (TransactionTypeNotFoundException e) {
+            throw new InvalidObjectIdentifier("Transaction type " + message.transactionType.id + " was not found.");
+        }
+    }
+
+    private class InvalidObjectIdentifier extends Exception {
+        public InvalidObjectIdentifier(String message) {
+            super(message);
+        }
+    }
+
+    private void addMessageFormData(Model model, Settings settings) {
+        FormData data = new FormDataBuilder()
+            .setEhiUrlDefault(settings.ehiUrlDefault)
+            .setSchemes(Arrays.asList(Scheme.values()))
+            .setCountries(countryManager.getCountries())
+            .setCurrencies(countryManager.getCurrencies())
+            .setMccs(classifierManager.getMccs())
+            .setPosCapabilities(Arrays.asList(PosCapability.values()))
+            .setPinEntryCapabilities(Arrays.asList(PinEntryCapability.values()))
+            .setProcessingCodes(classifierManager.getProcessingCodes())
+            .setTransactionTypes(classifierManager.getTransactionTypes())
+            .setCards(settings.cards)
+            .setMerchants(settings.merchants)
+            .createFormData();
+        model.addAttribute("data", data);
+    }
+
+    private Collection<Card> getCards(HttpServletRequest request) {
+        List<Card> cards = SettingsUtil.getSessionSettings(request.getSession()).cards;
+        if (CollectionUtils.isEmpty(cards)) {
+            return new ArrayList<>();
+        } else {
+            return cards;
+        }
+    }
+
+    private Card getCard(HttpServletRequest request, String cardPcId) throws CardNotFoundException {
+        List<Card> cards = SettingsUtil.getSessionSettings(request.getSession()).cards;
+        return findCard(cards, cardPcId);
+    }
+
 }

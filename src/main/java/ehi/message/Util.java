@@ -19,14 +19,30 @@ import ehi.message.exception.CurrencyNotFoundException;
 import ehi.message.exception.MccNotFoundException;
 import ehi.message.exception.ProcessingCodeNotFoundException;
 import ehi.message.exception.TransactionTypeNotFoundException;
+import ehi.message.model.Amount;
+import ehi.message.model.Message;
 import org.springframework.util.CollectionUtils;
 import org.springframework.util.StringUtils;
 
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 import java.util.SplittableRandom;
 
 public class Util {
+
+    public static Message newMessageInstance() {
+        Message message = new Message();
+        message.date = LocalDateTime.now();
+        message.amount = new Amount();
+        message.amount.currency = new CurrencyBuilder().createCurrency();
+        message.mcc = new Mcc();
+        message.processingCode = new ProcessingCode();
+        message.transactionType = new TransactionType();
+        message.card = new Card();
+        message.merchant = new Merchant();
+        return message;
+    }
 
     public static Card findCard(List<Card> cards, String cardPcId) throws CardNotFoundException {
         if (!StringUtils.hasText(cardPcId) || CollectionUtils.isEmpty(cards)) {

@@ -112,8 +112,9 @@
                     <sources>
                         <source>src/main/resources/xsd/currency-codes-ISO4217.xsd</source>
                         <source>src/main/resources/xsd/iso_country_codes.xsd</source>
+                        <source>src/main/resources/xsd/ehi-message.xsd</source>
                     </sources>
-                    <outputDirectory>${basedir}/src/main/java/ehi/jaxb</outputDirectory>
+                    <outputDirectory>${basedir}/src/main/java</outputDirectory>
                     <packageName>ehi.jaxb.generated</packageName>
                     <clearOutputDir>false</clearOutputDir>
                 </configuration>
