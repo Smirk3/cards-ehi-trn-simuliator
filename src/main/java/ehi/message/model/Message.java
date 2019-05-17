@@ -39,6 +39,8 @@ public class Message implements Serializable {
 
     public Merchant merchant;
 
+    public String xmlRequest;
+
 
     public String getEhiUrl() {
         return ehiUrl;
@@ -134,5 +136,13 @@ public class Message implements Serializable {
 
     public void setCountry(Country country) {
         this.country = country;
+    }
+
+    public String getXmlRequest() {
+        return xmlRequest;
+    }
+
+    public void setXmlRequest(String xmlRequest) {
+        this.xmlRequest = xmlRequest;
     }
 }

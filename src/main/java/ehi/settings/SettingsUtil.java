@@ -32,6 +32,14 @@ public class SettingsUtil {
     private static final String CARDS = "cards";
     private static final String CARD_PC_ID = "pcId";
     private static final String CARD_NUMBER = "number";
+    private static final String CARD_INSTITUTION_CODE = "institutionCode";
+    private static final String CARD_USAGE_GROUP = "cardUsageGroup";
+    private static final String CARD_SUBBIN = "subBin";
+    private static final String CARD_PRODUCT_ID_IN_PC = "productIdInPc";
+    private static final String CARD_CVV2 = "cvv2";
+    private static final String CARD_CUSTOMER_REFERENCE = "customerReference";
+    private static final String CARD_EXPIRY = "expiry";
+
     private static final String TEMPLATES = "templates";
     private static final String TEMPLATE_NAME = "name";
     private static final String TEMPLATE_DESCRIPTION = "description";
@@ -61,7 +69,14 @@ public class SettingsUtil {
         for (Card card : settings.cards){
             JsonObjectBuilder crtBuilder = Json.createObjectBuilder();
             crtBuilder.add(CARD_PC_ID, card.pcId);
-            crtBuilder.add(CARD_NUMBER, card.number);
+            nullSafe(crtBuilder, CARD_NUMBER, card.number);
+            nullSafe(crtBuilder, CARD_INSTITUTION_CODE, card.institutionCode);
+            nullSafe(crtBuilder, CARD_USAGE_GROUP, card.cardUsageGroup);
+            nullSafe(crtBuilder, CARD_SUBBIN, card.subBin);
+            nullSafe(crtBuilder, CARD_PRODUCT_ID_IN_PC, card.productIdInPc);
+            nullSafe(crtBuilder, CARD_CVV2, card.cvv2);
+            nullSafe(crtBuilder, CARD_CUSTOMER_REFERENCE, card.customerReference);
+            nullSafe(crtBuilder, CARD_EXPIRY, card.expiry);
 
             crtsBuilder.add(crtBuilder);
         }
@@ -127,7 +142,14 @@ public class SettingsUtil {
 
                 Card card = new CardBuilder().createCard();
                 card.pcId = cardJson.getString(CARD_PC_ID);
-                card.number = cardJson.getString(CARD_NUMBER);
+                card.number = cardJson.getString(CARD_NUMBER, null);
+                card.institutionCode = cardJson.getString(CARD_INSTITUTION_CODE, null);
+                card.cardUsageGroup = cardJson.getString(CARD_USAGE_GROUP, null);
+                card.subBin = cardJson.getString(CARD_SUBBIN, null);
+                card.productIdInPc = cardJson.getString(CARD_PRODUCT_ID_IN_PC, null);
+                card.cvv2 = cardJson.getString(CARD_CVV2, null);
+                card.customerReference = cardJson.getString(CARD_CUSTOMER_REFERENCE, null);
+                card.expiry = cardJson.getString(CARD_EXPIRY, null);
 
                 cards.add(card);
             }

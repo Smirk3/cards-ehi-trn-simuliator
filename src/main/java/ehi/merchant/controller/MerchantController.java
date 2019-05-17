@@ -5,7 +5,6 @@ import ehi.FormMode;
 import ehi.alerts.AlertError;
 import ehi.alerts.AlertSuccess;
 import ehi.alerts.AlertUtil;
-import ehi.card.Card;
 import ehi.merchant.exception.IllegalMerchant;
 import ehi.merchant.exception.MerchantNotFoundException;
 import ehi.merchant.model.Merchant;
@@ -60,11 +59,9 @@ public class MerchantController extends BaseController {
     public String deleteMerchant(HttpServletRequest request, Model model,
                                  @RequestParam("merchantName") String merchantName) {
         Settings settings = SettingsUtil.getSessionSettings(request.getSession());
-        List<Merchant> merchants = settings.merchants;
-
         try {
             Merchant merchant = Util.findMerchant(settings.merchants, merchantName);
-            merchants.remove(merchant);
+            settings.merchants.removeIf(m -> m.name.equalsIgnoreCase(merchant.name));
             AlertUtil.addAlert(model, new AlertSuccess("Merchant " + merchantName + " deleted."));
 
         } catch (MerchantNotFoundException e) {
@@ -122,9 +119,7 @@ public class MerchantController extends BaseController {
     }
 
     @RequestMapping("/edit")
-    public String edit(HttpServletRequest request, Model model,
-                       //@RequestParam("merchantName") String merchantName,
-                       Merchant merchant) {
+    public String edit(HttpServletRequest request, Model model, Merchant merchant) {
         Settings settings = SettingsUtil.getSessionSettings(request.getSession());
         try {
             Merchant merchantFound = Util.findMerchant(settings.merchants, merchant.name);
@@ -139,6 +134,9 @@ public class MerchantController extends BaseController {
             merchantFound.address.region = merchant.address.region;
             merchantFound.address.postCode = merchant.address.postCode;
             merchantFound.address.country = merchant.address.country;
+
+            settings.merchants.removeIf(m -> m.name.equalsIgnoreCase(merchantFound.name));
+            settings.merchants.add(merchantFound);
 
             AlertUtil.addAlert(model, new AlertSuccess("Merchant " + merchant.name + " was updated successfully."));
 

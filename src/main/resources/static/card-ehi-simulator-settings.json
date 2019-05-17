@@ -1,1 +1,62 @@
-{"ehiUrlDefault":"localhost:6060/soap/GetTransaction?wsdl","cards":[{"pcId":"123456789","number":"1111**********2222"},{"pcId":"987654321","number":"1111**********3333"}],"merchants":[{"name":"Maxima","phoneNumber":"+37052869325","url":"www.maxima.lt","nameOther":"Franmax","netId":"2","taxId":"21","contact":"Testas Testas","address":{"street":"Savanorių 375","city":"Vilnius","country":"Lietuva","region":"Vilniaus m.","postCode":"LT04300"}},{"name":"Senukai","phoneNumber":"+37085921478","url":"www.senukai.lt","nameOther":"Palink","netId":"3","taxId":"25","contact":"Testas1 Testas1","address":{"street":"Savanorių 1","city":"Kaunas","country":"Lietuva","region":"Kauno m.","postCode":"LT04635"}}],"templates":[]}
+{
+    "cards": [
+        {
+            "cardUsageGroup": "DEV-CU-001",
+            "customerReference": "1234569F",
+            "cvv2": "918",
+            "expiry": "2206",
+            "institutionCode": "DEV",
+            "number": "3523***********6578 - Igor Zubanov - CDB0000462 (local)",
+            "pcId": "014ecabd-041b-4228-977d-3ed984ce87cb",
+            "productIdInPc": "2395",
+            "subBin": "55462605"
+        },
+        {
+            "cardUsageGroup": "DEV-CU-001",
+            "customerReference": "1234569F",
+            "cvv2": "918",
+            "expiry": "2206",
+            "institutionCode": "DEV",
+            "number": "6438***********6613 - Igor Zubanov - CDB0000504 (local)",
+            "pcId": "2c4ef95a-f826-49f6-8a21-1a7853ffb164",
+            "productIdInPc": "2395",
+            "subBin": "55462605"
+        }
+    ],
+    "ehiUrlDefault": "localhost:6060/soap/GetTransaction?wsdl",
+    "merchants": [
+        {
+            "address": {
+                "city": "Vilnius",
+                "country": "Lietuva",
+                "postCode": "LT04300",
+                "region": "Vilniaus m.",
+                "street": "Savanorių 375"
+            },
+            "contact": "Testas Testas",
+            "name": "Maxima",
+            "nameOther": "Franmax",
+            "netId": "2",
+            "phoneNumber": "+37052869325",
+            "taxId": "21",
+            "url": "www.maxima.lt"
+        },
+        {
+            "address": {
+                "city": "Kaunas",
+                "country": "Lietuva",
+                "postCode": "LT04635",
+                "region": "Kauno m.",
+                "street": "Savanorių 1"
+            },
+            "contact": "Testas1 Testas1",
+            "name": "Senukai",
+            "nameOther": "Palink",
+            "netId": "3",
+            "phoneNumber": "+37085921478",
+            "taxId": "25",
+            "url": "www.senukai.lt"
+        }
+    ],
+    "templates": []
+}

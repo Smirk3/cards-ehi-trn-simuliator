@@ -6,7 +6,6 @@ import ehi.alerts.AlertError;
 import ehi.alerts.AlertSuccess;
 import ehi.alerts.AlertUtil;
 import ehi.card.Card;
-import ehi.card.CardBuilder;
 import ehi.card.exception.CardNotFoundException;
 import ehi.card.exception.IllegalCard;
 import ehi.message.Util;
@@ -20,7 +19,6 @@ import org.springframework.util.CollectionUtils;
 import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.SessionAttribute;
 import org.springframework.web.bind.annotation.SessionAttributes;
 
 import javax.servlet.http.HttpServletRequest;
@@ -65,7 +63,7 @@ public class CardsController extends BaseController {
         Settings settings = SettingsUtil.getSessionSettings(request.getSession());
         try {
             Card card = Util.findCard(settings.cards, cardPcId);
-            settings.cards.remove(card);
+            settings.cards.removeIf(c -> c.pcId.equalsIgnoreCase(card.pcId));
             AlertUtil.addAlert(model, new AlertSuccess("Card " + card.number + " deleted."));
 
         } catch (CardNotFoundException e) {
@@ -91,6 +89,7 @@ public class CardsController extends BaseController {
         Optional<Card> cardFound = settings.cards.stream().filter(c -> c.pcId.equalsIgnoreCase(card.pcId)).findAny();
         try {
             if (!StringUtils.hasText(card.pcId) || cardFound.isPresent()) throw new IllegalCard();
+            setHardcodedValues(card);
             settings.cards.add(card);
 
             AlertUtil.addAlert(model, new AlertSuccess("Card " + card.number + " was created successfully."));
@@ -99,6 +98,16 @@ public class CardsController extends BaseController {
             AlertUtil.addAlert(model, new AlertError(String.format("Invalid card pc id: %s", card.pcId)));
             return showCreateForm(model, true);
         }
+    }
+
+    private void setHardcodedValues(Card card) {
+        card.cardUsageGroup = "DEV-CU-001";
+        card.customerReference = "1234569F";
+        card.cvv2 = "918";
+        card.expiry = "2206";
+        card.institutionCode = "DEV";
+        card.productIdInPc = "2395";
+        card.subBin = "55462605";
     }
 
     @RequestMapping("/show/edit")
@@ -129,6 +138,10 @@ public class CardsController extends BaseController {
         try {
             Card cardFound = Util.findCard(settings.cards, card.pcId);
             cardFound.number = card.number;
+            setHardcodedValues(cardFound);
+
+            settings.cards.removeIf(c -> c.pcId.equalsIgnoreCase(cardFound.pcId));
+            settings.cards.add(cardFound);
 
             AlertUtil.addAlert(model, new AlertSuccess("Card " + card.number + " was updated successfully."));
 
