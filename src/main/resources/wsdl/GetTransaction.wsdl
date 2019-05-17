@@ -1,0 +1,335 @@
+<?xml version='1.0' encoding='UTF-8'?><wsdl:definitions xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/" xmlns:tns="http://tempuri.org/" xmlns:tm="http://microsoft.com/wsdl/mime/textMatching/" xmlns:soapenc="http://schemas.xmlsoap.org/soap/encoding/" xmlns:soap12="http://schemas.xmlsoap.org/wsdl/soap12/" xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/" xmlns:s="http://www.w3.org/2001/XMLSchema" xmlns:mime="http://schemas.xmlsoap.org/wsdl/mime/" xmlns:http="http://schemas.xmlsoap.org/wsdl/http/" targetNamespace="http://tempuri.org/">
+  <wsdl:types>
+<s:schema xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/" xmlns:tns="http://tempuri.org/" xmlns:tm="http://microsoft.com/wsdl/mime/textMatching/" xmlns:soapenc="http://schemas.xmlsoap.org/soap/encoding/" xmlns:soap12="http://schemas.xmlsoap.org/wsdl/soap12/" xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/" xmlns:s="http://www.w3.org/2001/XMLSchema" xmlns:mime="http://schemas.xmlsoap.org/wsdl/mime/" xmlns:http="http://schemas.xmlsoap.org/wsdl/http/" elementFormDefault="qualified" targetNamespace="http://tempuri.org/">
+      
+  <s:element name="GetTransaction"> 
+        
+    <s:complexType> 
+          
+      <s:all> 
+            
+        <s:element maxOccurs="1" minOccurs="0" name="Acquirer_id_DE32" type="s:string"/> 
+            
+        <s:element maxOccurs="1" minOccurs="1" name="ActBal" type="s:double"/> 
+            
+        <s:element maxOccurs="1" minOccurs="0" name="Additional_Amt_DE54" type="s:string"/> 
+            
+        <s:element maxOccurs="1" minOccurs="0" name="Amt_Tran_Fee_DE28" type="s:string"/> 
+            
+        <s:element maxOccurs="1" minOccurs="0" name="Auth_Code_DE38" type="s:string"/> 
+            
+        <s:element maxOccurs="1" minOccurs="1" name="Avl_Bal" type="s:double"/> 
+            
+        <s:element maxOccurs="1" minOccurs="1" name="Bill_Amt" type="s:double"/> 
+            
+        <s:element maxOccurs="1" minOccurs="0" name="Bill_Ccy" type="s:string"/> 
+            
+        <s:element maxOccurs="1" minOccurs="1" name="BlkAmt" type="s:double"/> 
+            
+        <s:element maxOccurs="1" minOccurs="0" name="Cust_Ref" type="s:string"/> 
+            
+        <s:element maxOccurs="1" minOccurs="0" name="FX_Pad" type="s:double"/> 
+            
+        <s:element maxOccurs="1" minOccurs="1" name="Fee_Fixed" type="s:double"/> 
+            
+        <s:element maxOccurs="1" minOccurs="1" name="Fee_Rate" type="s:double"/> 
+            
+        <s:element maxOccurs="1" minOccurs="0" name="LoadSRC" type="s:string"/> 
+            
+        <s:element maxOccurs="1" minOccurs="0" name="LoadType" type="s:string"/> 
+            
+        <s:element maxOccurs="1" minOccurs="0" name="MCC_Code" type="s:string"/> 
+            
+        <s:element maxOccurs="1" minOccurs="0" name="MCC_Desc" type="s:string"/> 
+            
+        <s:element maxOccurs="1" minOccurs="1" name="MCC_Pad" type="s:double"/> 
+            
+        <s:element maxOccurs="1" minOccurs="0" name="Merch_ID_DE42" type="s:string"/> 
+            
+        <s:element maxOccurs="1" minOccurs="0" name="Merch_Name_DE43" type="s:string"/> 
+            
+        <s:element maxOccurs="1" minOccurs="0" name="Note" type="s:string"/> 
+            
+        <s:element maxOccurs="1" minOccurs="0" name="POS_Data_DE22" type="s:string"/> 
+            
+        <s:element maxOccurs="1" minOccurs="0" name="POS_Data_DE61" type="s:string"/> 
+            
+        <s:element maxOccurs="1" minOccurs="0" name="POS_Termnl_DE41" type="s:string"/> 
+            
+        <s:element maxOccurs="1" minOccurs="0" name="POS_Time_DE12" type="s:string"/> 
+            
+        <s:element maxOccurs="1" minOccurs="0" name="Proc_Code" type="s:string"/> 
+            
+        <s:element maxOccurs="1" minOccurs="0" name="Resp_Code_DE39" type="s:string"/> 
+            
+        <s:element maxOccurs="1" minOccurs="0" name="Ret_Ref_No_DE37" type="s:string"/> 
+            
+        <s:element maxOccurs="1" minOccurs="1" name="Settle_Amt" type="s:double"/> 
+            
+        <s:element maxOccurs="1" minOccurs="0" name="Settle_Ccy" type="s:string"/> 
+            
+        <s:element maxOccurs="1" minOccurs="0" name="Status_Code" type="s:string"/> 
+            
+        <s:element maxOccurs="1" minOccurs="0" name="Token" type="s:string"/> 
+            
+        <s:element maxOccurs="1" minOccurs="0" name="Trans_link" type="s:string"/> 
+            
+        <s:element maxOccurs="1" minOccurs="1" name="Txn_Amt" type="s:double"/> 
+            
+        <s:element maxOccurs="1" minOccurs="0" name="Txn_CCy" type="s:string"/> 
+            
+        <s:element maxOccurs="1" minOccurs="0" name="Txn_Ctry" type="s:string"/> 
+            
+        <s:element maxOccurs="1" minOccurs="0" name="Txn_Desc" type="s:string"/> 
+            
+        <s:element maxOccurs="1" minOccurs="0" name="Txn_GPS_Date" type="s:string"/> 
+            
+        <s:element maxOccurs="1" minOccurs="1" name="TXn_ID" type="s:string"/> 
+            
+        <s:element maxOccurs="1" minOccurs="0" name="Txn_Stat_Code" type="s:string"/> 
+            
+        <s:element maxOccurs="1" minOccurs="0" name="TXN_Time_DE07" type="s:string"/> 
+            
+        <s:element maxOccurs="1" minOccurs="0" name="Txn_Type" type="s:string"/> 
+            
+        <s:element maxOccurs="1" minOccurs="0" name="Additional_Data_DE48" type="s:string"/> 
+  	    
+        <s:element maxOccurs="1" minOccurs="0" name="Authorised_by_GPS" type="s:string"/> 
+            
+        <s:element maxOccurs="1" minOccurs="0" name="AVS_Result" type="s:string"/> 
+            
+        <s:element maxOccurs="1" minOccurs="0" name="CU_Group" type="s:string"/> 
+            
+        <s:element maxOccurs="1" minOccurs="0" name="InstCode" type="s:string"/> 
+            
+        <s:element maxOccurs="1" minOccurs="0" name="MTID" type="s:string"/> 
+            
+        <s:element maxOccurs="1" minOccurs="1" name="ProductID" type="s:int"/> 
+            
+        <s:element maxOccurs="1" minOccurs="0" name="Record_Data_DE120" type="s:string"/> 
+            
+        <s:element maxOccurs="1" minOccurs="1" name="SubBIN" type="s:int"/> 
+            
+        <s:element maxOccurs="1" minOccurs="0" name="TLogIDOrg" type="s:string"/> 
+            
+        <s:element maxOccurs="1" minOccurs="0" name="VL_Group" type="s:string"/>  
+            
+        <s:element maxOccurs="1" minOccurs="0" name="Dom_Fee_Fixed" type="s:string"/> 
+            
+        <s:element maxOccurs="1" minOccurs="0" name="Non_Dom_Fee_Fixed" type="s:string"/> 
+            
+        <s:element maxOccurs="1" minOccurs="0" name="Fx_Fee_Fixed" type="s:string"/> 
+            
+        <s:element maxOccurs="1" minOccurs="0" name="Other_Fee_Amt" type="s:string"/> 
+            
+        <s:element maxOccurs="1" minOccurs="0" name="Fx_Fee_Rate" type="s:string"/> 
+            
+        <s:element maxOccurs="1" minOccurs="0" name="Dom_Fee_Rate" type="s:string"/> 
+            
+        <s:element maxOccurs="1" minOccurs="0" name="Non_Dom_Fee_Rate" type="s:string"/> 
+            
+        <s:element maxOccurs="1" minOccurs="0" name="Additional_Data_DE124" type="s:string"/> 
+            
+        <s:element maxOccurs="1" minOccurs="1" name="CVV2" type="s:string"/> 
+            
+        <s:element maxOccurs="1" minOccurs="0" name="Expiry_Date" type="s:string"/> 
+            
+        <s:element maxOccurs="1" minOccurs="0" name="PAN_Sequence_Number" type="s:string"/> 
+            
+        <s:element maxOccurs="1" minOccurs="0" name="PIN" type="s:string"/> 
+            
+        <s:element maxOccurs="1" minOccurs="0" name="PIN_Enc_Algorithm" type="s:string"/> 
+            
+        <s:element maxOccurs="1" minOccurs="0" name="PIN_Format" type="s:string"/> 
+            
+        <s:element maxOccurs="1" minOccurs="0" name="PIN_Key_Index" type="s:string"/> 
+            
+        <s:element maxOccurs="1" minOccurs="0" name="SendingAttemptCount" type="s:string"/> 
+            
+        <s:element maxOccurs="1" minOccurs="0" name="source_bank_ctry" type="s:string"/> 
+            
+        <s:element maxOccurs="1" minOccurs="0" name="source_bank_account_format" type="s:string"/> 
+            
+        <s:element maxOccurs="1" minOccurs="0" name="source_bank_account" type="s:string"/> 
+            
+        <s:element maxOccurs="1" minOccurs="0" name="dest_bank_ctry" type="s:string"/> 
+            
+        <s:element maxOccurs="1" minOccurs="0" name="dest_bank_account_format" type="s:string"/> 
+            
+        <s:element maxOccurs="1" minOccurs="0" name="dest_bank_account" type="s:string"/> 
+            
+        <s:element maxOccurs="1" minOccurs="0" name="GPS_POS_Capability" type="s:string"/> 
+            
+        <s:element maxOccurs="1" minOccurs="0" name="GPS_POS_Data" type="s:string"/>             
+            
+        <s:element maxOccurs="1" minOccurs="0" name="Acquirer_Reference_Data_031" type="s:string"/> 
+            
+        <s:element maxOccurs="1" minOccurs="0" name="Response_Source" type="s:string"/> 
+            
+        <s:element maxOccurs="1" minOccurs="0" name="Response_Source_Why" type="s:string"/> 
+            
+        <s:element maxOccurs="1" minOccurs="0" name="Message_Source" type="s:string"/> 
+            
+        <s:element maxOccurs="1" minOccurs="0" name="Message_Why" type="s:string"/> 
+            
+        <s:element maxOccurs="1" minOccurs="0" name="traceid_lifecycle" type="s:string"/> 
+            
+        <s:element maxOccurs="1" minOccurs="1" name="Balance_Sequence" type="s:int"/> 
+            
+        <s:element maxOccurs="1" minOccurs="1" name="Balance_Sequence_Exthost" type="s:int"/> 
+            
+        <s:element maxOccurs="1" minOccurs="0" name="PaymentToken_id" type="s:string"/> 
+            
+        <s:element maxOccurs="1" minOccurs="0" name="PaymentToken_creator" type="s:string"/> 
+            
+        <s:element maxOccurs="1" minOccurs="0" name="PaymentToken_expdate" type="s:string"/> 
+            
+        <s:element maxOccurs="1" minOccurs="0" name="PaymentToken_type" type="s:string"/> 
+            
+        <s:element maxOccurs="1" minOccurs="0" name="PaymentToken_status" type="s:string"/> 
+            
+        <s:element maxOccurs="1" minOccurs="0" name="PaymentToken_creatorStatus" type="s:string"/> 
+            
+        <s:element maxOccurs="1" minOccurs="0" name="PaymentToken_wallet" type="s:string"/> 
+            
+        <s:element maxOccurs="1" minOccurs="0" name="PaymentToken_deviceType" type="s:string"/> 
+            
+        <s:element maxOccurs="1" minOccurs="0" name="PaymentToken_lang" type="s:string"/> 
+            
+        <s:element maxOccurs="1" minOccurs="0" name="PaymentToken_deviceTelNum" type="s:string"/> 
+            
+        <s:element maxOccurs="1" minOccurs="0" name="PaymentToken_deviceIp" type="s:string"/> 
+            
+        <s:element maxOccurs="1" minOccurs="0" name="PaymentToken_deviceId" type="s:string"/> 
+            
+        <s:element maxOccurs="1" minOccurs="0" name="PaymentToken_deviceName" type="s:string"/> 
+            
+        <s:element maxOccurs="1" minOccurs="0" name="PaymentToken_activationCode" type="s:string"/> 
+            
+        <s:element maxOccurs="1" minOccurs="0" name="PaymentToken_activationExpiry" type="s:string"/> 
+            
+        <s:element maxOccurs="1" minOccurs="0" name="PaymentToken_activationMethod" type="s:string"/> 
+            
+        <s:element maxOccurs="1" minOccurs="0" name="PaymentToken_activationMethodData" type="s:string"/> 
+ 
+        <s:element maxOccurs="1" minOccurs="0" name="ICC_System_Related_Data_DE55" type="s:string"/> 
+            
+        <s:element maxOccurs="1" minOccurs="0" name="Merch_Name" type="s:string"/> 
+            
+        <s:element maxOccurs="1" minOccurs="0" name="Merch_Street" type="s:string"/>             
+        <s:element maxOccurs="1" minOccurs="0" name="Merch_City" type="s:string"/> 
+            
+        <s:element maxOccurs="1" minOccurs="0" name="Merch_Region" type="s:string"/> 
+            
+        <s:element maxOccurs="1" minOccurs="0" name="Merch_Postcode" type="s:string"/> 
+            
+        <s:element maxOccurs="1" minOccurs="0" name="Merch_Country" type="s:string"/> 
+            
+        <s:element maxOccurs="1" minOccurs="0" name="Merch_Tel" type="s:string"/> 
+            
+        <s:element maxOccurs="1" minOccurs="0" name="Merch_URL" type="s:string"/> 
+            
+        <s:element maxOccurs="1" minOccurs="0" name="Merch_Name_Other" type="s:string"/> 
+            
+        <s:element maxOccurs="1" minOccurs="0" name="Merch_Net_id" type="s:string"/> 
+            
+        <s:element maxOccurs="1" minOccurs="0" name="Merch_Tax_id" type="s:string"/> 
+            
+        <s:element maxOccurs="1" minOccurs="0" name="Merch_Contact" type="s:string"/>           
+      </s:all> 
+        
+    </s:complexType> 
+      
+  </s:element> 
+      
+  <s:element name="GetTransactionResponse"> 
+        
+    <s:complexType> 
+          
+      <s:all> 
+            
+        <s:element maxOccurs="1" minOccurs="1" name="GetTransactionResult" type="tns:ResponseMsg"/> 
+          
+      </s:all> 
+        
+    </s:complexType> 
+      
+  </s:element> 
+      
+  <s:complexType name="ResponseMsg"> 
+        
+    <s:all> 
+          
+      <s:element maxOccurs="1" minOccurs="0" name="Responsestatus" type="s:string"/> 
+          
+      <s:element maxOccurs="1" minOccurs="0" name="CurBalance" type="s:double"/> 
+          
+      <s:element maxOccurs="1" minOccurs="0" name="AvlBalance" type="s:double"/> 
+          
+      <s:element maxOccurs="1" minOccurs="1" name="Acknowledgement" type="s:string"/> 
+          
+      <s:element maxOccurs="1" minOccurs="0" name="LoadAmount" type="s:double"/> 
+          
+      <s:element maxOccurs="1" minOccurs="0" name="Bill_Amt_Approved" type="s:double"/> 
+          
+      <s:element maxOccurs="1" minOccurs="0" name="Update_Balance" type="s:int"/> 
+          
+      <s:element maxOccurs="1" minOccurs="0" name="New_Balance_Sequence_Exthost" type="s:int"/> 
+          
+      <s:element maxOccurs="1" minOccurs="0" name="CVV2_Result" type="s:string"/> 
+        
+    </s:all> 
+      
+  </s:complexType> 
+    
+</s:schema>
+  </wsdl:types>
+  <wsdl:message name="GetTransactionSoapIn">
+    <wsdl:part element="tns:GetTransaction" name="parameters">
+    </wsdl:part>
+  </wsdl:message>
+  <wsdl:message name="GetTransactionSoapOut">
+    <wsdl:part element="tns:GetTransactionResponse" name="parameters">
+    </wsdl:part>
+  </wsdl:message>
+  <wsdl:portType name="Service1Soap">
+    <wsdl:operation name="GetTransaction">
+      <wsdl:input message="tns:GetTransactionSoapIn">
+    </wsdl:input>
+      <wsdl:output message="tns:GetTransactionSoapOut">
+    </wsdl:output>
+    </wsdl:operation>
+  </wsdl:portType>
+  <wsdl:binding name="Service1Soap12" type="tns:Service1Soap">
+    <soap12:binding transport="http://schemas.xmlsoap.org/soap/http"/>
+    <wsdl:operation name="GetTransaction">
+      <soap12:operation soapAction="http://tempuri.org/GetTransaction" style="document"/>
+      <wsdl:input>
+        <soap12:body use="literal"/>
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal"/>
+      </wsdl:output>
+    </wsdl:operation>
+  </wsdl:binding>
+  <wsdl:binding name="Service1Soap" type="tns:Service1Soap">
+    <soap:binding transport="http://schemas.xmlsoap.org/soap/http"/>
+    <wsdl:operation name="GetTransaction">
+      <soap:operation soapAction="http://tempuri.org/GetTransaction" style="document"/>
+      <wsdl:input>
+        <soap:body use="literal"/>
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal"/>
+      </wsdl:output>
+    </wsdl:operation>
+  </wsdl:binding>
+  <wsdl:service name="Service1">
+    <wsdl:port binding="tns:Service1Soap12" name="Service1Soap12">
+      <soap12:address location="http://localhost:52424/Service1.asmx"/>
+    </wsdl:port>
+    <wsdl:port binding="tns:Service1Soap" name="Service1Soap">
+      <soap:address location="http://localhost:6060/soap/GetTransaction"/>
+    </wsdl:port>
+  </wsdl:service>
+</wsdl:definitions>
