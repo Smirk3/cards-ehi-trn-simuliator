@@ -8,20 +8,22 @@
 
             <legend>Transaction message</legend>
 
-            <div class="form-group row">
-                <label class="col-sm-2 col-form-label" th:text="'EHI url'"></label>
+            <div class="form-group row align-items-center">
                 <div class="col-sm-10">
-                    <div>
+                    <div class="form-group">
+                        <label class="col-sm-2 col-form-label" th:text="'EHI url'"></label>
                         <div class="form-control" th:text="${message.ehiUrl}" aria-describedby="helpInline" />
                     </div>
                 </div>
             </div>
 
-            <div class="form-group row">
+            <div class="form-group row align-items-center">
                 <div class="col-sm-10">
-                    <div>
-                        <div class="form-control" th:text="''"/>
-                        <input th:name="''" th:value="''" type="textarea"/>
+                    <div class="form-group">
+                        <label th:for="xmlRequest" class="col-sm-2 col-form-label" th:text="'Request'"></label>
+                        <pre><code class="language-xml">
+                            <textarea rows="30" class="form-control" th:name="xmlRequest" th:utext="${message.xmlRequest}"/>
+                        </code></pre>
                     </div>
                 </div>
             </div>

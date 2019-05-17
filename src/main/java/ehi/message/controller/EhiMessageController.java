@@ -92,7 +92,7 @@ public class EhiMessageController extends BaseController {
         try {
             bindMessageObjects(message, settings);
 
-            messageService.createMessageRequest(message);
+            message.xmlRequest = messageService.createNewRequest(message);
 
             model.addAttribute(VIEW, "ehi/transaction/messageFormPreview");
             return TEMPLATE;

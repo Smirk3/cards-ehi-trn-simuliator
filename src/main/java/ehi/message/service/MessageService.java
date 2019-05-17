@@ -21,8 +21,8 @@ public class MessageService {
 
     private static final Logger logger = LogManager.getLogger(MessageService.class);
 
-    public void setNewRequest(Message message) {
-        message.xmlRequest = createXmlRequest(message);
+    public String createNewRequest(Message message) {
+        return createXmlRequest(message);
     }
 
     private static String createXmlRequest(Message message) {
