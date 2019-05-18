@@ -24,6 +24,11 @@
             <artifactId>spring-boot-starter-thymeleaf</artifactId>
         </dependency>
         <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-ws</artifactId>
+            <version>1.4.7.RELEASE</version>
+        </dependency>
+        <dependency>
             <groupId>org.thymeleaf.extras</groupId>
             <artifactId>thymeleaf-extras-java8time</artifactId>
         </dependency>
@@ -77,6 +82,10 @@
             <artifactId>commons-csv</artifactId>
             <version>1.6</version>
         </dependency>
+        <dependency>
+            <groupId>wsdl4j</groupId>
+            <artifactId>wsdl4j</artifactId>
+        </dependency>
     </dependencies>
 
     <properties>
@@ -106,9 +115,6 @@
                     </execution>
                 </executions>
                 <configuration>
-                    <!--<xjbSources>
-                        <xjbSource>src/main/resources/xsd</xjbSource>
-                    </xjbSources>-->
                     <sources>
                         <source>src/main/resources/xsd/currency-codes-ISO4217.xsd</source>
                         <source>src/main/resources/xsd/iso_country_codes.xsd</source>
@@ -117,6 +123,26 @@
                     <outputDirectory>${basedir}/src/main/java</outputDirectory>
                     <packageName>ehi.jaxb.generated</packageName>
                     <clearOutputDir>false</clearOutputDir>
+                </configuration>
+            </plugin>
+            <plugin>
+                <groupId>org.jvnet.jaxb2.maven2</groupId>
+                <artifactId>maven-jaxb2-plugin</artifactId>
+                <version>0.13.2</version>
+                <executions>
+                    <execution>
+                        <goals>
+                            <goal>generate</goal>
+                        </goals>
+                    </execution>
+                </executions>
+                <configuration>
+                    <generatePackage>ehi.web.service.client.soap.schemas.gps</generatePackage>
+                    <generateDirectory>${project.basedir}/src/main/java</generateDirectory>
+                    <schemaDirectory>${project.basedir}/src/main/resources/wsdl</schemaDirectory>
+                    <schemaIncludes>
+                        <include>*.wsdl</include>
+                    </schemaIncludes>
                 </configuration>
             </plugin>
         </plugins>
