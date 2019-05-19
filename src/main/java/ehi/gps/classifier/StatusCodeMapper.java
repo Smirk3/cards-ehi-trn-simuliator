@@ -1,12 +1,10 @@
 package ehi.gps.classifier;
 
-import org.springframework.stereotype.Component;
 import org.springframework.util.StringUtils;
 
 import java.util.HashMap;
 import java.util.Map;
 
-@Component
 public class StatusCodeMapper {
 
     private static final Map<String, String> STATUS;

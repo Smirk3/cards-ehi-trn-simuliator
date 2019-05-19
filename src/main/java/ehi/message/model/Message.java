@@ -41,6 +41,8 @@ public class Message implements Serializable {
 
     public String xmlRequest;
 
+    public Response response;
+
 
     public String getEhiUrl() {
         return ehiUrl;
@@ -144,5 +146,13 @@ public class Message implements Serializable {
 
     public void setXmlRequest(String xmlRequest) {
         this.xmlRequest = xmlRequest;
+    }
+
+    public Response getResponse() {
+        return response;
+    }
+
+    public void setResponse(Response response) {
+        this.response = response;
     }
 }

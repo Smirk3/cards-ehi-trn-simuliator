@@ -4,6 +4,7 @@ import ehi.BaseController;
 import ehi.alerts.AlertError;
 import ehi.alerts.AlertSuccess;
 import ehi.alerts.AlertUtil;
+import ehi.alerts.AlertWarning;
 import ehi.card.Card;
 import ehi.card.exception.CardNotFoundException;
 import ehi.classifier.ClassifierManager;
@@ -101,6 +102,19 @@ public class EhiMessageController extends BaseController {
             AlertUtil.addAlert(model, new AlertError(e.getMessage()));
             return showEditMessageForm(model, request);
         }
+    }
+
+    @RequestMapping("/do")
+    public String doMessage(Model model, Message message) {
+        message.response = messageService.doRequest(message.ehiUrl, message.xmlRequest);
+        String text = message.response.statusCode + " - " + message.response.statusMessage;
+        if ("00".equals(message.response.statusCode)){
+            AlertUtil.addAlert(model, new AlertSuccess(text));
+        } else {
+            AlertUtil.addAlert(model, new AlertWarning(text));
+        }
+        model.addAttribute(VIEW, "ehi/transaction/messageResult");
+        return TEMPLATE;
     }
 
     @RequestMapping(EHI_MESSAGE_NEW)
