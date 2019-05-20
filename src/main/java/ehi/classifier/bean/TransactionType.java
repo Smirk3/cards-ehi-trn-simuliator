@@ -51,4 +51,14 @@ public class TransactionType {
     public void setDescription(String description) {
         this.description = description;
     }
+
+    @Override
+    public String toString() {
+        return "TransactionType{" +
+            "id='" + id + '\'' +
+            ", mtId='" + mtId + '\'' +
+            ", txnType='" + txnType + '\'' +
+            ", description='" + description + '\'' +
+            '}';
+    }
 }

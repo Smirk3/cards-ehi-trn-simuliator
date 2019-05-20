@@ -57,7 +57,7 @@
                         </select>
                         <small id="helpInline" class="form-text text-muted" th:text="'Select transaction country'" style="font-size: 0.75rem"/>
                     </div>
-                    <div class="col-7" style="float: left;">
+                    <div class="col-5" style="float: left;">
                         <input type="text" class="form-control" th:name="date" th:value="${#temporals.format(message.date, 'yyyy-MM-dd HH:mm:ss.SSS')}" aria-describedby="helpInline"/>
                         <small id="helpInline" class="form-text text-muted" th:text="'Transaction date'" style="font-size: 0.75rem"/>
                     </div>
@@ -69,7 +69,7 @@
                     </div>
                     <div class="col-8" style="float: left;">
                         <select th:id="amount.currency.isoCode" th:name="amount.currency.isoCode" class="custom-select" aria-describedby="helpInline">
-                            <option th:each="crnc : ${data.currencies}" th:value="${crnc.isoCode}" th:text="${crnc.isoCode} + ' - ' + ${crnc.name}" th:selected="${(message.amount.currency.isoCode == crnc.isoCode)}"/>
+                            <option th:each="crnc : ${data.currencies}" th:value="${crnc.isoCode}" th:text="${#strings.abbreviate(crnc.isoCode + ' - ' + crnc.name, 60)}" th:selected="${(message.amount.currency.isoCode == crnc.isoCode)}"/>
                         </select>
                         <small id="helpInline" class="form-text text-muted" th:text="'Transaction currency'" style="font-size: 0.75rem"/>
                     </div>

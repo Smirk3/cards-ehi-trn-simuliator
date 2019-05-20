@@ -9,9 +9,11 @@ public class StatusCodeMapper {
 
     private static final Map<String, String> STATUS;
 
+    public static final String STATUS_CODE_SUCCESS = "00";
+
     static {
         STATUS = new HashMap<>();
-        STATUS.put("00", "All Good");
+        STATUS.put(STATUS_CODE_SUCCESS, "All Good");
         STATUS.put("01", "Refer to card issuer");
         STATUS.put("03", "Invalid merchant");
         STATUS.put("04", "capture card");

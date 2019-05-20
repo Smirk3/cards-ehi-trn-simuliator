@@ -13,6 +13,7 @@ import ehi.gps.classifier.PinEntryCapability;
 import ehi.gps.classifier.PosCapability;
 import ehi.gps.classifier.Scheme;
 import ehi.merchant.exception.MerchantNotFoundException;
+import ehi.message.controller.bean.ButtonNext;
 import ehi.message.controller.bean.FormData;
 import ehi.message.controller.bean.FormDataBuilder;
 import ehi.message.exception.CountryNotFoundException;
@@ -48,6 +49,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import static ehi.gps.classifier.StatusCodeMapper.STATUS_CODE_SUCCESS;
 import static ehi.message.Util.findCard;
 import static ehi.message.Util.findCountryByIsoAlpha3;
 import static ehi.message.Util.findCurrency;
@@ -55,6 +57,7 @@ import static ehi.message.Util.findMcc;
 import static ehi.message.Util.findMerchant;
 import static ehi.message.Util.findProcessingCode;
 import static ehi.message.Util.findTransactionType;
+import static ehi.message.Util.findTransactionTypeByDescription;
 import static ehi.message.Util.newMessageInstance;
 
 @Controller
@@ -106,15 +109,56 @@ public class EhiMessageController extends BaseController {
 
     @RequestMapping("/do")
     public String doMessage(Model model, Message message) {
+        doMessageRequest(model, message);
+        model.addAttribute(VIEW, "ehi/transaction/messageResult");
+        return TEMPLATE;
+    }
+
+    @RequestMapping("/do/next")
+    public String doNextMessage(Model model, Message message,
+                                @RequestParam("transactionTypeId") String transactionTypeId) {
+        try {
+            message.transactionType = findTransactionType(classifierManager.getTransactionTypes(), transactionTypeId);
+            doMessageRequest(model, message);
+
+        } catch (TransactionTypeNotFoundException e) {
+            AlertUtil.addAlert(model, new AlertWarning(e.getMessage()));
+        }
+        model.addAttribute(VIEW, "ehi/transaction/messageResult");
+        return TEMPLATE;
+    }
+
+    private void doMessageRequest(Model model, Message message) {
         message.response = messageService.doRequest(message.ehiUrl, message.xmlRequest);
-        String text = message.response.statusCode + " - " + message.response.statusMessage;
-        if ("00".equals(message.response.statusCode)){
+        String text = String.format("%s: %s (%s)", message.transactionType.description, message.response.statusMessage, message.response.statusCode);
+        if (STATUS_CODE_SUCCESS.equals(message.response.statusCode)) {
             AlertUtil.addAlert(model, new AlertSuccess(text));
         } else {
             AlertUtil.addAlert(model, new AlertWarning(text));
         }
-        model.addAttribute(VIEW, "ehi/transaction/messageResult");
-        return TEMPLATE;
+        model.addAttribute("nextButtons", resolveNextButtons(message));
+    }
+
+    private List<ButtonNext> resolveNextButtons(Message message) {
+        if (message == null) {
+            return null;
+        }
+
+        List<ButtonNext> buttons = new ArrayList<>();
+        try {
+            if (message.response != null && STATUS_CODE_SUCCESS.equals(message.response.statusCode)
+                && "Authorisation Request".equals(message.transactionType.description)) {
+                ButtonNext button = new ButtonNext();
+                button.transactionType = findTransactionTypeByDescription(classifierManager.getTransactionTypes(),
+                    "Financial Notification (First Presentment)");
+                button.label = "Do " + button.transactionType.description;
+
+                buttons.add(button);
+            }
+        } catch (TransactionTypeNotFoundException e) {
+            logger.error(e);
+        }
+        return buttons;
     }
 
     @RequestMapping(EHI_MESSAGE_NEW)
@@ -334,19 +378,15 @@ public class EhiMessageController extends BaseController {
             message.transactionType = findTransactionType(classifierManager.getTransactionTypes(), message.transactionType.id);
 
         } catch (CardNotFoundException e) {
-            throw new InvalidObjectIdentifier("Card '" + message.card.pcId + "' was not found.<br/> You should create it <a href=\"/ehi/data/card\">here</a>.");
+            throw new InvalidObjectIdentifier(e.getMessage() + "<br/> You should create it <a href=\"/ehi/data/card\">here</a>.");
         } catch (MerchantNotFoundException e) {
-            throw new InvalidObjectIdentifier("Merchant " + message.merchant.name + " was not found.<br/> You should create it <a href=\"/ehi/data/merchant\">here</a>");
-        } catch (CountryNotFoundException e) {
-            throw new InvalidObjectIdentifier("Country " + message.country.isoCodeAlpha3 + " was not found.");
-        } catch (CurrencyNotFoundException e) {
-            throw new InvalidObjectIdentifier("Currency " + message.amount.currency.isoCode + " was not found.");
-        } catch (MccNotFoundException e) {
-            throw new InvalidObjectIdentifier("Mcc " + message.mcc.code + " was not found.");
-        } catch (ProcessingCodeNotFoundException e) {
-            throw new InvalidObjectIdentifier("Processing code " + message.processingCode.value + " was not found.");
-        } catch (TransactionTypeNotFoundException e) {
-            throw new InvalidObjectIdentifier("Transaction type " + message.transactionType.id + " was not found.");
+            throw new InvalidObjectIdentifier(e.getMessage() + "<br/> You should create it <a href=\"/ehi/data/merchant\">here</a>");
+        } catch (CountryNotFoundException
+            | CurrencyNotFoundException
+            | MccNotFoundException
+            | ProcessingCodeNotFoundException
+            | TransactionTypeNotFoundException e) {
+            throw new InvalidObjectIdentifier(e.getMessage());
         }
     }
 

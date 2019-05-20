@@ -46,13 +46,13 @@ public class Util {
 
     public static Card findCard(List<Card> cards, String cardPcId) throws CardNotFoundException {
         if (!StringUtils.hasText(cardPcId) || CollectionUtils.isEmpty(cards)) {
-            throw new CardNotFoundException();
+            throw new CardNotFoundException("Card '" + cardPcId + "' was not found.");
         }
 
         Optional<Card> card = cards.stream().filter(c -> cardPcId.equals(c.pcId)).findAny();
 
         if (card == null || !card.isPresent()){
-            throw new CardNotFoundException();
+            throw new CardNotFoundException("Card '" + cardPcId + "' was not found.");
         }
 
         return new CardBuilder()
@@ -70,13 +70,13 @@ public class Util {
 
     public static Merchant findMerchant(List<Merchant> merchants, String merchantName) throws MerchantNotFoundException {
         if (!StringUtils.hasText(merchantName) || CollectionUtils.isEmpty(merchants)) {
-            throw new MerchantNotFoundException();
+            throw new MerchantNotFoundException("Merchant " + merchantName + " was not found.");
         }
 
         Optional<Merchant> merchant = merchants.stream().filter(m -> merchantName.equals(m.name)).findAny();
 
         if (merchant == null || !merchant.isPresent()) {
-            throw new MerchantNotFoundException();
+            throw new MerchantNotFoundException("Merchant " + merchantName + " was not found.");
         }
 
         return new MerchantBuilder()
@@ -97,13 +97,13 @@ public class Util {
 
     public static Country findCountryByIsoAlpha3(List<Country> countries, String isoCodeAlpha3) throws CountryNotFoundException {
         if (!StringUtils.hasText(isoCodeAlpha3) || CollectionUtils.isEmpty(countries)) {
-            throw new CountryNotFoundException();
+            throw new CountryNotFoundException("Country " + isoCodeAlpha3 + " was not found.");
         }
 
         Optional<Country> country = countries.stream().filter(c -> isoCodeAlpha3.equals(c.isoCodeAlpha3)).findAny();
 
         if (country == null || !country.isPresent()) {
-            throw new CountryNotFoundException();
+            throw new CountryNotFoundException("Country " + isoCodeAlpha3 + " was not found.");
         }
 
         return new CountryBuilder()
@@ -122,13 +122,13 @@ public class Util {
 
     public static Currency findCurrency(List<Currency> currencies, String isoCode) throws CurrencyNotFoundException {
         if (!StringUtils.hasText(isoCode) || CollectionUtils.isEmpty(currencies)) {
-            throw new CurrencyNotFoundException();
+            throw new CurrencyNotFoundException("Currency " + isoCode + " was not found.");
         }
 
         Optional<Currency> currency = currencies.stream().filter(c -> isoCode.equals(c.isoCode)).findAny();
 
         if (currency == null || !currency.isPresent()) {
-            throw new CurrencyNotFoundException();
+            throw new CurrencyNotFoundException("Currency " + isoCode + " was not found.");
         }
 
         return new CurrencyBuilder().setEntity(currency.get().entity)
@@ -140,13 +140,13 @@ public class Util {
 
     public static Mcc findMcc(List<Mcc> mccs, String code) throws MccNotFoundException {
         if (!StringUtils.hasText(code) || CollectionUtils.isEmpty(mccs)) {
-            throw new MccNotFoundException();
+            throw new MccNotFoundException("Mcc " + code + " was not found.");
         }
 
         Optional<Mcc> mcc = mccs.stream().filter(c -> code.equals(c.code)).findAny();
 
         if (mcc == null || !mcc.isPresent()) {
-            throw new MccNotFoundException();
+            throw new MccNotFoundException("Mcc " + code + " was not found.");
         }
 
         return new Mcc(mcc.get().code, mcc.get().description);
@@ -154,13 +154,13 @@ public class Util {
 
     public static ProcessingCode findProcessingCode(List<ProcessingCode> processingCodes, String value) throws ProcessingCodeNotFoundException {
         if (!StringUtils.hasText(value) || CollectionUtils.isEmpty(processingCodes)) {
-            throw new ProcessingCodeNotFoundException();
+            throw new ProcessingCodeNotFoundException("Processing code " + value + " was not found.");
         }
 
         Optional<ProcessingCode> processingCode = processingCodes.stream().filter(c -> value.equals(c.value)).findAny();
 
         if (processingCode == null || !processingCode.isPresent()) {
-            throw new ProcessingCodeNotFoundException();
+            throw new ProcessingCodeNotFoundException("Processing code " + value + " was not found.");
         }
 
         return new ProcessingCode(processingCode.get().value,
@@ -170,19 +170,36 @@ public class Util {
 
     public static TransactionType findTransactionType(List<TransactionType> transactionTypes, String id) throws TransactionTypeNotFoundException {
         if (!StringUtils.hasText(id) || CollectionUtils.isEmpty(transactionTypes)) {
-            throw new TransactionTypeNotFoundException();
+            throw new TransactionTypeNotFoundException("Transaction type " + id + " was not found.");
         }
 
         Optional<TransactionType> transactionType = transactionTypes.stream().filter(c -> id.equals(c.id)).findAny();
 
         if (transactionType == null || !transactionType.isPresent()) {
-            throw new TransactionTypeNotFoundException();
+            throw new TransactionTypeNotFoundException("Transaction type " + id + " was not found.");
         }
 
         return new TransactionType(transactionType.get().id,
                                    transactionType.get().mtId,
                                    transactionType.get().txnType,
                                    transactionType.get().description);
+    }
+
+    public static TransactionType findTransactionTypeByDescription(List<TransactionType> transactionTypes, String description) throws TransactionTypeNotFoundException {
+        if (!StringUtils.hasText(description) || CollectionUtils.isEmpty(transactionTypes)) {
+            throw new TransactionTypeNotFoundException("Could not find transaction type by description: '" + description + "'");
+        }
+
+        Optional<TransactionType> transactionType = transactionTypes.stream().filter(c -> description.equals(c.description)).findAny();
+
+        if (transactionType == null || !transactionType.isPresent()) {
+            throw new TransactionTypeNotFoundException("Could not find transaction type by description: '" + description + "', available transaction types: " + transactionTypes.toArray());
+        }
+
+        return new TransactionType(transactionType.get().id,
+            transactionType.get().mtId,
+            transactionType.get().txnType,
+            transactionType.get().description);
     }
 
     public static String randomNumberInRange(int from, int to) {
