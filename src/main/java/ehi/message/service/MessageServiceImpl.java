@@ -1,10 +1,12 @@
 package ehi.message.service;
 
+import ehi.classifier.bean.TransactionType;
 import ehi.gps.classifier.AccountingEntryType;
 import ehi.gps.classifier.StatusCodeMapper;
 import ehi.message.model.Message;
 import ehi.message.model.Response;
 import ehi.web.service.client.soap.SOAPConnector;
+import ehi.web.service.client.soap.schemas.gps.GetTransaction;
 import ehi.web.service.client.soap.schemas.gps.GetTransactionResponse;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -29,14 +31,19 @@ public class MessageServiceImpl implements MessageService {
     private static final Logger logger = LogManager.getLogger(MessageServiceImpl.class);
 
     @Override
-    public String createNewRequest(Message message) {
-        ehi.web.service.client.soap.schemas.gps.GetTransaction request = createRequest(message);
-        return toXml(request, ehi.web.service.client.soap.schemas.gps.GetTransaction.class);
+    public String createRequestForNewTransaction(Message message) {
+        GetTransaction request = createRequest(message);
+        return toXml(request, GetTransaction.class);
+    }
+
+    @Override
+    public String createRequestForSameTransaction(Message message, TransactionType transactionType) {
+        return "";
     }
 
     @Override
     public Response doRequest(String url, String request) {
-        ehi.web.service.client.soap.schemas.gps.GetTransaction requestObj = (ehi.web.service.client.soap.schemas.gps.GetTransaction) toObject(request, ehi.web.service.client.soap.schemas.gps.GetTransaction.class);
+        GetTransaction requestObj = (GetTransaction) toObject(request, GetTransaction.class);
         GetTransactionResponse soapResponse = (GetTransactionResponse) soapConnector.callWebService(url, requestObj);
 
         Response response = new Response();
@@ -47,11 +54,11 @@ public class MessageServiceImpl implements MessageService {
         return response;
     }
 
-    private static ehi.web.service.client.soap.schemas.gps.GetTransaction createRequest(Message message) {
+    private static GetTransaction createRequest(Message message) {
         final String id = resolveTraceId();
         final String gpsSequence = randomNumberInRange(1000, 99999);
 
-        ehi.web.service.client.soap.schemas.gps.GetTransaction getTrn = new ehi.web.service.client.soap.schemas.gps.GetTransaction();
+        GetTransaction getTrn = new GetTransaction();
 
         getTrn.setAcquirerIdDE32(randomNumberInRange(1111111, 9999999));
         getTrn.setActBal(0.00);

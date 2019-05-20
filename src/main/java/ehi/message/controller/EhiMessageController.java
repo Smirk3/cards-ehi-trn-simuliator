@@ -96,7 +96,7 @@ public class EhiMessageController extends BaseController {
         try {
             bindMessageObjects(message, settings);
 
-            message.xmlRequest = messageService.createNewRequest(message);
+            message.xmlRequest = messageService.createRequestForNewTransaction(message);
 
             model.addAttribute(VIEW, "ehi/transaction/messageFormPreview");
             return TEMPLATE;
@@ -119,6 +119,8 @@ public class EhiMessageController extends BaseController {
                                 @RequestParam("transactionTypeId") String transactionTypeId) {
         try {
             message.transactionType = findTransactionType(classifierManager.getTransactionTypes(), transactionTypeId);
+            message.response = null;
+            message.xmlRequest = messageService.createRequestForSameTransaction(message, message.transactionType);
             doMessageRequest(model, message);
 
         } catch (TransactionTypeNotFoundException e) {
