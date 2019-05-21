@@ -38,7 +38,10 @@ public class MessageServiceImpl implements MessageService {
 
     @Override
     public String createRequestForSameTransaction(Message message, TransactionType transactionType) {
-        return "";
+        GetTransaction getTrn = (GetTransaction) toObject(message.xmlRequest, GetTransaction.class);
+        getTrn.setTxnType(transactionType.txnType);
+        getTrn.setMTID(transactionType.mtId);
+        return toXml(getTrn, GetTransaction.class);
     }
 
     @Override
