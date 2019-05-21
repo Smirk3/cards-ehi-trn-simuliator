@@ -41,6 +41,7 @@ public class MessageServiceImpl implements MessageService {
         GetTransaction getTrn = (GetTransaction) toObject(message.xmlRequest, GetTransaction.class);
         getTrn.setTxnType(transactionType.txnType);
         getTrn.setMTID(transactionType.mtId);
+        getTrn.setTXnID(getNewTxnId());
         return toXml(getTrn, GetTransaction.class);
     }
 
@@ -58,7 +59,7 @@ public class MessageServiceImpl implements MessageService {
     }
 
     private static GetTransaction createRequest(Message message) {
-        final String id = resolveTraceId();
+        final String id = getNewTraceId();
         final String gpsSequence = randomNumberInRange(1000, 99999);
 
         GetTransaction getTrn = new GetTransaction();
@@ -94,7 +95,7 @@ public class MessageServiceImpl implements MessageService {
         getTrn.setTxnCtry(message.country.isoCodeAlpha3);
         getTrn.setTxnDesc(message.scheme.getLabel());
         getTrn.setTxnGPSDate(message.date.format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss.SSS")));
-        getTrn.setTXnID("TXNID" + LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyyMMddHHmmssSSS")));
+        getTrn.setTXnID(getNewTxnId());
         getTrn.setTxnStatCode("A");
         getTrn.setTXNTimeDE07(message.date.format(DateTimeFormatter.ofPattern("MMddHHmmss")));
         getTrn.setTxnType(message.transactionType.txnType);
@@ -141,8 +142,12 @@ public class MessageServiceImpl implements MessageService {
         return ((Integer) (Integer.valueOf(gpsSequence) - 1)).toString();
     }
 
-    private static String resolveTraceId() {
+    private static String getNewTraceId() {
         return "ID" + LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyyMMddHHmmssSSS"));
+    }
+
+    private static String getNewTxnId() {
+        return "TXNID" + LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyyMMddHHmmssSSS"));
     }
 
     private static BigDecimal resolveBillAmount(Message message) {

@@ -6,3 +6,18 @@ function withAction(element, action){
 function submitForm(element){
     element.closest("form").submit;
 }
+
+function editRequest(){
+    $("#requestView").hide();
+    $("#actionButtons").hide();
+    $("#requestEdit").show();
+}
+
+function saveRequest(){
+    var a = $("#xmlRequestEdit").val();
+    $("#xmlRequestView").val('asd');
+
+    $("#requestView").show();
+    $("#actionButtons").show();
+    $("#requestEdit").hide();
+}
