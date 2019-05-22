@@ -13,11 +13,24 @@ function editRequest(){
     $("#requestEdit").show();
 }
 
+String.prototype.htmlEscape = function() {
+    return $('<div/>').text(this.toString()).html();
+};
+
 function saveRequest(){
-    var a = $("#xmlRequestEdit").val();
-    $("#xmlRequestView").val('asd');
+    var xml = $("#xmlRequestEdit").val();
+    $("#xmlRequestView").html(xml.htmlEscape());
+    $("#xmlRequest").val(xml);
 
     $("#requestView").show();
     $("#actionButtons").show();
     $("#requestEdit").hide();
+
+    Prism.highlightElement($("#xmlRequestView")[0]);
 }
+
+$( document ).ready(function() {
+    //var xml = $("#xmlRequestEdit").val();
+    //$("#xmlRequestView").html(xml.htmlEscape());
+    //Prism.highlightElement($("#xmlRequestView")[0]);
+});
