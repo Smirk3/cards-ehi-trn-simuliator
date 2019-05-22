@@ -38,12 +38,8 @@ public class XmlObjectUtil {
             jaxbMarshaller.marshal(object, output);
             String xml = output.toString();
 
-            //xml = xml.replaceAll("<\\?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"yes\"\\?>\n", "");
             xml = xml.replaceAll(" xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\"", "");
             xml = xml.replaceAll(" xsi:schemaLocation=\"\"", "");
-            //xml = xml.replaceAll(" xsi:nil=\"true\"", "");
-            //xml = xml.replaceAll("ns2:", "");
-            //xml = xml.replaceAll(":ns2", "");
 
             return xml;
 
