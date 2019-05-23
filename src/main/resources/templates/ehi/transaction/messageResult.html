@@ -5,14 +5,37 @@
 <div class="container" th:fragment="content">
         <fieldset>
 
-            <legend>Message response</legend>
+            <div class="table-responsive">
+                <table class="table table-striped">
+                    <thead>
+                    <tr>
+                        <th>Reference no</th>
+                        <th>Amount</th>
+                        <th>Billing amount</th>
+                        <th>Card Id</th>
+                        <th>Message type</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr>
+                        <td th:text="${mainMessageData.referenceNumber}"/>
+                        <td th:text="${mainMessageData.amount.value + ' ' + mainMessageData.amount.currency.isoCode}"/>
+                        <td th:text="${mainMessageData.billingAmount.value + ' ' + mainMessageData.billingAmount.currency.isoCode}"/>
+                        <td th:text="${mainMessageData.cardPcId}"/>
+                        <td th:text="${mainMessageData.transactionType.description}"/>
+                    </tr>
+                    </tbody>
+                </table>
+            </div>
 
-            <div class="form-group row align-items-center">
-                <div class="col-sm-10">
-                    <div class="form-group">
-                        <pre><code class="language-xml">
-                            <textarea rows="20" class="form-control" th:name="xmlRequest" th:utext="${message.response.xml}"/>
-                        </code></pre>
+            <div>
+                <legend>Message response</legend>
+
+                <div class="form-group row align-items-center">
+                    <div class="col-sm-10">
+                        <div class="form-group">
+                            <pre><code class="language-xml"><textarea rows="20" class="form-control" th:name="xmlRequest" th:utext="${message.response.xml}"/></code></pre>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -20,10 +43,12 @@
         </fieldset>
         <div class="form-group row">
             <div class="offset-sm-2 col-sm-10">
-                <div th:if="not ${nextButtons.isEmpty()}">
+                <div th:if="not ${nextButtons.isEmpty()}" style="float: left; padding-left: 5px;">
                     <a th:each="btn : ${nextButtons}" class="btn btn-primary" th:href="@{/ehi/message/do/next?transactionTypeId={id}(id=${btn.transactionType.id})}" role="button" th:text="${btn.label}"/>
                 </div>
-                <a class="btn btn-secondary" th:href="@{/ehi/message/edit/fields}" role="button">Back</a>
+                <div style="float: left; padding-left: 5px;">
+                    <a class="btn btn-secondary" th:href="@{/ehi/message/edit/fields}" role="button">New message</a>
+                </div>
             </div>
         </div>
 </div>

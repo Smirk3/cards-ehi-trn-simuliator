@@ -42,6 +42,7 @@ import org.springframework.web.servlet.view.RedirectView;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.validation.Valid;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
@@ -91,11 +92,10 @@ public class EhiMessageController extends BaseController {
     }
 
     @RequestMapping("/show")
-    public String show(Model model, HttpServletRequest request, Message message) {
+    public String show(Model model, HttpServletRequest request, @Valid Message message) {
         Settings settings = SettingsUtil.getSessionSettings(request.getSession());
         try {
             bindMessageObjects(message, settings);
-
             message.xmlRequest = messageService.createRequestForNewTransaction(message);
 
             model.addAttribute(VIEW, "ehi/transaction/messageFormPreview");
@@ -132,13 +132,14 @@ public class EhiMessageController extends BaseController {
 
     private void doMessageRequest(Model model, Message message) {
         message.response = messageService.doRequest(message.ehiUrl, message.xmlRequest);
-        String text = String.format("%s: %s (%s)", message.transactionType.description, message.response.statusMessage, message.response.statusCode);
+        String text = String.format("%s (%s)", message.response.statusMessage, message.response.statusCode);
         if (STATUS_CODE_SUCCESS.equals(message.response.statusCode)) {
             AlertUtil.addAlert(model, new AlertSuccess(text));
         } else {
             AlertUtil.addAlert(model, new AlertWarning(text));
         }
         model.addAttribute("nextButtons", resolveNextButtons(message));
+        model.addAttribute("mainMessageData", messageService.getMessageMainData(message));
     }
 
     private List<ButtonNext> resolveNextButtons(Message message) {

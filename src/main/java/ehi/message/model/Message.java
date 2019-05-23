@@ -10,6 +10,7 @@ import ehi.gps.classifier.Scheme;
 import ehi.gps.model.Country;
 import ehi.merchant.model.Merchant;
 
+import javax.validation.Valid;
 import java.io.Serializable;
 import java.time.LocalDateTime;
 
@@ -22,7 +23,7 @@ public class Message implements Serializable {
     public Country country;
 
     public LocalDateTime date;
-
+    @Valid
     public Amount amount;
 
     public Mcc mcc;

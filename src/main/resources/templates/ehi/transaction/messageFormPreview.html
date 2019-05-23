@@ -24,9 +24,7 @@
                         <div style="float: right;">
                             <button type="button" class="btn btn-link" onclick="editRequest()">Edit</button>
                         </div>
-                        <pre><code th:id="xmlRequestView" class="language-xml">
-                                <textarea rows="30" class="form-control" th:utext="${message.xmlRequest}"/>
-                        </code></pre>
+                        <pre><code th:id="xmlRequestView" class="language-xml"><textarea rows="30" class="form-control" th:utext="${message.xmlRequest}"/></code></pre>
                         <input type="hidden" th:id="xmlRequest" th:name="xmlRequest" th:value="${message.xmlRequest}"/>
                     </div>
                 </div>

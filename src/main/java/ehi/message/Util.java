@@ -34,6 +34,7 @@ public class Util {
     public static Message newMessageInstance() {
         Message message = new Message();
         message.date = LocalDateTime.now();
+        message.country = new Country();
         message.amount = new Amount();
         message.amount.currency = new CurrencyBuilder().createCurrency();
         message.mcc = new Mcc();

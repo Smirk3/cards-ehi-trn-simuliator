@@ -2,6 +2,7 @@ package ehi.message.service;
 
 import ehi.classifier.bean.TransactionType;
 import ehi.message.model.Message;
+import ehi.message.model.MessageMainData;
 import ehi.message.model.Response;
 
 public interface MessageService {
@@ -12,4 +13,5 @@ public interface MessageService {
 
     Response doRequest(String url, String request);
 
+    MessageMainData getMessageMainData(Message message);
 }

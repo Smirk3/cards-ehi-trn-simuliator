@@ -3,7 +3,10 @@ package ehi.message.service;
 import ehi.classifier.bean.TransactionType;
 import ehi.gps.classifier.AccountingEntryType;
 import ehi.gps.classifier.StatusCodeMapper;
+import ehi.gps.model.Currency;
+import ehi.message.model.Amount;
 import ehi.message.model.Message;
+import ehi.message.model.MessageMainData;
 import ehi.message.model.Response;
 import ehi.web.service.client.soap.SOAPConnector;
 import ehi.web.service.client.soap.schemas.gps.GetTransaction;
@@ -56,6 +59,30 @@ public class MessageServiceImpl implements MessageService {
         response.xml = toXml(soapResponse, GetTransactionResponse.class);
 
         return response;
+    }
+
+    @Override
+    public MessageMainData getMessageMainData(Message message) {
+        GetTransaction requestObj = (GetTransaction) toObject(message.xmlRequest, GetTransaction.class);
+
+        MessageMainData mainData = new MessageMainData();
+        mainData.referenceNumber = requestObj.getTXnID();
+        mainData.cardPcId = requestObj.getToken();
+        mainData.transactionType = message.transactionType;
+
+        Amount amount = new Amount();
+        amount.currency = new Currency();
+        amount.value = BigDecimal.valueOf(requestObj.getTxnAmt());
+        amount.currency.isoCode = message.country.currency.isoCode;
+        mainData.amount = amount;
+
+        Amount billingAmount = new Amount();
+        billingAmount.currency = new Currency();
+        billingAmount.value = BigDecimal.valueOf(requestObj.getBillAmt());
+        billingAmount.currency.isoCode = message.amount.currency.isoCode;
+        mainData.billingAmount = billingAmount;
+
+        return mainData;
     }
 
     private static GetTransaction createRequest(Message message) {

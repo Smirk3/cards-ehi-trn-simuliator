@@ -28,9 +28,3 @@ function saveRequest(){
 
     Prism.highlightElement($("#xmlRequestView")[0]);
 }
-
-$( document ).ready(function() {
-    //var xml = $("#xmlRequestEdit").val();
-    //$("#xmlRequestView").html(xml.htmlEscape());
-    //Prism.highlightElement($("#xmlRequestView")[0]);
-});
