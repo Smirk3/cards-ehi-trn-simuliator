@@ -8,6 +8,7 @@ import ehi.alerts.AlertWarning;
 import ehi.card.Card;
 import ehi.card.exception.CardNotFoundException;
 import ehi.classifier.ClassifierManager;
+import ehi.classifier.bean.TransactionType;
 import ehi.country.CountryManager;
 import ehi.gps.classifier.PinEntryCapability;
 import ehi.gps.classifier.PosCapability;
@@ -117,20 +118,22 @@ public class EhiMessageController extends BaseController {
 
     @RequestMapping("/do/next")
     public String doNextMessage(Model model, Message message,
-                                @RequestParam("transactionTypeId") String transactionTypeId) {
+                                @RequestParam String transactionTypeId,
+                                @RequestParam String processingCodeValue) {
         Message nextMessage = copyOfMessage(message);
         nextMessage.parent = message;
         message.child = nextMessage;
 
         try {
             nextMessage.transactionType = findTransactionType(classifierManager.getTransactionTypes(), transactionTypeId);
+            nextMessage.processingCode = findProcessingCode(classifierManager.getProcessingCodes(), processingCodeValue);
             nextMessage.response = null;
             nextMessage.xmlRequest = messageService.createRequestForSameTransaction(nextMessage, nextMessage.transactionType);
             doMessageRequest(model, nextMessage);
             model.addAttribute(MODEL_ATTR_MESSAGE, nextMessage);
 
-        } catch (TransactionTypeNotFoundException e) {
-            AlertUtil.addAlert(model, new AlertWarning(e.getMessage()));
+        } catch (TransactionTypeNotFoundException | ProcessingCodeNotFoundException e) {
+            AlertUtil.addAlert(model, new AlertError(e.getMessage()));
         }
         model.addAttribute(VIEW, "ehi/transaction/messageResult");
         return TEMPLATE;
@@ -157,17 +160,24 @@ public class EhiMessageController extends BaseController {
         try {
             if (message.response != null && STATUS_CODE_SUCCESS.equals(message.response.statusCode)
                 && "Authorisation Request".equals(message.transactionType.description)) {
-                ButtonNext button = new ButtonNext();
-                button.transactionType = findTransactionTypeByDescription(classifierManager.getTransactionTypes(),
-                    "Financial Notification (First Presentment)");
-                button.label = "Do " + button.transactionType.description;
-
-                buttons.add(button);
+                buttons.add(createButtonNext("Financial Notification (First Presentment)", message.processingCode.value));
+                buttons.add(createButtonNext("Automatic Authorisation Reversal", message.processingCode.value));
+            } else if (message.response != null && STATUS_CODE_SUCCESS.equals(message.response.statusCode)
+                && "Financial Notification (First Presentment)".equals(message.transactionType.description)) {
+                buttons.add(createButtonNext("Financial Reversal", "20"));
             }
-        } catch (TransactionTypeNotFoundException e) {
+        } catch (TransactionTypeNotFoundException | ProcessingCodeNotFoundException e) {
             logger.error(e);
         }
         return buttons;
+    }
+
+    private ButtonNext createButtonNext(String transactionTypeDescription, String processingCodeValue) throws TransactionTypeNotFoundException, ProcessingCodeNotFoundException {
+        ButtonNext button = new ButtonNext();
+        button.transactionType = findTransactionTypeByDescription(classifierManager.getTransactionTypes(), transactionTypeDescription);
+        button.processingCode = findProcessingCode(classifierManager.getProcessingCodes(), processingCodeValue);
+        button.label = "Do " + button.transactionType.description;
+        return button;
     }
 
     @RequestMapping(EHI_MESSAGE_NEW)

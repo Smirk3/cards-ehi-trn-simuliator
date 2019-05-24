@@ -88,7 +88,7 @@ public class ClassifierManager {
              CSVParser csvParser = new CSVParser(reader, CSVFormat.MYSQL)) {
             for (CSVRecord csvRecord : csvParser) {
                 String id = Integer.valueOf(csvRecord.get(0).hashCode()).toString();
-                list.add(new TransactionType(id, csvRecord.get(2), csvRecord.get(1), csvRecord.get(0)));
+                list.add(new TransactionType(id, csvRecord.get(2), csvRecord.get(1), csvRecord.get(0).trim()));
             }
         }
         return list;

@@ -1,5 +1,6 @@
 package ehi.message.service;
 
+import ehi.classifier.bean.ProcessingCode;
 import ehi.classifier.bean.TransactionType;
 import ehi.gps.classifier.AccountingEntryType;
 import ehi.gps.classifier.StatusCodeMapper;
@@ -48,6 +49,8 @@ public class MessageServiceImpl implements MessageService {
         getTrn.setTxnType(transactionType.txnType);
         getTrn.setMTID(transactionType.mtId);
         getTrn.setTXnID(getNewTxnId());
+        getTrn.setProcCode(wrapProcessingCodeValue(message.processingCode));
+        getTrn.setBillAmt(resolveBillAmount(message));
         return toXml(getTrn, GetTransaction.class);
     }
 
@@ -83,6 +86,7 @@ public class MessageServiceImpl implements MessageService {
 
         MessageMainData mainData = new MessageMainData();
         mainData.referenceNumber = requestObj.getTXnID();
+        mainData.traceIdLifecycle = requestObj.getTraceidLifecycle();
         mainData.cardPcId = requestObj.getToken();
         mainData.transactionType = message.transactionType;
 
@@ -111,7 +115,7 @@ public class MessageServiceImpl implements MessageService {
         getTrn.setActBal(0.00);
         getTrn.setAuthCodeDE38(randomNumberInRange(111111, 999999));
         getTrn.setAvlBal(0.00);
-        getTrn.setBillAmt(resolveBillAmount(message).setScale(2, BigDecimal.ROUND_DOWN).doubleValue());
+        getTrn.setBillAmt(resolveBillAmount(message));
         getTrn.setBillCcy(message.amount.currency.number);
         getTrn.setBlkAmt(0.00);
         getTrn.setCustRef(message.card.customerReference);
@@ -126,7 +130,7 @@ public class MessageServiceImpl implements MessageService {
         getTrn.setPOSDataDE22(message.posCapability.getValue() + message.pinEntryCapability.getValue() + "0");
         getTrn.setPOSTermnlDE41(randomNumberInRange(11111111, 99999999));
         getTrn.setPOSTimeDE12(message.date.format(DateTimeFormatter.ofPattern("HHmmss")));
-        getTrn.setProcCode(message.processingCode.value + "0000");
+        getTrn.setProcCode(wrapProcessingCodeValue(message.processingCode));
         getTrn.setRespCodeDE39("00");
         getTrn.setRetRefNoDE37("6036");
         getTrn.setSettleAmt(0.00);
@@ -193,12 +197,18 @@ public class MessageServiceImpl implements MessageService {
         return "TXNID" + LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyyMMddHHmmssSSS"));
     }
 
-    private static BigDecimal resolveBillAmount(Message message) {
+    private static double resolveBillAmount(Message message) {
+        BigDecimal amount;
         if (AccountingEntryType.DEBIT.equals(message.processingCode.accountingEntryType)) {
-            return message.amount.value.negate();
+            amount = message.amount.value.negate();
         } else {
-            return message.amount.value;
+            amount = message.amount.value;
         }
+        return amount.setScale(2, BigDecimal.ROUND_DOWN).doubleValue();
+    }
+
+    private static String wrapProcessingCodeValue(ProcessingCode processingCode) {
+        return processingCode.value + "0000";
     }
 
 }

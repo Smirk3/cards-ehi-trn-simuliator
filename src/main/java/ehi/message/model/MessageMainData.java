@@ -6,6 +6,8 @@ public class MessageMainData {
 
     public String referenceNumber;
 
+    public String traceIdLifecycle;
+
     public Amount amount;
 
     public Amount billingAmount;
@@ -21,6 +23,14 @@ public class MessageMainData {
 
     public void setReferenceNumber(String referenceNumber) {
         this.referenceNumber = referenceNumber;
+    }
+
+    public String getTraceIdLifecycle() {
+        return traceIdLifecycle;
+    }
+
+    public void setTraceIdLifecycle(String traceIdLifecycle) {
+        this.traceIdLifecycle = traceIdLifecycle;
     }
 
     public Amount getAmount() {
