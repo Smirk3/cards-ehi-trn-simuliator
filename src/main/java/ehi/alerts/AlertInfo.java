@@ -1,11 +1,21 @@
 package ehi.alerts;
 
+import static com.google.common.base.MoreObjects.firstNonNull;
+
 /**
  * Created by igorz on 2017-02-09.
  */
 public class AlertInfo extends Alert {
-    
+
+    private static final String TITLE = "Info";
+
     public AlertInfo(String text) {
-        super("INFO", "<b>Info</b><br/> " + text);
+        this(text, null);
     }
+
+    public AlertInfo(String text, String title) {
+
+        super("INFO", String.format("<b>%s</b><br/> %s", firstNonNull(title, TITLE), text));
+    }
+
 }

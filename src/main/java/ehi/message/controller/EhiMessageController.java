@@ -140,9 +140,9 @@ public class EhiMessageController extends BaseController {
         message.response = messageService.doRequest(message.ehiUrl, message.xmlRequest);
         String text = String.format("%s: %s (%s)", message.transactionType.description, message.response.statusMessage, message.response.statusCode);
         if (STATUS_CODE_SUCCESS.equals(message.response.statusCode)) {
-            model.addAttribute("notice", new AlertSuccess(text));
+            model.addAttribute("notice", new AlertSuccess(text, "Processed"));
         } else {
-            model.addAttribute("notice", new AlertWarning(text));
+            model.addAttribute("notice", new AlertWarning(text, "Refused"));
         }
         model.addAttribute("nextButtons", resolveNextButtons(message));
         model.addAttribute("messagesMainData", messageService.getMessagesMainData(message));

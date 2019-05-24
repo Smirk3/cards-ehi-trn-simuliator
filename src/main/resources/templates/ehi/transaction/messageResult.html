@@ -17,8 +17,7 @@
                     </tr>
                     </thead>
                     <tbody>
-                    <!--<tr th:each="msg : ${messagesMainData}" th:class="${(#arrays.length(messagesMainData) == (messagesMainData.index)) ? 'grey lighten-2' : ''}">-->
-                    <tr th:each="msg : ${messagesMainData}">
+                    <tr th:each="msg, i : ${messagesMainData}" th:class="${i.last ? 'indigo lighten-4' : ''}">
                         <td th:text="${msg.referenceNumber}"/>
                         <td th:text="${msg.amount.value + ' ' + msg.amount.currency.isoCode}"/>
                         <td th:text="${msg.billingAmount.value + ' ' + msg.billingAmount.currency.isoCode}"/>
