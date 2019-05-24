@@ -41,9 +41,9 @@
                     <td th:text="${template.description}"/>
                     <td>
                         <div class="btn-group" role="group" aria-label="...">
-                            <a class="btn btn-secondary" th:href="@{/ibpay/message/templates/do(templateId=${template.id})}" role="button" th:text="${template.message.type == T(ibpay.message.MessageType).PAY ? 'Pay' : 'Authenticate'}"/>
-                            <a class="btn btn-secondary" th:href="@{/ibpay/message/templates/show/edit(templateId=${template.id})}" role="button">edit</a>
-                            <a class="btn btn-secondary" th:href="@{/ibpay/message/templates/delete(templateId=${template.id})}" role="button">delete</a>
+                            <a class="btn btn-indigo" th:href="@{/ibpay/message/templates/do(templateId=${template.id})}" role="button" th:text="${template.message.type == T(ibpay.message.MessageType).PAY ? 'Pay' : 'Authenticate'}"/>
+                            <a class="btn btn-indigo" th:href="@{/ibpay/message/templates/show/edit(templateId=${template.id})}" role="button">edit</a>
+                            <a class="btn btn-indigo" th:href="@{/ibpay/message/templates/delete(templateId=${template.id})}" role="button">delete</a>
                         </div>
                     </td>
                 </tr>

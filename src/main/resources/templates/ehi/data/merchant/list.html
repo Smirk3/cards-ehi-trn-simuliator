@@ -11,7 +11,7 @@
         </div>
 
         <div th:if="${merchants.isEmpty()}" style="padding-top: 20px">
-            <a class="btn btn-outline-primary btn-block" th:href="@{/ehi/data/merchant/show/create}" role="button">Add
+            <a class="btn btn-outline-indigo btn-block" th:href="@{/ehi/data/merchant/show/create}" role="button">Add
                 merchant</a>
         </div>
 
@@ -22,7 +22,7 @@
 
 
         <div class="table-responsive" th:if="not ${merchants.isEmpty()}">
-            <a class="btn btn-outline-primary btn-block" th:href="@{/ehi/data/merchant/show/create}" role="button">Add
+            <a class="btn btn-outline-indigo btn-block" th:href="@{/ehi/data/merchant/show/create}" role="button">Add
                 merchant</a>
             <table class="table table-striped">
                 <thead>
@@ -40,8 +40,8 @@
                     <td th:text="${instance.address}"/>
                     <td>
                         <div class="btn-group" role="group" aria-label="...">
-                            <a class="btn btn-secondary" th:href="@{/ehi/data/merchant/show/edit(merchantName=${instance.name})}" role="button">edit</a>
-                            <a class="btn btn-secondary" th:href="@{/ehi/data/merchant/delete(merchantName=${instance.name})}" role="button">delete</a>
+                            <a class="btn btn-indigo" th:href="@{/ehi/data/merchant/show/edit(merchantName=${instance.name})}" role="button">edit</a>
+                            <a class="btn btn-indigo" th:href="@{/ehi/data/merchant/delete(merchantName=${instance.name})}" role="button">delete</a>
                         </div>
                     </td>
                 </tr>

@@ -47,7 +47,7 @@
                     <a th:each="btn : ${nextButtons}" class="btn btn-primary" th:href="@{/ehi/message/do/next?transactionTypeId={id}(id=${btn.transactionType.id})}" role="button" th:text="${btn.label}"/>
                 </div>
                 <div style="float: left; padding-left: 5px;">
-                    <a class="btn btn-secondary" th:href="@{/ehi/message/edit/fields}" role="button">New message</a>
+                    <a class="btn btn-light" th:href="@{/ehi/message/edit/fields}" role="button">New message</a>
                 </div>
             </div>
         </div>
