@@ -21,6 +21,7 @@ import ehi.message.exception.ProcessingCodeNotFoundException;
 import ehi.message.exception.TransactionTypeNotFoundException;
 import ehi.message.model.Amount;
 import ehi.message.model.Message;
+import ehi.message.model.Response;
 import org.springframework.util.CollectionUtils;
 import org.springframework.util.StringUtils;
 
@@ -207,4 +208,89 @@ public class Util {
         return Integer.valueOf(new SplittableRandom().nextInt(from, to)).toString();
     }
 
+    public static Message copyOfMessage(Message message) {
+        Message copy = new Message();
+        copy.ehiUrl = message.ehiUrl;
+        copy.scheme = message.scheme;
+        copy.country = new CountryBuilder()
+            .setName(message.country.name)
+            .setCapital(message.country.capital)
+            .setIsoCodeAlpha2(message.country.isoCodeAlpha2)
+            .setIsoCodeAlpha3(message.country.isoCodeAlpha3)
+            .setIsoCodeNumeric(message.country.isoCodeNumeric)
+            .setCurrency(new CurrencyBuilder().setEntity(message.country.currency.entity)
+                .setName(message.country.currency.name)
+                .setIsoCode(message.country.currency.isoCode)
+                .setNumber(message.country.currency.number)
+                .setMinorUnit(message.country.currency.minorUnit).createCurrency()).createCountry();
+
+        copy.date = message.date;
+
+        copy.amount = new Amount();
+        copy.amount.value = message.amount.value;
+        copy.amount.currency = new Currency();
+        copy.amount.currency.entity = message.amount.currency.entity;
+        copy.amount.currency.name = message.amount.currency.name;
+        copy.amount.currency.isoCode = message.amount.currency.isoCode;
+        copy.amount.currency.number = message.amount.currency.number;
+        copy.amount.currency.minorUnit = message.amount.currency.minorUnit;
+
+        copy.mcc = new Mcc(message.mcc.code, message.mcc.description);
+
+        copy.posCapability = message.posCapability;
+        copy.pinEntryCapability = message.pinEntryCapability;
+
+        copy.processingCode = new ProcessingCode(message.processingCode.value,
+            message.processingCode.label,
+            message.processingCode.accountingEntryType);
+
+        copy.transactionType = new TransactionType(message.transactionType.id,
+            message.transactionType.mtId,
+            message.transactionType.txnType,
+            message.transactionType.description);
+
+        copy.card = new CardBuilder()
+            .setPcId(message.card.pcId)
+            .setNumber(message.card.number)
+            .setInstitutionCode(message.card.institutionCode)
+            .setCardUsageGroup(message.card.cardUsageGroup)
+            .setSubBin(message.card.subBin)
+            .setProductIdInPc(message.card.productIdInPc)
+            .setCvv2(message.card.cvv2)
+            .setCustomerReference(message.card.customerReference)
+            .setExpiry(message.card.expiry)
+            .createCard();
+
+        copy.merchant = new MerchantBuilder()
+            .setName(message.merchant.name)
+            .setAddress(new AddressBuilder().setStreet(message.merchant.address.street)
+                .setCity(message.merchant.address.city)
+                .setRegion(message.merchant.address.region)
+                .setPostCode(message.merchant.address.postCode)
+                .setCountry(message.merchant.address.country).createAddress())
+            .setPhoneNumber(message.merchant.phoneNumber)
+            .setUrl(message.merchant.url)
+            .setNameOther(message.merchant.nameOther)
+            .setNetId(message.merchant.netId)
+            .setTaxId(message.merchant.taxId)
+            .setContact(message.merchant.contact)
+            .createMerchant();
+
+        copy.xmlRequest = message.xmlRequest;
+
+        copy.response = new Response();
+        copy.response.statusCode = message.response.statusCode;
+        copy.response.statusMessage = message.response.statusMessage;
+        copy.response.xml = message.response.xml;
+
+        return copy;
+    }
+
+    public static Message resolveStartMessage(Message message) {
+        Message startMessage = message;
+        while (startMessage.parent != null) {
+            startMessage = startMessage.parent;
+        }
+        return startMessage;
+    }
 }

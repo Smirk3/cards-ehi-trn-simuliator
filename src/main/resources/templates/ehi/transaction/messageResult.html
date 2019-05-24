@@ -17,19 +17,23 @@
                     </tr>
                     </thead>
                     <tbody>
-                    <tr>
-                        <td th:text="${mainMessageData.referenceNumber}"/>
-                        <td th:text="${mainMessageData.amount.value + ' ' + mainMessageData.amount.currency.isoCode}"/>
-                        <td th:text="${mainMessageData.billingAmount.value + ' ' + mainMessageData.billingAmount.currency.isoCode}"/>
-                        <td th:text="${mainMessageData.cardPcId}"/>
-                        <td th:text="${mainMessageData.transactionType.description}"/>
+                    <!--<tr th:each="msg : ${messagesMainData}" th:class="${(#arrays.length(messagesMainData) == (messagesMainData.index)) ? 'grey lighten-2' : ''}">-->
+                    <tr th:each="msg : ${messagesMainData}">
+                        <td th:text="${msg.referenceNumber}"/>
+                        <td th:text="${msg.amount.value + ' ' + msg.amount.currency.isoCode}"/>
+                        <td th:text="${msg.billingAmount.value + ' ' + msg.billingAmount.currency.isoCode}"/>
+                        <td th:text="${msg.cardPcId}"/>
+                        <td th:text="${msg.transactionType.description}"/>
                     </tr>
                     </tbody>
                 </table>
             </div>
 
             <div>
-                <legend>Message response</legend>
+                <legend th:text="${message.transactionType.description} + ' message response'"/>
+
+                <div class="alert alert-success" role="alert" th:if="${notice.type == 'SUCCESS'}" th:utext="${notice.text}"/>
+                <div class="alert alert-warning" role="alert" th:if="${notice.type == 'WARNING'}" th:utext="${notice.text}"/>
 
                 <div class="form-group row align-items-center">
                     <div class="col-sm-10">

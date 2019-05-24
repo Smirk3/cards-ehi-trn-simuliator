@@ -51,6 +51,7 @@ import java.util.List;
 import java.util.Map;
 
 import static ehi.gps.classifier.StatusCodeMapper.STATUS_CODE_SUCCESS;
+import static ehi.message.Util.copyOfMessage;
 import static ehi.message.Util.findCard;
 import static ehi.message.Util.findCountryByIsoAlpha3;
 import static ehi.message.Util.findCurrency;
@@ -117,11 +118,16 @@ public class EhiMessageController extends BaseController {
     @RequestMapping("/do/next")
     public String doNextMessage(Model model, Message message,
                                 @RequestParam("transactionTypeId") String transactionTypeId) {
+        Message nextMessage = copyOfMessage(message);
+        nextMessage.parent = message;
+        message.child = nextMessage;
+
         try {
-            message.transactionType = findTransactionType(classifierManager.getTransactionTypes(), transactionTypeId);
-            message.response = null;
-            message.xmlRequest = messageService.createRequestForSameTransaction(message, message.transactionType);
-            doMessageRequest(model, message);
+            nextMessage.transactionType = findTransactionType(classifierManager.getTransactionTypes(), transactionTypeId);
+            nextMessage.response = null;
+            nextMessage.xmlRequest = messageService.createRequestForSameTransaction(nextMessage, nextMessage.transactionType);
+            doMessageRequest(model, nextMessage);
+            model.addAttribute(MODEL_ATTR_MESSAGE, nextMessage);
 
         } catch (TransactionTypeNotFoundException e) {
             AlertUtil.addAlert(model, new AlertWarning(e.getMessage()));
@@ -132,14 +138,14 @@ public class EhiMessageController extends BaseController {
 
     private void doMessageRequest(Model model, Message message) {
         message.response = messageService.doRequest(message.ehiUrl, message.xmlRequest);
-        String text = String.format("%s (%s)", message.response.statusMessage, message.response.statusCode);
+        String text = String.format("%s: %s (%s)", message.transactionType.description, message.response.statusMessage, message.response.statusCode);
         if (STATUS_CODE_SUCCESS.equals(message.response.statusCode)) {
-            AlertUtil.addAlert(model, new AlertSuccess(text));
+            model.addAttribute("notice", new AlertSuccess(text));
         } else {
-            AlertUtil.addAlert(model, new AlertWarning(text));
+            model.addAttribute("notice", new AlertWarning(text));
         }
         model.addAttribute("nextButtons", resolveNextButtons(message));
-        model.addAttribute("mainMessageData", messageService.getMessageMainData(message));
+        model.addAttribute("messagesMainData", messageService.getMessagesMainData(message));
     }
 
     private List<ButtonNext> resolveNextButtons(Message message) {

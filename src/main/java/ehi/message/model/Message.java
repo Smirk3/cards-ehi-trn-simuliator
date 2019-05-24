@@ -44,6 +44,10 @@ public class Message implements Serializable {
 
     public Response response;
 
+    public Message parent;
+
+    public Message child;
+
 
     public String getEhiUrl() {
         return ehiUrl;

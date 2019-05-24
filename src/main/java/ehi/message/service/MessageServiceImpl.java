@@ -20,8 +20,11 @@ import org.springframework.util.StringUtils;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
+import java.util.List;
 
 import static ehi.message.Util.randomNumberInRange;
+import static ehi.message.Util.resolveStartMessage;
 import static ehi.message.service.XmlObjectUtil.toObject;
 import static ehi.message.service.XmlObjectUtil.toXml;
 
@@ -62,7 +65,20 @@ public class MessageServiceImpl implements MessageService {
     }
 
     @Override
-    public MessageMainData getMessageMainData(Message message) {
+    public List<MessageMainData> getMessagesMainData(Message message) {
+        List<MessageMainData> data = new ArrayList<>();
+        Message startMessage = resolveStartMessage(message);
+
+        data.add(getMessageMainData(startMessage));
+        while (startMessage.child != null) {
+            startMessage = startMessage.child;
+            data.add(getMessageMainData(startMessage));
+        }
+
+        return data;
+    }
+
+    private static MessageMainData getMessageMainData(Message message) {
         GetTransaction requestObj = (GetTransaction) toObject(message.xmlRequest, GetTransaction.class);
 
         MessageMainData mainData = new MessageMainData();

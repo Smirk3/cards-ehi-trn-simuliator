@@ -5,6 +5,8 @@ import ehi.message.model.Message;
 import ehi.message.model.MessageMainData;
 import ehi.message.model.Response;
 
+import java.util.List;
+
 public interface MessageService {
 
     String createRequestForNewTransaction(Message message);
@@ -13,5 +15,5 @@ public interface MessageService {
 
     Response doRequest(String url, String request);
 
-    MessageMainData getMessageMainData(Message message);
+    List<MessageMainData> getMessagesMainData(Message message);
 }
