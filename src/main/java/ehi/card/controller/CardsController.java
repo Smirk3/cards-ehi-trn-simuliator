@@ -53,7 +53,7 @@ public class CardsController extends BaseController {
             cards = settings.cards;
         }
         model.addAttribute(MODEL_ATTR_CARDS, cards);
-        model.addAttribute(VIEW, BASE_URI + "/list");
+        model.addAttribute(VIEW, "ehi/data/card/list");
         return TEMPLATE;
     }
 
@@ -79,7 +79,7 @@ public class CardsController extends BaseController {
         if (isOnError == null || !isOnError){
             model.addAttribute(MODEL_ATTR_CARD, new Card());
         }
-        model.addAttribute(VIEW, BASE_URI+"/form");
+        model.addAttribute(VIEW, "ehi/data/card/form");
         return TEMPLATE;
     }
 
@@ -121,7 +121,7 @@ public class CardsController extends BaseController {
             model.addAttribute(MODEL_ATTR_CARD, card);
 
             model.addAttribute(MODEL_ATTR_FORM_MODE, FormMode.EDIT);
-            model.addAttribute(VIEW, BASE_URI+"/form");
+            model.addAttribute(VIEW, "ehi/data/card/form");
             template = TEMPLATE;
 
         } catch (CardNotFoundException e) {

@@ -51,7 +51,7 @@ public class MerchantController extends BaseController {
             merchants = settings.merchants;
         }
         model.addAttribute(MODEL_ATTR_MERCHANTS, merchants);
-        model.addAttribute(VIEW, BASE_URI + "/list");
+        model.addAttribute(VIEW, "ehi/data/merchant/list");
         return TEMPLATE;
     }
 
@@ -77,7 +77,7 @@ public class MerchantController extends BaseController {
         if (isOnError == null || !isOnError){
             model.addAttribute(MODEL_ATTR_MERCHANT, new Merchant());
         }
-        model.addAttribute(VIEW, BASE_URI + "/form");
+        model.addAttribute(VIEW, "ehi/data/merchant/form");
         return TEMPLATE;
     }
 
@@ -106,7 +106,7 @@ public class MerchantController extends BaseController {
             Merchant merchant = Util.findMerchant(settings.merchants, merchantName);
             model.addAttribute(MODEL_ATTR_MERCHANT, merchant);
 
-            model.addAttribute(VIEW, BASE_URI + "/form");
+            model.addAttribute(VIEW, "ehi/data/merchant/form");
             model.addAttribute(MODEL_ATTR_FORM_MODE, FormMode.EDIT);
             template = TEMPLATE;
 

@@ -56,6 +56,7 @@ public class MessageServiceImpl implements MessageService {
 
     @Override
     public Response doRequest(String url, String request) {
+        logger.debug("SOAP Request: " + request);
         GetTransaction requestObj = (GetTransaction) toObject(request, GetTransaction.class);
         GetTransactionResponse soapResponse = (GetTransactionResponse) soapConnector.callWebService(url, requestObj);
 
@@ -63,6 +64,7 @@ public class MessageServiceImpl implements MessageService {
         response.statusCode = soapResponse.getGetTransactionResult().getResponsestatus();
         response.statusMessage = StatusCodeMapper.getText(response.statusCode);
         response.xml = toXml(soapResponse, GetTransactionResponse.class);
+        logger.debug("SOAP Response: " + response.xml);
 
         return response;
     }

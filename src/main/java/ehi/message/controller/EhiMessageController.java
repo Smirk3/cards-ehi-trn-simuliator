@@ -8,7 +8,6 @@ import ehi.alerts.AlertWarning;
 import ehi.card.Card;
 import ehi.card.exception.CardNotFoundException;
 import ehi.classifier.ClassifierManager;
-import ehi.classifier.bean.TransactionType;
 import ehi.country.CountryManager;
 import ehi.gps.classifier.PinEntryCapability;
 import ehi.gps.classifier.PosCapability;
@@ -40,6 +39,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.SessionAttributes;
 import org.springframework.web.servlet.view.RedirectView;
+import org.springframework.ws.client.WebServiceIOException;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -71,7 +71,6 @@ public class EhiMessageController extends BaseController {
     private static final Logger logger = LogManager.getLogger(EhiMessageController.class);
 
     public static final String MODEL_ATTR_MESSAGE = "message";
-
     private static final String MODEL_ATTR_TEMPLATES = "templates";
 
     public static final String EHI_MESSAGE_URI = "/ehi/message";
@@ -90,7 +89,8 @@ public class EhiMessageController extends BaseController {
 
     @RequestMapping("")
     public RedirectView index() {
-        return new RedirectView(EHI_MESSAGE_URI + EHI_TEMPLATES_LIST_URI);
+        return new RedirectView(EHI_MESSAGE_URI + EHI_MESSAGE_NEW);
+        //return new RedirectView(EHI_MESSAGE_URI + EHI_TEMPLATES_LIST_URI);
     }
 
     @RequestMapping("/show")
@@ -110,10 +110,16 @@ public class EhiMessageController extends BaseController {
     }
 
     @RequestMapping("/do")
-    public String doMessage(Model model, Message message) {
-        doMessageRequest(model, message);
-        model.addAttribute(VIEW, "ehi/transaction/messageResult");
-        return TEMPLATE;
+    public String doMessage(Model model, HttpServletRequest request, Message message) {
+        try {
+            doMessageRequest(model, message);
+            model.addAttribute(VIEW, "ehi/transaction/messageResult");
+            return TEMPLATE;
+
+        } catch (WebServiceIOException e) {
+            AlertUtil.addAlert(model, new AlertError("Could not connect to " + message.ehiUrl));
+            return showEditMessageForm(model, request);
+        }
     }
 
     @RequestMapping("/do/next")
@@ -134,6 +140,8 @@ public class EhiMessageController extends BaseController {
 
         } catch (TransactionTypeNotFoundException | ProcessingCodeNotFoundException e) {
             AlertUtil.addAlert(model, new AlertError(e.getMessage()));
+        } catch (WebServiceIOException wse) {
+            AlertUtil.addAlert(model, new AlertError("Could not connect to " + message.ehiUrl));
         }
         model.addAttribute(VIEW, "ehi/transaction/messageResult");
         return TEMPLATE;
