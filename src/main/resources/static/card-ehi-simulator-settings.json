@@ -6,17 +6,6 @@
             "cvv2": "918",
             "expiry": "2206",
             "institutionCode": "DEV",
-            "number": "9999********3260 - Asta Valicke - CDB0000396 (local home)",
-            "pcId": "919749976",
-            "productIdInPc": "2395",
-            "subBin": "55462605"
-        },
-        {
-            "cardUsageGroup": "DEV-CU-001",
-            "customerReference": "1234569F",
-            "cvv2": "918",
-            "expiry": "2206",
-            "institutionCode": "DEV",
             "number": "3523***********6578 - Igor Zubanov - CDB0000462 (local)",
             "pcId": "014ecabd-041b-4228-977d-3ed984ce87cb",
             "productIdInPc": "2395",
