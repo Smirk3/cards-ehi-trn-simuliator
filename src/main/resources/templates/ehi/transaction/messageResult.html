@@ -29,7 +29,7 @@
                         </tr>
                         <tr th:id="${msg.referenceNumber}" style="display: none;">
                             <td colspan="6">
-                                <div class="mt-3" th:utext="${msg.transactionType.description}"/>
+                                <pre><code class="language-xml"><textarea th:utext="${msg.request}"/></code></pre>
                             </td>
                         </tr>
                     </div>

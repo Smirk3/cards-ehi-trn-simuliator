@@ -16,6 +16,10 @@ public class MessageMainData {
 
     public TransactionType transactionType;
 
+    public String request;
+
+    public String response;
+
 
     public String getReferenceNumber() {
         return referenceNumber;
@@ -63,5 +67,21 @@ public class MessageMainData {
 
     public void setTransactionType(TransactionType transactionType) {
         this.transactionType = transactionType;
+    }
+
+    public String getRequest() {
+        return request;
+    }
+
+    public void setRequest(String request) {
+        this.request = request;
+    }
+
+    public String getResponse() {
+        return response;
+    }
+
+    public void setResponse(String response) {
+        this.response = response;
     }
 }

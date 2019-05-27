@@ -91,6 +91,8 @@ public class MessageServiceImpl implements MessageService {
         mainData.traceIdLifecycle = requestObj.getTraceidLifecycle();
         mainData.cardPcId = requestObj.getToken();
         mainData.transactionType = message.transactionType;
+        mainData.request = message.xmlRequest;
+        mainData.response = message.response.xml;
 
         Amount amount = new Amount();
         amount.currency = new Currency();
