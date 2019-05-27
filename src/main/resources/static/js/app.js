@@ -29,6 +29,13 @@ function saveRequest(){
     Prism.highlightElement($("#xmlRequestView")[0]);
 }
 
-function toggleVisibility(elementId){
-    $('#'+elementId).toggle();
+function toggleVisibility(txnId){
+    if(!$('.message'+txnId).first().is(':visible')) {
+        $(".messageDetails").each(function (index, value){
+            $(this).hide();
+        });
+    }
+    $('.message'+txnId).each(function (index, value){
+        $(this).toggle();
+    });
 }

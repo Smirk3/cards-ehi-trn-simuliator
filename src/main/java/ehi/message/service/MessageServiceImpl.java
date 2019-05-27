@@ -24,8 +24,9 @@ import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
 
+import static ehi.gps.classifier.StatusCodeMapper.STATUS_CODE_SUCCESS;
 import static ehi.message.Util.randomNumberInRange;
-import static ehi.message.Util.resolveStartMessage;
+import static ehi.message.Util.resolveEndMessage;
 import static ehi.message.service.XmlObjectUtil.toObject;
 import static ehi.message.service.XmlObjectUtil.toXml;
 
@@ -72,12 +73,12 @@ public class MessageServiceImpl implements MessageService {
     @Override
     public List<MessageMainData> getMessagesMainData(Message message) {
         List<MessageMainData> data = new ArrayList<>();
-        Message startMessage = resolveStartMessage(message);
+        Message endMessage = resolveEndMessage(message);
 
-        data.add(getMessageMainData(startMessage));
-        while (startMessage.child != null) {
-            startMessage = startMessage.child;
-            data.add(getMessageMainData(startMessage));
+        data.add(getMessageMainData(endMessage));
+        while (endMessage.parent != null) {
+            endMessage = endMessage.parent;
+            data.add(getMessageMainData(endMessage));
         }
 
         return data;
@@ -93,6 +94,8 @@ public class MessageServiceImpl implements MessageService {
         mainData.transactionType = message.transactionType;
         mainData.request = message.xmlRequest;
         mainData.response = message.response.xml;
+        mainData.success = STATUS_CODE_SUCCESS.equals(message.response.statusCode);
+        mainData.statusMessage = message.response.statusMessage;
 
         Amount amount = new Amount();
         amount.currency = new Currency();

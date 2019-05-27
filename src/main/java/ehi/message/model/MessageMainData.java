@@ -20,6 +20,10 @@ public class MessageMainData {
 
     public String response;
 
+    public Boolean success;
+
+    public String statusMessage;
+
 
     public String getReferenceNumber() {
         return referenceNumber;
@@ -83,5 +87,21 @@ public class MessageMainData {
 
     public void setResponse(String response) {
         this.response = response;
+    }
+
+    public Boolean getSuccess() {
+        return success;
+    }
+
+    public void setSuccess(Boolean success) {
+        this.success = success;
+    }
+
+    public String getStatusMessage() {
+        return statusMessage;
+    }
+
+    public void setStatusMessage(String statusMessage) {
+        this.statusMessage = statusMessage;
     }
 }

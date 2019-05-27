@@ -153,7 +153,7 @@ public class EhiMessageController extends BaseController {
         if (STATUS_CODE_SUCCESS.equals(message.response.statusCode)) {
             model.addAttribute("notice", new AlertSuccess(text, "Processed"));
         } else {
-            model.addAttribute("notice", new AlertWarning(text, "Refused"));
+            model.addAttribute("notice", new AlertError(text, "Refused"));
         }
         model.addAttribute("nextButtons", resolveNextButtons(message));
         model.addAttribute("messagesMainData", messageService.getMessagesMainData(message));

@@ -286,11 +286,11 @@ public class Util {
         return copy;
     }
 
-    public static Message resolveStartMessage(Message message) {
-        Message startMessage = message;
-        while (startMessage.parent != null) {
-            startMessage = startMessage.parent;
+    public static Message resolveEndMessage(Message message) {
+        Message endMessage = message;
+        while (endMessage.child != null) {
+            endMessage = endMessage.child;
         }
-        return startMessage;
+        return endMessage;
     }
 }
