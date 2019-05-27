@@ -18,17 +18,25 @@
                     </tr>
                     </thead>
                     <tbody>
-                    <tr th:each="msg, i : ${messagesMainData}" th:class="${i.last ? 'indigo lighten-4' : ''}">
-                        <td th:text="${msg.referenceNumber}"/>
-                        <td th:text="${msg.amount.value + ' ' + msg.amount.currency.isoCode}"/>
-                        <td th:text="${msg.billingAmount.value + ' ' + msg.billingAmount.currency.isoCode}"/>
-                        <td th:text="${msg.cardPcId}"/>
-                        <td th:text="${msg.transactionType.description}"/>
-                        <td th:text="${msg.traceIdLifecycle}"/>
-                    </tr>
+                    <div th:each="msg, i : ${messagesMainData}">
+                        <tr th:class="${i.last ? 'indigo lighten-4' : ''}" th:onclick="'toggleVisibility(\'' + ${msg.referenceNumber} + '\')'">
+                            <td th:text="${msg.referenceNumber}"/>
+                            <td th:text="${msg.amount.value + ' ' + msg.amount.currency.isoCode}"/>
+                            <td th:text="${msg.billingAmount.value + ' ' + msg.billingAmount.currency.isoCode}"/>
+                            <td th:text="${msg.cardPcId}"/>
+                            <td th:text="${msg.transactionType.description}"/>
+                            <td th:text="${msg.traceIdLifecycle}"/>
+                        </tr>
+                        <tr th:id="${msg.referenceNumber}" style="display: none;">
+                            <td colspan="6">
+                                <div class="mt-3" th:utext="${msg.transactionType.description}"/>
+                            </td>
+                        </tr>
+                    </div>
                     </tbody>
                 </table>
             </div>
+
 
             <div>
                 <legend th:text="${message.transactionType.description} + ' message response'"/>

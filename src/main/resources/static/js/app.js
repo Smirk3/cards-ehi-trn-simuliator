@@ -28,3 +28,7 @@ function saveRequest(){
 
     Prism.highlightElement($("#xmlRequestView")[0]);
 }
+
+function toggleVisibility(elementId){
+    $('#'+elementId).toggle();
+}
