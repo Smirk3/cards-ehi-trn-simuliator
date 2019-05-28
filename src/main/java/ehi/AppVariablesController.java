@@ -3,8 +3,11 @@ package ehi;
 import ehi.alerts.AlertError;
 import ehi.alerts.AlertSuccess;
 import ehi.alerts.AlertUtil;
+import ehi.environment.EnvProviderException;
+import ehi.environment.EnvironmentProvider;
 import ehi.settings.Settings;
 import ehi.settings.SettingsUtil;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -19,6 +22,9 @@ public class AppVariablesController extends BaseController {
     private static final String SETTINGS = "settings";
     private static final String EHI_URL_DEFAULT_INVALID = "ehiUrlDefaultInvalid";
 
+    @Autowired
+    private EnvironmentProvider envProvider;
+
     @RequestMapping("")
     public String index(HttpServletRequest request, Model model) {
         Settings settings = SettingsUtil.getSessionSettings(request.getSession());
@@ -31,6 +37,17 @@ public class AppVariablesController extends BaseController {
     public String showEditForm(HttpServletRequest request, Model model) {
         Settings settings = SettingsUtil.getSessionSettings(request.getSession());
         model.addAttribute(SETTINGS, settings);
+
+        if (envProvider.isProviderAccessible()) {
+            try {
+                envProvider.authProvider("igor.zubanov", "veronika");
+                model.addAttribute("environments", envProvider.getEnvironments());
+
+            } catch (EnvProviderException e) {
+                AlertUtil.addAlert(model, new AlertSuccess(e.getMessage()));
+            }
+        }
+
         model.addAttribute(VIEW, "ehi/env/edit");
         return TEMPLATE;
     }
@@ -55,5 +72,19 @@ public class AppVariablesController extends BaseController {
 
         return template;
     }
+
+/*    @RequestMapping("/getEnvironments")
+    public void getEnvironments(HttpServletRequest request, HttpServletResponse response) {
+        List<Environment> envs = envProvider.getEnvironments();
+        List<Object> list = new ArrayList<>();
+        for (Environment env : envs) {
+            list.add(env.name);
+        }
+
+        Gson gson = new Gson();
+        String result = gson.toJson(list, LinkedList.class);
+
+        jsonResponse(result, response);
+    }*/
 
 }
