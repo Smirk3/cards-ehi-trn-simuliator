@@ -4,16 +4,27 @@ import ehi.alerts.AlertError;
 import ehi.alerts.AlertSuccess;
 import ehi.alerts.AlertUtil;
 import ehi.environment.EnvProviderException;
+import ehi.environment.Environment;
 import ehi.environment.EnvironmentProvider;
 import ehi.settings.Settings;
 import ehi.settings.SettingsUtil;
+import ehi.wiki.AjaxResponse;
+import ehi.wiki.AjaxResponseShowWikiLogin;
+import ehi.wiki.Login;
+import ehi.wiki.WikiAuthStatus;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import java.util.ArrayList;
+import java.util.List;
 
 @Controller
 @RequestMapping("/ehi/env")
@@ -37,16 +48,7 @@ public class AppVariablesController extends BaseController {
     public String showEditForm(HttpServletRequest request, Model model) {
         Settings settings = SettingsUtil.getSessionSettings(request.getSession());
         model.addAttribute(SETTINGS, settings);
-
-        if (envProvider.isProviderAccessible()) {
-            try {
-                envProvider.authProvider("igor.zubanov", "veronika");
-                model.addAttribute("environments", envProvider.getEnvironments());
-
-            } catch (EnvProviderException e) {
-                AlertUtil.addAlert(model, new AlertSuccess(e.getMessage()));
-            }
-        }
+        model.addAttribute("environments", getEnvironments(new WikiAuthStatus(request)));
 
         model.addAttribute(VIEW, "ehi/env/edit");
         return TEMPLATE;
@@ -73,7 +75,15 @@ public class AppVariablesController extends BaseController {
         return template;
     }
 
-/*    @RequestMapping("/getEnvironments")
+    private List<Environment> getEnvironments(WikiAuthStatus authStatus) {
+        if (authStatus.isAuthenticated()) {
+            return envProvider.getEnvironments();
+        } else {
+            return new ArrayList<>();
+        }
+    }
+
+    /*@RequestMapping("/getEnvironments")
     public void getEnvironments(HttpServletRequest request, HttpServletResponse response) {
         List<Environment> envs = envProvider.getEnvironments();
         List<Object> list = new ArrayList<>();
@@ -81,10 +91,6 @@ public class AppVariablesController extends BaseController {
             list.add(env.name);
         }
 
-        Gson gson = new Gson();
-        String result = gson.toJson(list, LinkedList.class);
-
-        jsonResponse(result, response);
+        jsonResponse(list, LinkedList.class, response);
     }*/
-
 }

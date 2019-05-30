@@ -3,30 +3,64 @@
 <body>
 <div class="container" th:fragment="content">
 
-    <form method="post" enctype="multipart/form-data" th:action="@{/ehi/env/edit}" >
+    <div id="overlay">
+        <div id="popup">
+
+            <form method="post" enctype="multipart/form-data" th:action="@{/ehi/env/wiki/bas/login}" >
+                <h3>BAS wiki login</h3>
+
+                <div id="alertError" class="alert alert-danger" role="alert" style="display: none;"></div>
+
+                <div id="alertInfo" class="alert alert-info" role="alert">
+                    Provide login to "https://wiki.bas.lt" and i'll try to assist you with usable info.
+                </div>
+
+                <fieldset style="padding-top: 20px">
+                    <div class="form-group row">
+                        <label th:for="user" class="col-sm-2 col-form-label" th:text="'User'"></label>
+                        <div class="col-sm-10">
+                            <div>
+                                <input type="text" class="form-control" th:id="user" th:name="user" required/>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="form-group row">
+                        <label th:for="password" class="col-sm-2 col-form-label" th:text="'Password'"></label>
+                        <div class="col-sm-10">
+                            <div>
+                                <input type="password" class="form-control" th:id="password" th:name="password" required/>
+                            </div>
+                        </div>
+                    </div>
+                </fieldset>
+
+                <div class="form-group row">
+                    <div class="offset-sm-2 col-sm-10">
+                        <a class="btn btn-indigo" onclick="authenticate();">Submit</a>
+                        <a class="btn btn-light" onclick="skipAuthentication();">Skip</a>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <form id="envEditForm" method="post" enctype="multipart/form-data" th:action="@{/ehi/env/edit}" >
         <h2>Application veriables</h2>
         <fieldset style="padding-top: 20px">
             <div class="form-group row">
-                <label th:for="merchantId" class="col-sm-2 col-form-label" th:text="'EHI url default'"></label>
+                <label for="ehiUrlDefault" class="col-sm-2 col-form-label" th:text="'EHI url default'"></label>
                 <div class="col-sm-10">
-                    <div>
-                        <input type="text" class="form-control" th:id="ehiUrlDefault" th:name="ehiUrlDefault" th:value="${ehiUrlDefaultInvalid == null ? settings.ehiUrlDefault : ehiUrlDefaultInvalid}"/>
+                    <div th:if="${#lists.isEmpty(environments)}">
+                        <input type="text" class="form-control" id="ehiUrlDefault" name="ehiUrlDefault"
+                               th:value="${ehiUrlDefaultInvalid == null ? settings.ehiUrlDefault : ehiUrlDefaultInvalid}"/>
                     </div>
-                </div>
-            </div>
 
-            <div class="form-group row">
-                <label th:for="merchantId" class="col-sm-2 col-form-label" th:text="'EHI url default'"></label>
-                <div class="col-sm-10">
-                    <div class="md-form">
-                        <input type="search" id="form-autocomplete" class="form-control mdb-autocomplete">
-                        <button class="mdb-autocomplete-clear">
-                            <svg fill="#000000" height="24" viewBox="0 0 24 24" width="24" xmlns="https://www.w3.org/2000/svg">
-                                <path d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/>
-                                <path d="M0 0h24v24H0z" fill="none"/>
-                            </svg>
-                        </button>
-                        <label for="form-autocomplete" class="active">Start typing environment name...</label>
+                    <div th:if="${not #lists.isEmpty(environments)}">
+                        <select id="ehiUrlDefault" name="ehiUrlDefault" class="custom-select">
+                            <option th:each="env : ${environments}" th:value="${env.url}" th:text="${env.name}"
+                                    th:selected="${settings.ehiUrlDefault != null && #strings.startsWith(settings.ehiUrlDefault, env.url)}"/>
+                        </select>
                     </div>
                 </div>
             </div>

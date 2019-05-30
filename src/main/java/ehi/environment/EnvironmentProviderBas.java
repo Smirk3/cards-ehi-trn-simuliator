@@ -3,6 +3,7 @@ package ehi.environment;
 import com.mashape.unirest.http.HttpResponse;
 import com.mashape.unirest.http.Unirest;
 import com.mashape.unirest.http.exceptions.UnirestException;
+import ehi.wiki.Login;
 import org.apache.http.HttpStatus;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -40,9 +41,9 @@ public class EnvironmentProviderBas implements EnvironmentProvider {
     }
 
     @Override
-    public void authProvider(String username, String password) throws EnvProviderException {
+    public void authProvider(Login login) throws EnvProviderException {
         try {
-            HttpResponse<String> response = Unirest.get(URL).basicAuth(username, password).asString();
+            HttpResponse<String> response = Unirest.get(URL).basicAuth(login.user, login.password).asString();
             validateResponse(response);
 
         } catch (UnirestException e) {
@@ -96,6 +97,7 @@ public class EnvironmentProviderBas implements EnvironmentProvider {
                             String port = resolveValue(c);
                             envUrl = String.format("https://%s:%s", nanoServicesIp, port);
                         }
+                        envs.get(j - 1).name = envUrl + "  - " + envs.get(j - 1).name;
                         envs.get(j - 1).url = envUrl;
                     }
                     break;

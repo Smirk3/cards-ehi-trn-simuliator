@@ -1,5 +1,6 @@
 package ehi;
 
+import com.google.gson.Gson;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -18,11 +19,15 @@ public class BaseController {
 
     public static final String MODEL_ATTR_FORM_MODE = "formMode";
 
+    private Gson gson = new Gson();
 
-    protected final String jsonResponse(Object json, HttpServletResponse response) {
+
+    protected final String jsonResponse(Object object, Class klass, HttpServletResponse response) {
         response.setContentType("application/json; charset=UTF-8");
+        String json = gson.toJson(object, klass);
+
         try {
-            response.getWriter().write(json.toString());
+            response.getWriter().write(json);
             response.getWriter().flush();
             response.getWriter().close();
             response.setStatus(HttpServletResponse.SC_OK);
