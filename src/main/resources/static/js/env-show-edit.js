@@ -80,8 +80,8 @@ function hideAuthPopup() {
 }
 
 function resolveCustomOptionSelected(select) {
-    $('#envsListDiv').show();
-    $('#envsList').attr('disabled', 'disabled');
-    $('#envCustomDiv').show();
-    $('#envCustom').show();
+    $('#ehiUrlCustomDiv').show();
+    $('#ehiUrlCustom').attr('disabled', 'disabled');
+    $('#ehiUrlListDiv').show();
+    $('#ehiUrlList').show();
 }
