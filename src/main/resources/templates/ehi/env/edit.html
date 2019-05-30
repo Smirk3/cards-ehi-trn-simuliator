@@ -51,13 +51,13 @@
             <div class="form-group row">
                 <label for="ehiUrlDefault" class="col-sm-2 col-form-label" th:text="'EHI url default'"></label>
                 <div class="col-sm-10">
-                    <div th:if="${#lists.isEmpty(environments)}">
-                        <input type="text" class="form-control" id="ehiUrlDefault" name="ehiUrlDefault"
+                    <div id="envCustomDiv" th:if="${#lists.isEmpty(environments)}">
+                        <input id="envCustom" type="text" class="form-control" id="ehiUrlDefault" name="ehiUrlDefault"
                                th:value="${ehiUrlDefaultInvalid == null ? settings.ehiUrlDefault : ehiUrlDefaultInvalid}"/>
                     </div>
 
-                    <div th:if="${not #lists.isEmpty(environments)}">
-                        <select id="ehiUrlDefault" name="ehiUrlDefault" class="custom-select">
+                    <div id="envsListDiv" th:if="${not #lists.isEmpty(environments)}">
+                        <select id="envsList" id="ehiUrlDefault" name="ehiUrlDefault" class="custom-select">
                             <option th:each="env : ${environments}" th:value="${env.url}" th:text="${env.name}"
                                     th:selected="${settings.ehiUrlDefault != null && #strings.startsWith(settings.ehiUrlDefault, env.url)}"/>
                         </select>

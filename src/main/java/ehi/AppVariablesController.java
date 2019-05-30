@@ -15,6 +15,7 @@ import ehi.wiki.WikiAuthStatus;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.util.CollectionUtils;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -77,20 +78,22 @@ public class AppVariablesController extends BaseController {
 
     private List<Environment> getEnvironments(WikiAuthStatus authStatus) {
         if (authStatus.isAuthenticated()) {
-            return envProvider.getEnvironments();
+            List<Environment> envs = envProvider.getEnvironments();
+            List<Environment> result;
+            if (!CollectionUtils.isEmpty(envs)){
+                result = new ArrayList<>();
+                Environment addCustom = new Environment();
+                addCustom.url = "ADD";
+                addCustom.name = "Add custom url";
+                result.add(addCustom);
+                result.addAll(envs);
+            } else {
+                result = new ArrayList<>();
+            }
+            return result;
         } else {
             return new ArrayList<>();
         }
     }
 
-    /*@RequestMapping("/getEnvironments")
-    public void getEnvironments(HttpServletRequest request, HttpServletResponse response) {
-        List<Environment> envs = envProvider.getEnvironments();
-        List<Object> list = new ArrayList<>();
-        for (Environment env : envs) {
-            list.add(env.name);
-        }
-
-        jsonResponse(list, LinkedList.class, response);
-    }*/
 }

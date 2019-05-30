@@ -24,6 +24,7 @@ public class EnvironmentProviderBas implements EnvironmentProvider {
     private static final Logger logger = LogManager.getLogger(EnvironmentProviderBas.class);
 
     private static final String URL = "https://wiki.bas.lt";
+    private static final String WSDL_URI = "/soap/GetTransaction?wsdl";
 
     public EnvironmentProviderBas() {
         Unirest.setTimeouts(10000, 10000);
@@ -98,7 +99,7 @@ public class EnvironmentProviderBas implements EnvironmentProvider {
                             envUrl = String.format("https://%s:%s", nanoServicesIp, port);
                         }
                         envs.get(j - 1).name = envUrl + "  - " + envs.get(j - 1).name;
-                        envs.get(j - 1).url = envUrl;
+                        envs.get(j - 1).url = envUrl + WSDL_URI;
                     }
                     break;
                 }

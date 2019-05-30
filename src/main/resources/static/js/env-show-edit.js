@@ -78,3 +78,10 @@ function hideAuthPopup() {
     $('#overlay').fadeOut(300);
     $('#envEditForm').show();
 }
+
+function resolveCustomOptionSelected(select) {
+    $('#envsListDiv').show();
+    $('#envsList').attr('disabled', 'disabled');
+    $('#envCustomDiv').show();
+    $('#envCustom').show();
+}
