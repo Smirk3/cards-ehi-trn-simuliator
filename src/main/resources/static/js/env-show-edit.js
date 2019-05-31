@@ -79,9 +79,11 @@ function hideAuthPopup() {
     $('#envEditForm').show();
 }
 
-function resolveCustomOptionSelected(select) {
-    $('#ehiUrlCustomDiv').show();
-    $('#ehiUrlCustom').attr('disabled', 'disabled');
-    $('#ehiUrlListDiv').show();
-    $('#ehiUrlList').show();
+function resolveCustomOptionSelected(selected) {
+    if (selected == 'ADD'){
+        $('#ehiUrlCustom').parent().show();
+        $('#ehiUrlCustom').removeAttr('disabled');
+        $('#ehiUrlList').attr('disabled', true);
+        $('#ehiUrlList').parent().hide();
+    }
 }

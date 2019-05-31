@@ -3,27 +3,19 @@ package ehi;
 import ehi.alerts.AlertError;
 import ehi.alerts.AlertSuccess;
 import ehi.alerts.AlertUtil;
-import ehi.environment.EnvProviderException;
 import ehi.environment.Environment;
 import ehi.environment.EnvironmentProvider;
 import ehi.settings.Settings;
 import ehi.settings.SettingsUtil;
-import ehi.wiki.AjaxResponse;
-import ehi.wiki.AjaxResponseShowWikiLogin;
-import ehi.wiki.Login;
 import ehi.wiki.WikiAuthStatus;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.util.CollectionUtils;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
 import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -79,18 +71,13 @@ public class AppVariablesController extends BaseController {
     private List<Environment> getEnvironments(WikiAuthStatus authStatus) {
         if (authStatus.isAuthenticated()) {
             List<Environment> envs = envProvider.getEnvironments();
-            List<Environment> result;
             if (!CollectionUtils.isEmpty(envs)){
-                result = new ArrayList<>();
                 Environment addCustom = new Environment();
                 addCustom.url = "ADD";
                 addCustom.name = "Add custom url";
-                result.add(addCustom);
-                result.addAll(envs);
-            } else {
-                result = new ArrayList<>();
+                envs.add(addCustom);
             }
-            return result;
+            return envs;
         } else {
             return new ArrayList<>();
         }
