@@ -58,7 +58,14 @@ public class EnvironmentProviderBas implements EnvironmentProvider {
         try {
             HttpResponse<String> response = Unirest.get(URL + "/display/BSC/Development+Nano+systems+-+BCLT").asString();
             validateResponse(response);
-            return parseDevelopmentEnvironments(response.getBody());
+            List<Environment> envs = parseDevEnvironments(response.getBody());
+
+            response = Unirest.get(URL + "/display/BSC/Test+Nano+sistemos+MTST+Telia+DC").asString();
+            validateResponse(response);
+            envs.addAll(parseTestEnvironments(response.getBody()));
+            envs.add(localhostUrl());
+
+            return envs;
 
         } catch (UnirestException | EnvProviderException e) {
             logger.error(e, e);
@@ -66,11 +73,56 @@ public class EnvironmentProviderBas implements EnvironmentProvider {
         }
     }
 
-    private List<Environment> parseDevelopmentEnvironments(String html) {
+    private List<Environment> parseTestEnvironments(String html) {
         List<Environment> envs = new ArrayList<>();
         Document doc = Jsoup.parse(html);
 
-        String nanoServicesIp = resolveNanoServicesIpAddress(doc);
+        String nanoServicesIp = resolveTestNanoServicesIpAddress(doc);
+
+        Element tableRows = doc.getElementsByTag("tbody").get(0);
+        List<Node> titleColumns = tableRows.childNode(0).childNodes();
+        for (int i = 2; i < titleColumns.size(); i++) {
+            Node column = titleColumns.get(i);
+            Environment env = new Environment();
+            env.name = resolveValue(column) + " (test)";
+            envs.add(env);
+        }
+
+        boolean isServicesRowsStarted = false;
+        for (int i = 1; i < tableRows.childNodeSize(); i++) {
+            String app = resolveValue(tableRows.childNode(i).childNode(0));
+            if ("Services".equals(app) || isServicesRowsStarted) {
+                isServicesRowsStarted = true;
+                String protocol = resolveValue(tableRows.childNode(i).childNode(1));
+                if ("HTTP".equals(protocol)) {
+                    for (int j = 2; j < tableRows.childNode(i).childNodeSize(); j++) {
+                        Node c = tableRows.childNode(i).childNode(j);
+
+                        String envUrl = resolveUrl(c);
+                        if (StringUtils.hasText(envUrl) && envUrl.indexOf("/rest/") != -1) {
+                            envUrl = envUrl.substring(0, envUrl.indexOf("/rest/"));
+                        } else if (StringUtils.hasText(envUrl) && envUrl.startsWith("http")) {
+                            envUrl = envUrl.endsWith("/") ? envUrl.substring(0, envUrl.length() - 1) : envUrl;
+                        } else {
+                            String port = resolveValue(c);
+                            envUrl = String.format("https://%s:%s", nanoServicesIp, port);
+                        }
+                        envs.get(j - 2).name = envUrl + "  - " + envs.get(j - 2).name;
+                        envs.get(j - 2).url = envUrl + WSDL_URI;
+                    }
+                    break;
+                }
+            }
+        }
+
+        return envs;
+    }
+
+    private List<Environment> parseDevEnvironments(String html) {
+        List<Environment> envs = new ArrayList<>();
+        Document doc = Jsoup.parse(html);
+
+        String nanoServicesIp = resolveDevNanoServicesIpAddress(doc);
 
         Element tableRows = doc.getElementsByTag("tbody").get(0);
         List<Node> titleColumns = tableRows.childNode(0).childNodes();
@@ -109,7 +161,17 @@ public class EnvironmentProviderBas implements EnvironmentProvider {
         return envs;
     }
 
-    private String resolveNanoServicesIpAddress(Document doc) {
+    private String resolveTestNanoServicesIpAddress(Document doc) {
+        Element tableRows = doc.getElementsByTag("tbody").get(1);
+        for (Node row : tableRows.childNodes()) {
+            if ("Nano Services".equalsIgnoreCase(resolveValue(row.childNode(5)))) {
+                return resolveValue(row.childNode(2));
+            }
+        }
+        return null;
+    }
+
+    private String resolveDevNanoServicesIpAddress(Document doc) {
         Element tableRows = doc.getElementsByTag("tbody").get(1);
         for (Node row : tableRows.childNodes()) {
             if ("Nano Services".equalsIgnoreCase(resolveValue(row.childNode(3)))) {
@@ -149,9 +211,11 @@ public class EnvironmentProviderBas implements EnvironmentProvider {
         }
     }
 
-    public static void main(String[] args) {
-        new EnvironmentProviderBas().getEnvironments();
-
-
+    private Environment localhostUrl() {
+        Environment env = new Environment();
+        String url = "http://localhost:6060";
+        env.url = url + WSDL_URI;
+        env.name = url + " (local)";
+        return env;
     }
 }
