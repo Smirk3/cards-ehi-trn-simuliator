@@ -4,8 +4,6 @@ import ehi.BaseController;
 import ehi.alerts.AlertError;
 import ehi.alerts.AlertSuccess;
 import ehi.alerts.AlertUtil;
-import ehi.alerts.AlertWarning;
-import ehi.card.Card;
 import ehi.card.exception.CardNotFoundException;
 import ehi.classifier.ClassifierManager;
 import ehi.country.CountryManager;
@@ -33,8 +31,6 @@ import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.util.CollectionUtils;
-import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.SessionAttributes;
@@ -42,14 +38,10 @@ import org.springframework.web.servlet.view.RedirectView;
 import org.springframework.ws.client.WebServiceIOException;
 
 import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Collection;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 import static ehi.gps.classifier.StatusCodeMapper.STATUS_CODE_SUCCESS;
 import static ehi.message.Util.copyOfMessage;
@@ -71,10 +63,8 @@ public class EhiMessageController extends BaseController {
     private static final Logger logger = LogManager.getLogger(EhiMessageController.class);
 
     public static final String MODEL_ATTR_MESSAGE = "message";
-    private static final String MODEL_ATTR_TEMPLATES = "templates";
 
     public static final String EHI_MESSAGE_URI = "/ehi/message";
-    public static final String EHI_TEMPLATES_LIST_URI = "/templates/list";
     public static final String EHI_MESSAGE_NEW = "/new/fields";
     public static final String EHI_MESSAGE_EDIT = "/edit/fields";
 
@@ -90,7 +80,6 @@ public class EhiMessageController extends BaseController {
     @RequestMapping("")
     public RedirectView index() {
         return new RedirectView(EHI_MESSAGE_URI + EHI_MESSAGE_NEW);
-        //return new RedirectView(EHI_MESSAGE_URI + EHI_TEMPLATES_LIST_URI);
     }
 
     @RequestMapping("/show")
@@ -190,7 +179,7 @@ public class EhiMessageController extends BaseController {
 
     @RequestMapping(EHI_MESSAGE_NEW)
     public RedirectView showNewMessageForm(Model model) {
-        model.addAttribute(MODEL_ATTR_MESSAGE, newMessageInstance());
+        model.addAttribute(MODEL_ATTR_MESSAGE, newMessageInstance(countryManager));
 
         model.addAttribute(VIEW, "ehi/transaction/messageFormEdit");
         return new RedirectView(EHI_MESSAGE_URI + EHI_MESSAGE_EDIT);
@@ -205,156 +194,6 @@ public class EhiMessageController extends BaseController {
         return TEMPLATE;
     }
 
-    @RequestMapping(EHI_TEMPLATES_LIST_URI)
-    public String showTemplatesList(HttpServletRequest request, Model model) {
-        List<Template> templates = SettingsUtil.getSessionSettings(request.getSession()).templates;
-        if (templates == null){
-            templates = new ArrayList<>();
-        }
-        model.addAttribute(MODEL_ATTR_TEMPLATES, templates);
-        model.addAttribute(VIEW, "ehi/transaction/template/templates");
-        return TEMPLATE;
-    }
-
-    @RequestMapping("/templates/do")
-    public String payByTemplate(HttpServletRequest request, Model model,
-                                @RequestParam("templateId") String templateId) {
-
-        return null;
-        /*        Settings settings = SettingsUtil.getSessionSettings(request.getSession());
-        List<Template> templates = settings.templates;
-        addIbUrlDefault(model, settings);
-
-        try {
-            Template template = findTemplate(templates, templateId);
-            try {
-                Contract contract = getCard(request, template.getMessage().getMerchantId());
-                MessageRequest message = MessageUtil.createMessageByTemplate(template, contract);
-
-                String contractMnemo = message.getMerchantId();
-                try {
-                    getCard(request, contractMnemo);
-                } catch (CardNotFoundException e) {
-                    AlertUtil.addAlert(model, new AlertWarning("IBPay contract " + contractMnemo + " was not found."));
-                }
-                message.setSystemGeneratedDate();
-
-                model.addAttribute(MODEL_ATTR_MESSAGE, message);
-                request.getSession().setAttribute(SESSION_ATTR_MESSAGE, message);
-
-                return showEditMessageFields(model);
-            } catch (CardNotFoundException cnfe) {
-                AlertUtil.addAlert(model, new AlertError(String.format(
-                    "Could not create message by template %s because of IBPay contract not found by merchant id: %s",
-                    template.getName(), template.getMessage().getMerchantId())));
-                return showTemplatesList(request, model);
-            }
-        } catch (TemplateNotFoundException e) {
-            AlertUtil.addAlert(model, new AlertWarning("IBPay template was not found."));
-            return showTemplatesList(request, model);
-        }*/
-    }
-
-    private void addIEhiUrlDefault(Model model, Settings settings){
-        if (StringUtils.hasText(settings.ehiUrlDefault)){
-            model.addAttribute("ehiUrlDefault", settings.ehiUrlDefault);
-        }
-    }
-
-    @RequestMapping("/templates/delete")
-    public String deleteTemplate(HttpServletRequest request, Model model,
-                                 @RequestParam("templateId") String templateId) {
-        if (StringUtils.hasText(templateId)) {
-            List<Template> templates = SettingsUtil.getSessionSettings(request.getSession()).templates;
-            for (int i = 0; i < templates.size(); i++) {
-                Template template = templates.get(i);
-                if (templateId.equalsIgnoreCase(template.id)) {
-                    templates.remove(i);
-                    break;
-                }
-            }
-        }
-        AlertUtil.addAlert(model, new AlertSuccess("Template deleted."));
-        return showTemplatesList(request, model);
-    }
-
-    @RequestMapping("/templates/create/name")
-    public String showCreateTemplateName(Model model) {
-        model.addAttribute(VIEW, "ehi/transaction/template/newTemplateName");
-        return TEMPLATE;
-    }
-
-    @RequestMapping("/templates/create")
-    public String createTemplate(HttpServletRequest request, Model model,
-                                 @RequestParam("templateName") String templateName,
-                                 @RequestParam("templateDescription") String templateDescription) {
-
-        List<Template> templates = SettingsUtil.getSessionSettings(request.getSession()).templates;
-
-        String id = getNewTemplateId(templates);
-        Template template = new Template();
-        template.id = id;
-        template.name = templateName;
-        template.description = templateDescription;
-        //template.setMessage((MessageRequest) request.getSession().getAttribute(SESSION_ATTR_MESSAGE));
-        templates.add(template);
-
-        AlertUtil.addAlert(model, new AlertSuccess("Template created successfully."));
-        return showTemplatesList(request, model);
-    }
-
-    @RequestMapping("/templates/show/edit")
-    public String showTemplateEditForm(HttpServletRequest request, Model model,
-                                       @RequestParam("templateId") String templateId) {
-        List<Template> templates = SettingsUtil.getSessionSettings(request.getSession()).templates;
-
-        try {
-            Template template = TemplateUtil.findTemplate(templates, templateId);
-            model.addAttribute("template", template);
-            model.addAttribute(VIEW, "ehi/transaction/template/templateEditForm");
-            return TEMPLATE;
-
-        } catch (TemplateNotFoundException e) {
-            AlertUtil.addAlert(model, new AlertError("Template not found."));
-            return showTemplatesList(request, model);
-        }
-    }
-
-    @RequestMapping("/templates/edit")
-    public String editTemplate(HttpServletRequest request, Model model,
-                               @RequestParam("templateId") String templateId,
-                               @RequestParam("description") String templateDescription) {
-        List<Template> templates = SettingsUtil.getSessionSettings(request.getSession()).templates;
-
-        try {
-            Map<String, String> params = getMessageParams(request);
-            //Card ibPayContract = getCard(request, params.get(FieldName.VK_SND_ID.name()));
-            Template template = TemplateUtil.findTemplate(templates, templateId);
-            template.description = templateDescription;
-
-            //MessageRequest message = template.getMessage();
-
-            //MessageUtil.setFieldValues(message, params);
-
-            AlertUtil.addAlert(model, new AlertSuccess("Template successfully updated."));
-            return showTemplatesList(request, model);
-
-        } catch (TemplateNotFoundException e) {
-            AlertUtil.addAlert(model, new AlertError("Template not found."));
-            return showTemplatesList(request, model);
-        /*} catch (CardNotFoundException cnfe) {
-            AlertUtil.addAlert(model, new AlertError("Template not found."));
-            return showTemplateEditForm(request, model, templateId);*/
-        }
-    }
-
-    @RequestMapping("/templates/download")
-    public void downloadTemplateTest(HttpServletRequest request, HttpServletResponse response) {
-        /*MessageRequest message = (MessageRequest) request.getSession().getAttribute(SESSION_ATTR_MESSAGE);
-        TestFile file = TemplateUtil.getTemplateTestFile(message);
-        FileDownloadUtil.download(response, file.getName(), file.getContent());*/
-    }
-
     private String getNewTemplateId(List<Template> templates){
         int id = 0;
         for (int i = 0; i < 50; i++) {
@@ -366,32 +205,6 @@ public class EhiMessageController extends BaseController {
             }
         }
         return Integer.toString(id);
-    }
-
-    private Map<String, String> getMessageParams(HttpServletRequest req) {
-        /*String prefix = "VK_";
-        Map<String, Object> paramsObj = WebUtils.getParametersStartingWith(req, prefix);
-        if (req.getParameterMap().containsKey(REQ_PARAM_DEBUG)){
-            paramsObj.put(REQ_PARAM_DEBUG, req.getParameterMap().get(REQ_PARAM_DEBUG));
-        }*/
-
-        Map<String, String> params = new HashMap<>();
-        /*for (String key : paramsObj.keySet()) {
-            String param = (paramsObj.get(key) instanceof String[]) ?
-                ((String[]) paramsObj.get(key))[0] :
-                ((String) paramsObj.get(key));
-            params.put((REQ_PARAM_DEBUG.equals(key) ? key : prefix + key), param);
-        }*/
-
-        return params;
-    }
-
-    private void setTemplatesEhiUrl(List<Template> templates, String ehiUrl) {
-        if (!CollectionUtils.isEmpty(templates)) {
-            for (Template template : templates) {
-                //template.getMessage().setIbUrl(ehiUrl);
-            }
-        }
     }
 
     private void bindMessageObjects(Message message, Settings settings) throws InvalidObjectIdentifier {
@@ -438,20 +251,6 @@ public class EhiMessageController extends BaseController {
             .setMerchants(settings.merchants)
             .createFormData();
         model.addAttribute("data", data);
-    }
-
-    private Collection<Card> getCards(HttpServletRequest request) {
-        List<Card> cards = SettingsUtil.getSessionSettings(request.getSession()).cards;
-        if (CollectionUtils.isEmpty(cards)) {
-            return new ArrayList<>();
-        } else {
-            return cards;
-        }
-    }
-
-    private Card getCard(HttpServletRequest request, String cardPcId) throws CardNotFoundException {
-        List<Card> cards = SettingsUtil.getSessionSettings(request.getSession()).cards;
-        return findCard(cards, cardPcId);
     }
 
 }

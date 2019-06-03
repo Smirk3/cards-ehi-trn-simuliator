@@ -6,6 +6,7 @@ import ehi.card.exception.CardNotFoundException;
 import ehi.classifier.bean.Mcc;
 import ehi.classifier.bean.ProcessingCode;
 import ehi.classifier.bean.TransactionType;
+import ehi.country.CountryManager;
 import ehi.gps.model.Country;
 import ehi.gps.model.CountryBuilder;
 import ehi.gps.model.Currency;
@@ -25,6 +26,7 @@ import ehi.message.model.Response;
 import org.springframework.util.CollectionUtils;
 import org.springframework.util.StringUtils;
 
+import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
@@ -32,18 +34,36 @@ import java.util.SplittableRandom;
 
 public class Util {
 
-    public static Message newMessageInstance() {
+    public static Message newMessageInstance(CountryManager countryManager) {
         Message message = new Message();
         message.date = LocalDateTime.now();
-        message.country = new Country();
-        message.amount = new Amount();
-        message.amount.currency = new CurrencyBuilder().createCurrency();
+        message.country = getDefaultCountry(countryManager);
+        message.amount = getDefaultAmount(countryManager);
         message.mcc = new Mcc();
         message.processingCode = new ProcessingCode();
         message.transactionType = new TransactionType();
         message.card = new Card();
         message.merchant = new Merchant();
         return message;
+    }
+
+    private static Country getDefaultCountry(CountryManager countryManager) {
+        try {
+            return findCountryByIsoAlpha3(countryManager.getCountries(), "LTU");
+        } catch (CountryNotFoundException e) {
+            return new Country();
+        }
+    }
+
+    private static Amount getDefaultAmount(CountryManager countryManager) {
+        Amount amount = new Amount();
+        try {
+            amount.currency = findCurrency(countryManager.getCurrencies(), "EUR");
+            amount.value = new BigDecimal(1);
+        } catch (CurrencyNotFoundException e) {
+            amount.currency = new CurrencyBuilder().createCurrency();
+        }
+        return amount;
     }
 
     public static Card findCard(List<Card> cards, String cardPcId) throws CardNotFoundException {
