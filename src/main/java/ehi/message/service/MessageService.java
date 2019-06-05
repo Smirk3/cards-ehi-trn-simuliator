@@ -11,7 +11,7 @@ public interface MessageService {
 
     String createRequestForNewTransaction(Message message);
 
-    String createRequestForSameTransaction(Message message, TransactionType transactionType);
+    String createRequestForSameTransaction(Message message);
 
     Response doRequest(String url, String request);
 

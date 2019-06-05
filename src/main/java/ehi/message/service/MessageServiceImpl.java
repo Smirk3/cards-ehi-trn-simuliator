@@ -45,13 +45,13 @@ public class MessageServiceImpl implements MessageService {
     }
 
     @Override
-    public String createRequestForSameTransaction(Message message, TransactionType transactionType) {
+    public String createRequestForSameTransaction(Message message) {
         GetTransaction getTrn = (GetTransaction) toObject(message.xmlRequest, GetTransaction.class);
-        getTrn.setTxnType(transactionType.txnType);
-        getTrn.setMTID(transactionType.mtId);
+        getTrn.setTxnType(message.transactionType.txnType);
+        getTrn.setMTID(message.transactionType.mtId);
         getTrn.setTXnID(getNewTxnId());
-        getTrn.setProcCode(wrapProcessingCodeValue(message.processingCode));
-        getTrn.setBillAmt(resolveBillAmount(message));
+        getTrn.setTxnAmt(message.amount.value.setScale(4, BigDecimal.ROUND_DOWN).doubleValue());
+        getTrn.setBillAmt(resolveBillAmountSign(message));
         return toXml(getTrn, GetTransaction.class);
     }
 
@@ -122,7 +122,7 @@ public class MessageServiceImpl implements MessageService {
         getTrn.setActBal(0.00);
         getTrn.setAuthCodeDE38(randomNumberInRange(111111, 999999));
         getTrn.setAvlBal(0.00);
-        getTrn.setBillAmt(resolveBillAmount(message));
+        getTrn.setBillAmt(resolveBillAmountSign(message));
         getTrn.setBillCcy(message.amount.currency.number);
         getTrn.setBlkAmt(0.00);
         getTrn.setCustRef(message.card.customerReference);
@@ -204,7 +204,7 @@ public class MessageServiceImpl implements MessageService {
         return "TXNID" + LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyyMMddHHmmssSSS"));
     }
 
-    private static double resolveBillAmount(Message message) {
+    private static double resolveBillAmountSign(Message message) {
         BigDecimal amount;
         if (AccountingEntryType.DEBIT.equals(message.processingCode.accountingEntryType)) {
             amount = message.amount.value.negate();

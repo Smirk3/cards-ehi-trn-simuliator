@@ -23,9 +23,6 @@ import ehi.message.model.Message;
 import ehi.message.service.MessageService;
 import ehi.settings.Settings;
 import ehi.settings.SettingsUtil;
-import ehi.template.Template;
-import ehi.template.TemplateNotFoundException;
-import ehi.template.TemplateUtil;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -39,6 +36,7 @@ import org.springframework.ws.client.WebServiceIOException;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -113,21 +111,20 @@ public class EhiMessageController extends BaseController {
 
     @RequestMapping("/do/next")
     public String doNextMessage(Model model, Message message,
-                                @RequestParam String transactionTypeId,
-                                @RequestParam String processingCodeValue) {
+                                @RequestParam String transactionTypeId) {
         Message nextMessage = copyOfMessage(message);
         nextMessage.parent = message;
         message.child = nextMessage;
 
         try {
             nextMessage.transactionType = findTransactionType(classifierManager.getTransactionTypes(), transactionTypeId);
-            nextMessage.processingCode = findProcessingCode(classifierManager.getProcessingCodes(), processingCodeValue);
+            nextMessage.amount.value = resolveAmountForNextMessage(nextMessage);
             nextMessage.response = null;
-            nextMessage.xmlRequest = messageService.createRequestForSameTransaction(nextMessage, nextMessage.transactionType);
+            nextMessage.xmlRequest = messageService.createRequestForSameTransaction(nextMessage);
             doMessageRequest(model, nextMessage);
             model.addAttribute(MODEL_ATTR_MESSAGE, nextMessage);
 
-        } catch (TransactionTypeNotFoundException | ProcessingCodeNotFoundException e) {
+        } catch (TransactionTypeNotFoundException e) {
             AlertUtil.addAlert(model, new AlertError(e.getMessage()));
         } catch (WebServiceIOException wse) {
             AlertUtil.addAlert(model, new AlertError("Could not connect to " + message.ehiUrl));
@@ -157,22 +154,22 @@ public class EhiMessageController extends BaseController {
         try {
             if (message.response != null && STATUS_CODE_SUCCESS.equals(message.response.statusCode)
                 && "Authorisation Request".equals(message.transactionType.description)) {
-                buttons.add(createButtonNext("Financial Notification (First Presentment)", message.processingCode.value));
-                buttons.add(createButtonNext("Automatic Authorisation Reversal", message.processingCode.value));
+                buttons.add(createButtonNext("Authorisation Request"));
+                buttons.add(createButtonNext("Automatic Authorisation Reversal"));
+                buttons.add(createButtonNext("Financial Notification (First Presentment)"));
             } else if (message.response != null && STATUS_CODE_SUCCESS.equals(message.response.statusCode)
                 && "Financial Notification (First Presentment)".equals(message.transactionType.description)) {
-                buttons.add(createButtonNext("Financial Reversal", message.processingCode.value));
+                buttons.add(createButtonNext("Financial Reversal"));
             }
-        } catch (TransactionTypeNotFoundException | ProcessingCodeNotFoundException e) {
+        } catch (TransactionTypeNotFoundException e) {
             logger.error(e);
         }
         return buttons;
     }
 
-    private ButtonNext createButtonNext(String transactionTypeDescription, String processingCodeValue) throws TransactionTypeNotFoundException, ProcessingCodeNotFoundException {
+    private ButtonNext createButtonNext(String transactionTypeDescription) throws TransactionTypeNotFoundException {
         ButtonNext button = new ButtonNext();
         button.transactionType = findTransactionTypeByDescription(classifierManager.getTransactionTypes(), transactionTypeDescription);
-        button.processingCode = findProcessingCode(classifierManager.getProcessingCodes(), processingCodeValue);
         button.label = "Do " + button.transactionType.description;
         return button;
     }
@@ -192,19 +189,6 @@ public class EhiMessageController extends BaseController {
 
         model.addAttribute(VIEW, "ehi/transaction/messageFormEdit");
         return TEMPLATE;
-    }
-
-    private String getNewTemplateId(List<Template> templates){
-        int id = 0;
-        for (int i = 0; i < 50; i++) {
-            id = i;
-            try {
-                TemplateUtil.findTemplate(templates, Integer.toString(id));
-            } catch (TemplateNotFoundException e) {
-                break;
-            }
-        }
-        return Integer.toString(id);
     }
 
     private void bindMessageObjects(Message message, Settings settings) throws InvalidObjectIdentifier {
@@ -251,6 +235,29 @@ public class EhiMessageController extends BaseController {
             .setMerchants(settings.merchants)
             .createFormData();
         model.addAttribute("data", data);
+    }
+
+
+    private BigDecimal resolveAmountForNextMessage(Message message){
+        BigDecimal amount = message.amount.value;
+        if ("Authorisation Request".equals(message.transactionType.description) && "Authorisation Request".equals(message.parent.transactionType.description)) {
+            if (message.getAmount().value.signum() < 0) {
+                amount = message.getAmount().value.subtract(BigDecimal.ONE);
+            } else {
+                amount = message.getAmount().value.add(BigDecimal.ONE);
+            }
+        } else if (message.transactionType.description.indexOf("Authorisation Reversal") != -1
+                || message.transactionType.description.indexOf("Financial Notification") != -1) {
+            if (message.parent != null) {
+                amount = BigDecimal.ZERO;
+                Message msg = message;
+                while (msg.parent != null) {
+                    amount = amount.add(msg.parent.amount.value);
+                    msg = msg.parent;
+                }
+            }
+        }
+        return amount;
     }
 
 }
