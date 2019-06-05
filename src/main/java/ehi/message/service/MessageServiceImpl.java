@@ -211,6 +211,12 @@ public class MessageServiceImpl implements MessageService {
         } else {
             amount = message.amount.value;
         }
+
+        // Change billing amount sign to opposite for all Reversal messages
+        if (message.transactionType.description.indexOf("Reversal") > -1) {
+            amount = amount.negate();
+        }
+
         return amount.setScale(2, BigDecimal.ROUND_DOWN).doubleValue();
     }
 

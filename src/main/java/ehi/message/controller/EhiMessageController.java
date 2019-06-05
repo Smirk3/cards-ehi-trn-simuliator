@@ -161,7 +161,7 @@ public class EhiMessageController extends BaseController {
                 buttons.add(createButtonNext("Automatic Authorisation Reversal", message.processingCode.value));
             } else if (message.response != null && STATUS_CODE_SUCCESS.equals(message.response.statusCode)
                 && "Financial Notification (First Presentment)".equals(message.transactionType.description)) {
-                buttons.add(createButtonNext("Financial Reversal", "20"));
+                buttons.add(createButtonNext("Financial Reversal", message.processingCode.value));
             }
         } catch (TransactionTypeNotFoundException | ProcessingCodeNotFoundException e) {
             logger.error(e);
