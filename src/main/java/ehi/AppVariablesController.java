@@ -3,7 +3,6 @@ package ehi;
 import ehi.alerts.AlertError;
 import ehi.alerts.AlertSuccess;
 import ehi.alerts.AlertUtil;
-import ehi.environment.Environment;
 import ehi.environment.EnvironmentProvider;
 import ehi.settings.Settings;
 import ehi.settings.SettingsUtil;
@@ -11,13 +10,10 @@ import ehi.wiki.WikiAuthStatus;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.util.CollectionUtils;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
 import javax.servlet.http.HttpServletRequest;
-import java.util.ArrayList;
-import java.util.List;
 
 @Controller
 @RequestMapping("/ehi/env")
@@ -66,21 +62,6 @@ public class AppVariablesController extends BaseController {
         }
 
         return template;
-    }
-
-    private List<Environment> getEnvironments(WikiAuthStatus authStatus) {
-        if (authStatus.isAuthenticated()) {
-            List<Environment> envs = envProvider.getEnvironments();
-            if (!CollectionUtils.isEmpty(envs)){
-                Environment addCustom = new Environment();
-                addCustom.url = "ADD";
-                addCustom.name = "Add custom url";
-                envs.add(addCustom);
-            }
-            return envs;
-        } else {
-            return new ArrayList<>();
-        }
     }
 
 }

@@ -1,7 +1,6 @@
 
 $(document).ready(function() {
    showAuth();
-
 });
 
 function authenticate() {
@@ -20,7 +19,7 @@ function authenticate() {
         success: function (data) {
             if (data.status == "OK"){
                 $('#alertError').html('').hide();
-                window.location.href = "/ehi/env/show/edit";
+                window.location.href = window.location.href;
             } else {
                 $('#alertInfo').hide();
                 $('#alertError').html(data.message).show();
@@ -70,13 +69,13 @@ function showAuth() {
 }
 
 function showAuthPopup() {
-    $('#envEditForm').hide();
+    $('#editForm').hide();
     $('#overlay').fadeIn(300);
 }
 
 function hideAuthPopup() {
     $('#overlay').fadeOut(300);
-    $('#envEditForm').show();
+    $('#editForm').show();
 }
 
 function resolveCustomOptionSelected(selected) {

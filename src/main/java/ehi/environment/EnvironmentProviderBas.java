@@ -13,6 +13,7 @@ import org.jsoup.nodes.Element;
 import org.jsoup.nodes.Node;
 import org.jsoup.nodes.TextNode;
 import org.springframework.stereotype.Component;
+import org.springframework.util.CollectionUtils;
 import org.springframework.util.StringUtils;
 
 import java.util.ArrayList;
@@ -56,16 +57,22 @@ public class EnvironmentProviderBas implements EnvironmentProvider {
     @Override
     public List<Environment> getEnvironments() {
         try {
-            HttpResponse<String> response = Unirest.get(URL + "/display/BSC/Development+Nano+systems+-+BCLT").asString();
-            validateResponse(response);
-            List<Environment> envs = parseDevEnvironments(response.getBody());
+                HttpResponse<String> response = Unirest.get(URL + "/display/BSC/Development+Nano+systems+-+BCLT").asString();
+                validateResponse(response);
+                List<Environment> envs = parseDevEnvironments(response.getBody());
 
-            response = Unirest.get(URL + "/display/BSC/Test+Nano+sistemos+MTST+Telia+DC").asString();
-            validateResponse(response);
-            envs.addAll(parseTestEnvironments(response.getBody()));
-            envs.add(localhostUrl());
+                response = Unirest.get(URL + "/display/BSC/Test+Nano+sistemos+MTST+Telia+DC").asString();
+                validateResponse(response);
+                envs.addAll(parseTestEnvironments(response.getBody()));
+                envs.add(localhostUrl());
 
-            return envs;
+                if (!CollectionUtils.isEmpty(envs)){
+                    Environment addCustom = new Environment();
+                    addCustom.url = "ADD";
+                    addCustom.name = "Add custom url";
+                    envs.add(addCustom);
+                }
+                return envs;
 
         } catch (UnirestException | EnvProviderException e) {
             logger.error(e, e);

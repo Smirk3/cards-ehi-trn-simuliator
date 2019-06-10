@@ -16,15 +16,30 @@
         You have no cards and merchants. Upload EHI Simuliator <a th:href="@{/ehi/settings}">"Settings"</a> from file or create new ones.
     </div>
 
-    <form method="post" th:action="@{/ehi/message/show}" th:object="${message}" th:if="not ${data.cards.isEmpty()} and not ${data.merchants.isEmpty()}">
+    <div th:replace="ehi/login/wikiLogin :: popup" />
 
-        <div class="form-group row">
-            <label for="ehiUrl" class="col-sm-2 col-form-label">EHI url</label>
-            <div class="col-sm-10">
-                <input type="text" class="form-control" id="ehiUrl" th:name="ehiUrl" th:value="${data.ehiUrlDefault == null ? message.ehiUrl : data.ehiUrlDefault}" aria-describedby="helpInline"/>
-                <small id="helpInline" class="form-text text-muted" th:text="'NANO URL for soap message'" style="font-size: 0.75rem" />
+    <form id="editForm" method="post" th:action="@{/ehi/message/show}" th:object="${message}" th:if="not ${data.cards.isEmpty()} and not ${data.merchants.isEmpty()}">
+
+        <fieldset style="padding-top: 20px">
+            <div class="form-group row">
+                <label for="ehiUrlCustom" class="col-sm-2 col-form-label" th:text="'EHI url'"></label>
+                <div class="col-sm-10">
+                    <div th:style="${#lists.isEmpty(environments) ? '' : 'display:none'}">
+                        <input id="ehiUrlCustom" type="text" class="form-control" name="ehiUrl" th:disabled="${not #lists.isEmpty(environments)}"
+                               th:value="${data.ehiUrlDefault == null ? message.ehiUrl : data.ehiUrlDefault}"/>
+                        <small id="helpInline" class="form-text text-muted" th:text="'NANO URL for soap message'" style="font-size: 0.75rem" />
+                    </div>
+
+                    <div th:style="${not #lists.isEmpty(environments) ? '' : 'display:none'}">
+                        <select id="ehiUrlList" name="ehiUrl" class="custom-select" th:disabled="${#lists.isEmpty(environments)}" onchange="resolveCustomOptionSelected(this.value)">
+                            <option th:each="env : ${environments}" th:value="${env.url}" th:text="${env.name}"
+                                    th:selected="${message.ehiUrl != null && #strings.startsWith(message.ehiUrl, env.url)}"/>
+                        </select>
+                        <small id="helpInline" class="form-text text-muted" th:text="'NANO URL for soap message'" style="font-size: 0.75rem" />
+                    </div>
+                </div>
             </div>
-        </div>
+        </fieldset>
 
         <fieldset>
             <legend>Message fields</legend>

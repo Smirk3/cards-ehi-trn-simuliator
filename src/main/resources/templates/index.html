@@ -50,7 +50,8 @@
 
 <script type="text/javascript" th:src="@{/js/app.js}"></script>
 
-<script th:if="${#strings.startsWith(#httpServletRequest.requestURI,'/ehi/env/show/edit')}" type="text/javascript" th:src="@{/js/env-show-edit.js}"></script>
+<script th:if="${#strings.startsWith(#httpServletRequest.requestURI,'/ehi/env/show/edit')
+              || #strings.startsWith(#httpServletRequest.requestURI,'/ehi/message/edit/fields')}" type="text/javascript" th:src="@{/js/wiki-auth.js}"></script>
 
 </body>
 </html>

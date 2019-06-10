@@ -7,6 +7,7 @@ import ehi.alerts.AlertUtil;
 import ehi.card.exception.CardNotFoundException;
 import ehi.classifier.ClassifierManager;
 import ehi.country.CountryManager;
+import ehi.environment.EnvironmentProvider;
 import ehi.gps.classifier.PinEntryCapability;
 import ehi.gps.classifier.PosCapability;
 import ehi.gps.classifier.Scheme;
@@ -23,6 +24,7 @@ import ehi.message.model.Message;
 import ehi.message.service.MessageService;
 import ehi.settings.Settings;
 import ehi.settings.SettingsUtil;
+import ehi.wiki.WikiAuthStatus;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -186,6 +188,7 @@ public class EhiMessageController extends BaseController {
     public String showEditMessageForm(Model model, HttpServletRequest request) {
         Settings settings = SettingsUtil.getSessionSettings(request.getSession());
         addMessageFormData(model, settings);
+        model.addAttribute("environments", getEnvironments(new WikiAuthStatus(request)));
 
         model.addAttribute(VIEW, "ehi/transaction/messageFormEdit");
         return TEMPLATE;
