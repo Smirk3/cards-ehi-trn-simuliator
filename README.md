@@ -8,7 +8,7 @@ Startup for Windows
 You should have java 1.8 installed on your machine.
 
 Start from command line:
-java -Dserver.port=8080 -jar card-ehi-trn-simuliator-1.0.0.jar
+"java -Dserver.port=8080 -jar card-ehi-trn-simuliator-1.0.0.jar"
 
 OR
 
