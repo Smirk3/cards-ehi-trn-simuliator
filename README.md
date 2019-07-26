@@ -25,5 +25,5 @@ pause
 change "startup.bat" file content JAVA_HOME property value to Java 1.8 installed on your's machine path
 in "startup.bat" file content check card-ehi-trn-simuliator artifact version you are trying to execute: "card-ehi-trn-simuliator-1.0.0.jar"
 execute "startup.bat" file.
-open in browser URL "http://localhost:8080"
+open in browser URL "http://localhost:8080/ehi"
 you can start application server on any different port number by changing port number -Dserver.port=8080
