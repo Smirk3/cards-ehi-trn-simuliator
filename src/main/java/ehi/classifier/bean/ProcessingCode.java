@@ -1,3 +1,8 @@
+/*
+ * Copyright (c) 2019. Igor Zubanov ( igor.zubanov@gmail.com ).
+ * All rights reserved.
+ */
+
 package ehi.classifier.bean;
 
 import ehi.gps.classifier.AccountingEntryType;

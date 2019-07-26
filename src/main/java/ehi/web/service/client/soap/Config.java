@@ -1,3 +1,8 @@
+/*
+ * Copyright (c) 2019. Igor Zubanov ( igor.zubanov@gmail.com ).
+ * All rights reserved.
+ */
+
 package ehi.web.service.client.soap;
 
 import org.springframework.context.annotation.Bean;
