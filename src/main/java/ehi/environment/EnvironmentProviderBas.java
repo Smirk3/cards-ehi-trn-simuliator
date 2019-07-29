@@ -17,6 +17,7 @@ import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.nodes.Node;
 import org.jsoup.nodes.TextNode;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 import org.springframework.util.CollectionUtils;
 import org.springframework.util.StringUtils;
@@ -29,6 +30,8 @@ public class EnvironmentProviderBas implements EnvironmentProvider {
 
     private static final Logger logger = LogManager.getLogger(EnvironmentProviderBas.class);
 
+    @Value("${environment.provider.enabled}")
+    private Boolean providerEnabled;
     private static final String URL = "https://wiki.bas.lt";
     private static final String WSDL_URI = "/soap/GetTransaction?wsdl";
 
@@ -38,6 +41,7 @@ public class EnvironmentProviderBas implements EnvironmentProvider {
 
     @Override
     public Boolean isProviderAccessible() {
+        if (providerEnabled != null && providerEnabled == Boolean.FALSE) return false;
         try {
             HttpResponse<String> response = Unirest.get(URL).asString();
             return HttpStatus.SC_OK == response.getStatus();
@@ -62,22 +66,22 @@ public class EnvironmentProviderBas implements EnvironmentProvider {
     @Override
     public List<Environment> getEnvironments() {
         try {
-                HttpResponse<String> response = Unirest.get(URL + "/display/BSC/Development+Nano+systems+-+BCLT").asString();
-                validateResponse(response);
-                List<Environment> envs = parseDevEnvironments(response.getBody());
+            HttpResponse<String> response = Unirest.get(URL + "/display/BSC/Development+Nano+systems+-+BCLT").asString();
+            validateResponse(response);
+            List<Environment> envs = parseDevEnvironments(response.getBody());
 
-                response = Unirest.get(URL + "/display/BSC/Test+Nano+sistemos+MTST+Telia+DC").asString();
-                validateResponse(response);
-                envs.addAll(parseTestEnvironments(response.getBody()));
-                envs.add(localhostUrl());
+            response = Unirest.get(URL + "/display/BSC/Test+Nano+sistemos+MTST+Telia+DC").asString();
+            validateResponse(response);
+            envs.addAll(parseTestEnvironments(response.getBody()));
+            envs.add(localhostUrl());
 
-                if (!CollectionUtils.isEmpty(envs)){
-                    Environment addCustom = new Environment();
-                    addCustom.url = "ADD";
-                    addCustom.name = "Add custom url";
-                    envs.add(addCustom);
-                }
-                return envs;
+            if (!CollectionUtils.isEmpty(envs)) {
+                Environment addCustom = new Environment();
+                addCustom.url = "ADD";
+                addCustom.name = "Add custom url";
+                envs.add(addCustom);
+            }
+            return envs;
 
         } catch (UnirestException | EnvProviderException e) {
             logger.error(e, e);
