@@ -8,15 +8,28 @@
 <body>
 
 <div class="container" th:fragment="content">
-    <form method="get">
-        <fieldset>
-            <legend>Welcome</legend>
+            <legend>Getting started</legend>
 
+            <div>
+                <details open="">
+                    <summary>1. Configuration</summary>
+                    <ul>
+                        <li>Go to <a th:href="@{/ehi/settings}">settings page</a> and click "Use default settings" button.</li>
+                        <li>Check <a th:href="@{/ehi/env}">application variables</a></li>
+                        <li>Go to <a th:href="@{/ehi/data/card/list}">list of cards page</a> and add cards you want to do request for.</li>
+                    </ul>
+                </details>
 
+                <details>
+                    <summary>Do requests</summary>
+                    <ul>
+                        <li>Fill in main request parameters on <a th:href="@{/ehi/message/edit/fields}">messages page</a> and click "Next" button.</li>
+                        <li>You will see automatically generated XML request body. You can change this XML document manually by clicking "Edit" button on the top right corner of XML document frame. and then click "Save" button.</li>
+                        <li>Click "Submit" button on the bottom of XML document</li>
+                    </ul>
+                </details>
+            </div>
 
-        </fieldset>
-
-    </form>
 </div>
 
 </body>
