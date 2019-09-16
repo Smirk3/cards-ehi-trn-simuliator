@@ -7,8 +7,8 @@ External Host Interface (EHI) is a real-time transactional data feed that enable
 
 ### Startup for Windows
 
-You should have java 1.8 installed on your machine.
-download executable JAR 
+You should have java 1.8 installed on your machine.  
+download executable *cards-ehi-trn-simulator* JAR (https://github.com/Smirk3/cards-ehi-trn-simuliator/tree/master/target)
 
 **Start from command line:**  
 `java -Dserver.port=8080 -jar card-ehi-trn-simuliator-1.0.0.jar`
