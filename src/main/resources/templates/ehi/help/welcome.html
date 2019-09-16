@@ -8,27 +8,57 @@
 <body>
 
 <div class="container" th:fragment="content">
-            <legend>Getting started</legend>
+    <legend>About application</legend>
+    <div>
+        WEB Application is used to simulate card authorization messages of GPS provider (https://globalprocessing.net/)
+        like GPS External Host Interface (EHI) do.
+    </div>
+    <div style="padding-top: 15px">
+        External Host Interface (EHI) is a real-time transactional data feed that enables you to implement bespoke
+        decision-making logic and your own authorization rules.
+    </div>
 
-            <div>
-                <details open="">
-                    <summary>1. Configuration</summary>
-                    <ul>
-                        <li>Go to <a th:href="@{/ehi/settings}">settings page</a> and click "Use default settings" button.</li>
-                        <li>Check <a th:href="@{/ehi/env}">application variables</a></li>
-                        <li>Go to <a th:href="@{/ehi/data/card/list}">list of cards page</a> and add cards you want to do request for.</li>
-                    </ul>
-                </details>
+    <legend style="padding-top: 30px">Getting started</legend>
 
-                <details>
-                    <summary>Do requests</summary>
+    <div>
+        <details open="">
+            <summary>1. Configuration</summary>
+            <ul>
+                <li>Go to <a th:href="@{/ehi/settings}">settings page</a> and click "Use default settings" button.</li>
+                <li>Check <a th:href="@{/ehi/env}">application variables</a></li>
+                <li>Go to <a th:href="@{/ehi/data/card/list}">list of cards page</a> and add cards you want to do
+                    request for.
+                </li>
+            </ul>
+        </details>
+
+        <details>
+            <summary>Do requests</summary>
+            <ul>
+                <li>Fill in main request parameters on <a th:href="@{/ehi/message/edit/fields}">messages page</a> and
+                    click "Next" button.
+                </li>
+                <li>You will see automatically generated XML request body. You can change this XML document manually by
+                    clicking "Edit" button on the top right corner of XML document frame and then click "Save" button.
+                </li>
+                <li>Click "Submit" button on the bottom of XML document</li>
+                <li>On the next page yuo will see:
+                    <div><img src="/images/messages-req-resp.jpg"/></div>
                     <ul>
-                        <li>Fill in main request parameters on <a th:href="@{/ehi/message/edit/fields}">messages page</a> and click "Next" button.</li>
-                        <li>You will see automatically generated XML request body. You can change this XML document manually by clicking "Edit" button on the top right corner of XML document frame. and then click "Save" button.</li>
-                        <li>Click "Submit" button on the bottom of XML document</li>
+                        <li>First block: response message and code. Green background - success, reg - failed</li>
+                        <li>Second block: table of requests. Click on table raw and yuo will see XML request and
+                            response.
+                        </li>
+                        <li>Third block: buttons to do next notification request based on recently done. There are
+                            implemented several external host notification flows. Application suggests yuo to do all
+                            available notifications based on recently done or do new notification message to start new
+                            flow of notification messages.
+                        </li>
                     </ul>
-                </details>
-            </div>
+                </li>
+            </ul>
+        </details>
+    </div>
 
 </div>
 
