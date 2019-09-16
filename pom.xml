@@ -124,6 +124,7 @@
             <id>bas</id>
             <properties>
                 <activateSpringProfile>bas</activateSpringProfile>
+                <envClassifier>bas</envClassifier>
             </properties>
         </profile>
     </profiles>
@@ -137,6 +138,7 @@
                 <artifactId>spring-boot-maven-plugin</artifactId>
                 <configuration>
                     <addResources>true</addResources>
+                    <classifier>${envClassifier}</classifier>
                 </configuration>
             </plugin>
 
