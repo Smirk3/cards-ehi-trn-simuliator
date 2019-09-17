@@ -121,6 +121,12 @@
 
     <profiles>
         <profile>
+            <id>default</id>
+            <properties>
+                <envClassifier>def</envClassifier>
+            </properties>
+        </profile>
+        <profile>
             <id>bas</id>
             <properties>
                 <activateSpringProfile>bas</activateSpringProfile>
