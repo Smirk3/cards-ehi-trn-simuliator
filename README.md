@@ -30,3 +30,7 @@ OR
 - execute "startup.bat" file.  
 - open in browser URL "http://localhost:8080/ehi"  
 - you can start application server on any different port number by changing port number **-Dserver.port=8080**
+
+### Main functionality
+- Save/upload your's own configuration to/from file.
+![settings!](/src/main/resources/static/images/readme_settings.png "settings upload/save")
