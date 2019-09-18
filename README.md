@@ -9,7 +9,7 @@ They enable the emerging payments industry to deliver breakthrough innovations t
 
 ### Startup for Windows
 
-You should have java 1.8 installed on your machine.  
+You should have java 1.8+ installed on your machine.  
 download executable *cards-ehi-trn-simulator* JAR (https://github.com/Smirk3/cards-ehi-trn-simuliator/tree/master/target)
 
 **Start from command line:**  
