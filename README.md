@@ -1,9 +1,11 @@
 ### About application
 
-WEB Application is used to simulate card authorization messages of GPS provider (Global Processing Services (GPS) https://globalprocessing.net/) like GPS External Host Interface (EHI) do.
+WEB Application is used to simulate card authorization messages of GPS provider (https://globalprocessing.net/) like GPS External Host Interface (EHI) do.
 
 External Host Interface (EHI) is a real-time transactional data feed that enables you to implement bespoke decision-making logic and your own authorization rules.
 
+Global Processing Services (GPS) is an award-winning issuer processor enabling many of today’s most high-proﬁle ﬁntech innovators and disruptors. They are certiﬁed by Mastercard and Visa to process and manage any credit, debit or pre-paid card transaction globally.  
+They enable the emerging payments industry to deliver breakthrough innovations through a unique combination of proprietary technology, their people and partners.
 
 ### Startup for Windows
 
