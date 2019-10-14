@@ -6,7 +6,6 @@
 package ehi.message.service;
 
 import ehi.classifier.bean.ProcessingCode;
-import ehi.classifier.bean.TransactionType;
 import ehi.gps.classifier.AccountingEntryType;
 import ehi.gps.classifier.StatusCodeMapper;
 import ehi.gps.model.Currency;
@@ -57,6 +56,7 @@ public class MessageServiceImpl implements MessageService {
         getTrn.setTXnID(getNewTxnId());
         getTrn.setTxnAmt(message.amount.value.setScale(4, BigDecimal.ROUND_DOWN).doubleValue());
         getTrn.setBillAmt(resolveBillAmountSign(message));
+        getTrn.setPOSTimeDE12(resolvePosTime(message));
         return toXml(getTrn, GetTransaction.class);
     }
 
@@ -141,7 +141,7 @@ public class MessageServiceImpl implements MessageService {
         getTrn.setMerchNameDE43(message.scheme.getLabel());
         getTrn.setPOSDataDE22(message.posCapability.getValue() + message.pinEntryCapability.getValue() + "0");
         getTrn.setPOSTermnlDE41(randomNumberInRange(11111111, 99999999));
-        getTrn.setPOSTimeDE12(message.date.format(DateTimeFormatter.ofPattern("HHmmss")));
+        getTrn.setPOSTimeDE12(resolvePosTime(message));
         getTrn.setProcCode(wrapProcessingCodeValue(message.processingCode));
         getTrn.setRespCodeDE39("00");
         getTrn.setRetRefNoDE37("6036");
@@ -227,6 +227,14 @@ public class MessageServiceImpl implements MessageService {
 
     private static String wrapProcessingCodeValue(ProcessingCode processingCode) {
         return processingCode.value + "0000";
+    }
+
+    private static String resolvePosTime(Message message) {
+        if (message.getTransactionType().txnType.equals("A") || message.getTransactionType().txnType.equals("D")) {
+            return message.date.format(DateTimeFormatter.ofPattern("HHmmss"));
+        } else {
+            return message.date.format(DateTimeFormatter.ofPattern("yyMMddHHmmss"));
+        }
     }
 
 }
