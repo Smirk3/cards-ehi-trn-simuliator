@@ -5,7 +5,7 @@
 
     <groupId>lt.iz.ehi</groupId>
     <artifactId>card-ehi-trn-simuliator</artifactId>
-    <version>1.0.1</version>
+    <version>1.0.2</version>
     <packaging>jar</packaging>
 
     <parent>
